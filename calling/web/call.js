@@ -127,6 +127,13 @@ if (invitedRoom !== null) {
 }
 updateRoomLink();
 if (invitedRoom === null) status('Create a room or open an invitation');
+// Invitation opened in a browser on Android: offer to continue in the app. The intent: URL opens the
+// installed app directly (no App Links verification needed); if it is not installed, Chrome stays here.
+if (invitedRoom !== null && validRoom(invitedRoom) && /Android/i.test(navigator.userAgent) && !window.VoiceCheckAndroid) {
+  const a = $('openapp');
+  a.href = `intent://call?room=${encodeURIComponent(invitedRoom)}&server=${encodeURIComponent(new URL('/', location.href).href)}#Intent;scheme=voicecheck;package=com.hypenex.voiceclonecheck;S.browser_fallback_url=${encodeURIComponent(location.href)};end`;
+  a.hidden = false; a.style.display = 'block';
+}
 // Opened by the Voice Check app with ?autojoin=1: join without a tap (the app already holds the mic permission).
 if (invitedRoom !== null && validRoom(invitedRoom) && new URL(location.href).searchParams.get('autojoin') === '1') {
   setTimeout(() => { if (stopped && !joining) $('join').onclick(); }, 300);
