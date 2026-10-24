@@ -127,6 +127,10 @@ if (invitedRoom !== null) {
 }
 updateRoomLink();
 if (invitedRoom === null) status('Create a room or open an invitation');
+// Opened by the Voice Check app with ?autojoin=1: join without a tap (the app already holds the mic permission).
+if (invitedRoom !== null && validRoom(invitedRoom) && new URL(location.href).searchParams.get('autojoin') === '1') {
+  setTimeout(() => { if (stopped && !joining) $('join').onclick(); }, 300);
+}
 $('room').addEventListener('input', updateRoomLink);
 $('new').onclick = () => {
   $('room').value = crypto.randomUUID().replaceAll('-', '').slice(0, 16);

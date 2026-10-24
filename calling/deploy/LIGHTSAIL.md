@@ -81,3 +81,22 @@ curl -fsSL https://raw.githubusercontent.com/amanbotx2-fr/manipal-hackathon-2/li
 bash setup-lightsail.sh 13-233-1-2.sslip.io
 ```
 5. Check from anywhere: `curl https://13-233-1-2.sslip.io/config` must list `stun:` and `turn:` entries.
+
+## App-to-app calls: invite links that open the app (Android App Links)
+
+For `https://<host>/?room=…` to open the Voice Check app instead of the browser, the server must
+publish `/.well-known/assetlinks.json` naming the app package and its signing-certificate
+fingerprint (`deploy/assetlinks.json`, fingerprint also in `deploy/app-signing-sha256.txt`), and the
+app must declare the host (done in `mobile/app.json`, `android.intentFilters`, `autoVerify`).
+
+On the instance (updates code, publishes the statement, restarts):
+```sh
+sudo -i
+curl -fsSL https://raw.githubusercontent.com/amanbotx2-fr/manipal-hackathon-2/live-calling/calling/deploy/update-lightsail.sh -o update-lightsail.sh && bash update-lightsail.sh
+```
+Then install the APK on the phones. Android checks the statement **when the app is installed**, so
+update the server first; if an app was installed earlier, reinstall it or enable the link manually
+(App info → Open by default → add link). If the APK is ever re-signed (different keystore), the
+fingerprint changes and `assetlinks.json` must be regenerated.
+
+Fallback that always works: paste the invite link into the app's "Got an invite link?" field.

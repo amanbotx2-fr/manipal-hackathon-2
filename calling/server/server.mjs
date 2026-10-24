@@ -5,8 +5,16 @@ import { WebSocketServer, WebSocket } from 'ws';
 
 export function createServer({ allowedOrigin, iceServers = [] } = {}) {
   const assets = new Map([['/', ['index.html', 'text/html']], ['/call.js', ['call.js', 'text/javascript']], ['/pcm-worklet.js', ['pcm-worklet.js', 'text/javascript']]]);
+  // Android App Links: lets https://<host>/?room=... open the Voice Check app directly. The statement
+  // lists the app package and its signing certificate fingerprint(s) (ASSETLINKS_JSON env).
+  const assetlinks = process.env.ASSETLINKS_JSON || '';
   const server = http.createServer(async (req, res) => {
     const pathname = new URL(req.url, 'http://localhost').pathname;
+    if (pathname === '/.well-known/assetlinks.json') {
+      if (!assetlinks) { res.writeHead(404); return res.end(); }
+      res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'max-age=300' });
+      return res.end(assetlinks);
+    }
     if (pathname === '/config') {
       res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
       return res.end(JSON.stringify({ iceServers }));

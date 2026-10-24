@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { useCallback, useEffect, useState } from 'react';
-import { BackHandler, StyleSheet, View } from 'react-native';
+import { BackHandler, Linking, StyleSheet, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 import type { Analysis, PickedFile } from './src/analysis';
@@ -24,10 +24,19 @@ export default function App() {
   const [lastAnalysis, setLastAnalysis] = useState<Analysis | null>(null);
   const [resetToken, setResetToken] = useState(0);
   const [retryToken, setRetryToken] = useState(0);
+  const [incomingUrl, setIncomingUrl] = useState<string | null>(null);
 
   const goHome = useCallback(() => setScreen('home'), []);
   const openDev = useCallback((from: Screen) => { setDevFrom(from); setScreen('dev'); }, []);
   const another = useCallback(() => { setResetToken((n) => n + 1); setScreen('home'); }, []);
+
+  // Invite links: https://<calling-host>/?room=... (Android App Links) or voicecheck://call?room=...
+  useEffect(() => {
+    const isInvite = (u: string | null | undefined): u is string => !!u && /[?&]room=[A-Za-z0-9_-]{8,64}/.test(u);
+    Linking.getInitialURL().then((u) => { if (isInvite(u)) { setIncomingUrl(u); setScreen('call'); } }).catch(() => {});
+    const sub = Linking.addEventListener('url', ({ url }) => { if (isInvite(url)) { setIncomingUrl(url); setScreen('call'); } });
+    return () => sub.remove();
+  }, []);
 
   useEffect(() => {
     if (screen === 'home') return;
@@ -53,7 +62,7 @@ export default function App() {
           />
         </View>
         {screen === 'call' && (
-          <View style={styles.fill}><CallScreen onBack={goHome} /></View>
+          <View style={styles.fill}><CallScreen onBack={goHome} incomingUrl={incomingUrl} onConsumedIncoming={() => setIncomingUrl(null)} /></View>
         )}
         {screen === 'result' && outcome && (
           <View style={styles.fill}>

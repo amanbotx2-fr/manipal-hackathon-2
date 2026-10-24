@@ -169,9 +169,9 @@ export default function HomeScreen({ onOpenDev, onOpenCall, onResult, onError, r
             </View>
             <View style={styles.rule} />
             <PrimaryButton testID="home-select" label="Select audio" onPress={onPick} left={<UploadIcon />} right={<ArrowRight />} spread />
-            <Pressable testID="home-call" onPress={onOpenCall} hitSlop={8} style={styles.callLink} accessibilityRole="button">
-              <Text style={[type.small, styles.callLinkText]} maxFontSizeMultiplier={1.3}>Or start an in-app call with a live check ›</Text>
-            </Pressable>
+            <View style={styles.callRow}>
+              <SecondaryButton testID="home-call" label="Call a friend · live check" onPress={onOpenCall} />
+            </View>
           </>
         )}
 
@@ -346,6 +346,5 @@ const styles = StyleSheet.create({
   errorTitle: { fontWeight: '700', color: colors.danger },
   errorDetail: { color: '#7A271A', marginTop: 4 },
   privacyNote: { textAlign: 'center', marginTop: space.sm, fontSize: 13, lineHeight: 19 },
-  callLink: { alignSelf: 'center', paddingTop: space.sm },
-  callLinkText: { color: colors.ink, textDecorationLine: 'underline' },
+  callRow: { flexDirection: 'row', marginTop: space.sm },
 });
