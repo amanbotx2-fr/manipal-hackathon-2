@@ -140,3 +140,40 @@ Server-upload app preserved: `mobile/reference/server-upload-v1/` + `mobile/dist
 - iOS: module is a stub; nothing built or tested.
 - Two clips verify numerical compatibility only, not accuracy or multilingual robustness. Scores are uncalibrated; "genuine" is not proof a caller is safe.
 - Mac storage: free space fell to 1.0 GB during testing (macOS swap under memory pressure) and recovered to 1.4 GB after the emulator stopped. Further rebuilds or emulator sessions need ≥2 GB free; this is a practical blocker.
+
+## 2026-10-24 — Reference-tensor check done; detector made replaceable
+
+**Reference export:** `vcd_reference_export.zip` (sha256 `7615a446…`), made in a separate Colab runtime with onnxruntime 1.31.0 (CPU, ORT_ENABLE_ALL), librosa 0.11.0, soxr 1.1.0, ffmpeg 6.1.1. All 10 arrays matched their manifest sha256 and shapes. A second baseline CSV (`dhwani_predictions_20261024T124533Z.csv`) reproduced the earlier logits. Evidence is in `runs/20261024_android_emulator_ondevice/` (`reference_stage_comparison.json`, `reference_export_manifest.json`, `screen_reference_tensor_check.png`).
+
+**Runtime only:** all 16 exported Colab windows (both clips × 3 modes) run through onnxruntime-android 1.31.0 on the emulator gave **max |Δlogit| = 2.38e-6** (per window 0 to 2.4e-6). ~600 ms/window, cold load 5.3 s in this session (host not memory-starved).
+
+**Preprocessing stages** (device vs Colab, full precision):
+
+| Stage | genuine (AAC m4a 48 kHz) | synthetic (PCM16 WAV 22.05 kHz) |
+|---|---|---|
+| decode | max 3.05e-5 (= 1 LSB of int16), RMS 2.4e-6, same length, lag 0, SNR 73.2 dB | bit-exact |
+| resample (ours vs soxr_hq) | max 4.3e-5, SNR 72.3 dB | max 1.98e-4, SNR 77.4 dB |
+| windows | train_peak max 3.9e-4; train_zscore max 3.8e-3 (normalisation gain); SNR 72–75 dB | train_peak max 1.5e-4, SNR 75–80 dB |
+| logits | train_peak 3.4e-5; train_zscore 3.6e-4; api_replica 3.9e-4 | train_peak 1.6e-4; train_zscore 3.3e-3; api_replica 2.5e-3 |
+| clip score abs diff | ≤ 2e-7 | ≤ 5.2e-5 |
+| prediction | identical (all modes) | identical (all modes) |
+
+Interpretation: the runtime contributes ≤2.4e-6. The synthetic WAV decodes bit-exactly, so its logit gaps (up to 3.3e-3) come from resampling (soxr_hq vs our Kaiser-sinc), amplified by z-score normalisation. Genuine gaps combine 1-LSB AAC decoder rounding with resampling. Preprocessing was not changed to force agreement. Working tolerances observed: runtime ≤1e-5 logit; full pipeline ≤5e-3 logit and ≤1e-4 clip score on these two clips. These are observations on two clips, not guarantees.
+
+Not covered: device window dumps for genuine api_replica and synthetic train_zscore/api_replica (UI automation missed those taps; their logits were compared from earlier runs with identical preprocessing code).
+
+**Replaceable detector (small refactor, Dhwani preserved as baseline):**
+- Native `DetectorAdapter` + declarative `AdapterSpec` (version, pinned artifact + sha256, sample rate, window/hop, duration limits, batch size, modes + default, output labels + positive index, aggregation, threshold + tuned flag, calibration flag, attribution). `DhwaniAdapter` is the only registered adapter.
+- `DetectorEngine`, `ModelStore` (directory `models/<id>-<rev7>/`, so the installed `dhwani-ee01871` model is reused) and `OnnxWindowSession` (renamed from DhwaniSession) are model-agnostic. New JS calls: `getAdapterSpec()`, `listAdapters()`.
+- TS `src/detector` `Detector` interface (`analyseFile`, `analysePcm`, lifecycle). `App.tsx` uses only that; modes and default come from the adapter spec.
+- Verified: `tsc --noEmit` passes; `:vcd-detector:compileReleaseKotlin` succeeds. **Not verified:** a rebuilt APK on the emulator. The installed APK and `mobile/dist/voice-clone-check-offline-arm64-release-debugsigned.apk` (sha256 `e51a2244…`) are the pre-refactor, verified build. Rebuild + emulator smoke test once the Mac has ≥2 GB free.
+
+**Disk root cause:** three idle Gradle daemons (one at 2.7 GB RAM) plus the emulator pushed macOS swap to 7.6/8 GB, and free disk fell to 486 MB. `gradlew --stop` restored it to 2.4 GB; it was 1.2 GB at the end of this session. Always run `./gradlew --stop` after builds; shut the emulator down when idle.
+
+## 2026-10-24 — Paused; integration handoff written
+
+- Builds and emulator runs are paused until the Mac has ≥2 GB free and the evaluation session supplies a candidate. No further refactoring.
+- Preserved unchanged: pre-refactor offline APK (sha256 `e51a2244…`), server-upload APK (`867da954…`), the model installed on the Pixel_10a AVD, and `vcd_reference_export.zip`. Nothing deleted, nothing downloaded.
+- Adapter layer status unchanged: **compiles, unverified at runtime.**
+- `docs/DETECTOR_INTEGRATION_HANDOFF.md`: exact adapter files, the model input/output contract the engine enforces, the registration steps, and the parity/offline/crash checks (with Dhwani's measured results as the bar).
+- Note: two Gradle daemons from VS Code's Java extension (not from this project's builds) were running at the end of the session, reserving up to 2.5 GB of RAM. Left alone.

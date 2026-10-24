@@ -120,3 +120,34 @@ Run the same notebook with `RUN_KIND = "full"`, `ACCESS = "download"`, `KEEP_AUD
   On CPU that is tens of hours. Step 12 prints a projection from the pilot timings.
 
 Report the full run as a separate result and never merge it with the pilot. Any change to the preprocessing recipe, aggregation or threshold must be decided on separate validation data, and recorded in `docs/PROGRESS.md` before running.
+
+## 6. Failed baseline, audit, and the candidate detector (2026-10-24)
+
+- Run `runs/20261024T123319Z_pilot_train_peak/` is the **failed Dhwani baseline** (In-the-Wild pilot: AUC 0.456, EER 0.561, accuracy 0.503 at 0.5). It is frozen.
+- `dhwani_implementation_audit.md`: label mapping, decoding, normalisation and aggregation checked line by line against upstream. **No bug found**; nothing was changed.
+- `dev_evidence/`: the 200 pilot clip IDs. Burned for tuning; every later held-out subset excludes them.
+
+### Shortlist (research only; sources in `candidate_shortlist.md`)
+| Candidate | ITW EER | Weights / licence | Size | Android path | Verdict |
+|---|---|---|---|---|---|
+| **AntiDeepfake Wav2Vec2-Small** (NII) | 4.24 % self-reported, 5.31 % independent | HF safetensors 380 MB, **CC BY-NC-SA 4.0** | 95 M | wav2vec2-base: ONNX export supported by Optimum, int8 wav2vec2 Android demos exist | **chosen** |
+| DF Arena 500M (Idiap/TalTech) | 1.76 % / 1.87 % independent | HF 1.75 GB, custom code, **non-commercial** | 436 M | Conformer on XLS-R, unverified export, multi-second latency | too heavy |
+| Nes2Net-X (XLS-R) | 5.15 % self / 7.75 % independent | Google Drive ckpt, Apache-2.0 end to end | 318 M | plausible ONNX, Dhwani-sized | fallback if a permissive licence is required |
+
+Why AntiDeepfake-Small: the only candidate with strong, independently reproduced In-the-Wild evidence at a phone-sized footprint, hosted on HF with a pinned revision and sha256. Costs: non-commercial licence (fine for the hackathon, not for a shipped product without permission), and its published loader needs fairseq, which no longer installs on Colab; `antideepfake_hf.py` maps the weights into `transformers` with a strict all-tensors-accounted check.
+Known overlap: In-the-Wild is **not** in its training table; ASVspoof 2019 LA **is** (so 19LA cannot be its test set); VoxCeleb2 celebrity speech is, so speaker overlap with In-the-Wild public figures is possible.
+
+### Notebook 04: `04_candidate_comparison_colab.ipynb` (built by `build_04_notebook.py`)
+1. Colab, **GPU (T4)** runtime. Upload the notebook, Run all. No tokens needed.
+2. Downloads: Dhwani 1.26 GB (or Drive cache), AntiDeepfake 380 MB; both sha256-verified. In-the-Wild clips via HTTP range (≈ 500 clips).
+3. Cell 9 scores the candidate on the 200 pilot clips (development evidence). AUC < 0.80 means **stop and investigate**; it does not by itself prove the mapping is wrong, and a high AUC does not prove parity. Cell 13 is the parity check: a separate Python 3.8 venv with fairseq 0.12.2 scores identical inputs with the authors' code; the result is recorded as `verified` (max |Δ fake score|) or `unverified` (reason). Every candidate number carries that status.
+4. Cell 10–11: fresh held-out subset, seed `20261026`, 150 + 150 clips, clip-disjoint from the pilot (speaker-disjoint impossible). Both models on the same clips; threshold-free metrics, fixed threshold 0.5 for both, paired bootstrap. The card's "EER @ 0.8128" is **not** applied: it is the EER point the authors found on In-the-Wild itself (our test data) with a whole-file pipeline we have not proven identical; it is shown as context only.
+5. Cell 12: ONNX export + ORT parity + Colab CPU latency for the candidate (deployment evidence only; no mobile files touched).
+6. Return the zip and executed notebook into `runs/<run_name>/`.
+
+### If fine-tuning turns out necessary (proposal, not started)
+Bounded T4 experiment on the candidate's head (and optionally the top encoder layers), only if the held-out result is insufficient:
+- Data: MLAAD (gated, CC-BY-NC) + IndicSynth fakes and Common Voice / Kathbath / LibriTTS genuine, **both classes** receiving the same augmentations (noise, 8 kHz band-limit, codec/MP3, gain). No In-the-Wild data in training.
+- Splits grouped by speaker and by generator: train / validation (model + threshold selection) / test, with **≥ 3 generators held out of train and validation entirely**.
+- Budget: ≤ 2 h T4, frozen encoder first; log every run; report test only once.
+- Final check on a fresh In-the-Wild selection excluding the pilot and the 04 held-out IDs.

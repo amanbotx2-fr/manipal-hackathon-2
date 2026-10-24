@@ -1,0 +1,340 @@
+{
+ "created_utc": "2026-10-24T12:45:39.823037+00:00",
+ "model": {
+  "repo": "ayush2635/Dhwani-Multilingual-Deepfake-Audio-Detection-Model",
+  "revision": "ee0187142973e1f02050e47d2a31c55ee0263065",
+  "sha256": "d1c232bf4d7990526804b375c15804c0ee4e9b566478b908c5a57431491b7342",
+  "providers": [
+   "CPUExecutionProvider"
+  ],
+  "session_options": "onnxruntime defaults (graph_optimization_level=ORT_ENABLE_ALL)",
+  "input": [
+   [
+    "input",
+    [
+     "batch_size",
+     "time"
+    ],
+    "tensor(float)"
+   ]
+  ],
+  "output": [
+   [
+    "output",
+    [
+     1,
+     2
+    ],
+    "tensor(float)"
+   ]
+  ]
+ },
+ "versions": {
+  "python": "3.13.16",
+  "onnxruntime": "1.31.0",
+  "librosa": "0.11.0",
+  "soundfile": "0.14.0",
+  "numpy": "2.1.3",
+  "soxr": "1.1.0",
+  "ffmpeg": "ffmpeg version 6.1.1-3ubuntu5 Copyright (c) 2000-2023 the FFmpeg developers"
+ },
+ "preprocessing": {
+  "SR": 16000,
+  "WIN": 64000,
+  "HOP": 32000,
+  "MIN_DUR_S": 2.0,
+  "MAX_DUR_S": 10.0,
+  "PEAK_TARGET_DBFS": -3.0,
+  "resample": "librosa.resample res_type=soxr_hq",
+  "mono": "mean over channels",
+  "SILENT_PEAK_DBFS": -50.0,
+  "ACTIVE_FRAME_S": 0.025,
+  "ACTIVE_REL_DB": 35.0,
+  "ACTIVE_ABS_DBFS": -55.0,
+  "MIN_ACTIVE_S": 1.0,
+  "SYNTHETIC_INDEX": 1,
+  "DECISION_THRESHOLD": 0.5
+ },
+ "clips": {
+  "genuine": {
+   "source_name": "genuine_hi_aman.m4a",
+   "source_sha256": "8b03de0923525b54aa73cd0c9b940444f652681f9605cfdaa617762970085bae",
+   "decoder": "librosa/audioread (ffmpeg)",
+   "native_sr": 48000,
+   "channels": 1,
+   "native_samples": 396288,
+   "native_mono": {
+    "file": "genuine/native_mono.f32",
+    "shape": [
+     396288
+    ],
+    "dtype": "<f4",
+    "sha256": "20de6fc88426189219d05f7325187a0af89c76e3ff8aeffa0c52392a7516097a"
+   },
+   "x16": {
+    "file": "genuine/x16.f32",
+    "shape": [
+     132096
+    ],
+    "dtype": "<f4",
+    "sha256": "eef0760e714bb3f2357861faaa7b2f1b235f2d482b8305125f4116392f11b035"
+   },
+   "validate": {
+    "duration_s": 8.256,
+    "truncated": false,
+    "analysed_duration_s": 8.256,
+    "peak_dbfs": -22.12,
+    "rms_dbfs": -39.15,
+    "active_s": 8.025,
+    "clipping_frac": 0.0
+   },
+   "modes": {
+    "train_peak": {
+     "windows": {
+      "file": "genuine/windows_train_peak.f32",
+      "shape": [
+       4,
+       64000
+      ],
+      "dtype": "<f4",
+      "sha256": "5b58abdfcbfd1e89f41fe982ba80cba8df9a3b9c496565b26186b9e731af74c4"
+     },
+     "starts": [
+      0,
+      32000,
+      64000,
+      68096
+     ],
+     "logits": [
+      [
+       4.173818111419678,
+       -4.829592227935791
+      ],
+      [
+       4.1638569831848145,
+       -4.830561637878418
+      ],
+      [
+       4.167068004608154,
+       -4.834628582000732
+      ],
+      [
+       4.164922714233398,
+       -4.832973480224609
+      ]
+     ],
+     "scores": [
+      0.00012297452701918627,
+      0.0001240851277374904,
+      0.00012318542965742056,
+      0.00012365441530844628
+     ],
+     "clip_score_mean": 0.00012347487493063585,
+     "clip_score_max": 0.0001240851277374904
+    },
+    "train_zscore": {
+     "windows": {
+      "file": "genuine/windows_train_zscore.f32",
+      "shape": [
+       4,
+       64000
+      ],
+      "dtype": "<f4",
+      "sha256": "4eab07f76c124fa2ad81df017218a2ba5c0f6de9fa0edf2da1eeba298967fb79"
+     },
+     "starts": [
+      0,
+      32000,
+      64000,
+      68096
+     ],
+     "logits": [
+      [
+       4.159670829772949,
+       -4.807971000671387
+      ],
+      [
+       4.1857686042785645,
+       -4.8537163734436035
+      ],
+      [
+       4.185722351074219,
+       -4.846400737762451
+      ],
+      [
+       4.1814398765563965,
+       -4.842827796936035
+      ]
+     ],
+     "scores": [
+      0.00012745218405175166,
+      0.00011861784694186232,
+      0.00011949421590980164,
+      0.00012043647563145867
+     ],
+     "clip_score_mean": 0.00012150018063371857,
+     "clip_score_max": 0.00012745218405175166
+    },
+    "api_replica": {
+     "windows": {
+      "file": "genuine/windows_api_replica.f32",
+      "shape": [
+       1,
+       64000
+      ],
+      "dtype": "<f4",
+      "sha256": "a308f5dcd990cca33e286fbf301287e441bbc81f45510b62d9e2095eaf7865d7"
+     },
+     "starts": [
+      0
+     ],
+     "logits": [
+      [
+       4.156589984893799,
+       -4.773727893829346
+      ]
+     ],
+     "scores": [
+      0.00013229845222021246
+     ],
+     "clip_score_mean": 0.00013229845222021246,
+     "clip_score_max": 0.00013229845222021246
+    }
+   }
+  },
+  "synthetic": {
+   "source_name": "synthetic__en__Chatterbox__emerald_city_of_oz_20_f000055.wav",
+   "source_sha256": "9448a599a4d5cd420191182d20890592e69124c699f704903c22c3614f3fc0ac",
+   "decoder": "soundfile",
+   "native_sr": 22050,
+   "channels": 1,
+   "native_samples": 164052,
+   "native_mono": {
+    "file": "synthetic/native_mono.f32",
+    "shape": [
+     164052
+    ],
+    "dtype": "<f4",
+    "sha256": "4aa8a07761577372054f8810cb3dfcac1728bd1a595bf2a29f7a07f298cda4e2"
+   },
+   "x16": {
+    "file": "synthetic/x16.f32",
+    "shape": [
+     119040
+    ],
+    "dtype": "<f4",
+    "sha256": "115a1a08beecd9e81ae55e41512892fc38f5d9110a09b8d4eef6147f30f8fb1d"
+   },
+   "validate": {
+    "duration_s": 7.44,
+    "truncated": false,
+    "analysed_duration_s": 7.44,
+    "peak_dbfs": -0.37,
+    "rms_dbfs": -20.68,
+    "active_s": 5.6,
+    "clipping_frac": 0.0
+   },
+   "modes": {
+    "train_peak": {
+     "windows": {
+      "file": "synthetic/windows_train_peak.f32",
+      "shape": [
+       3,
+       64000
+      ],
+      "dtype": "<f4",
+      "sha256": "0de8eb2e321903f800458045bff62c6ee2f6c2fe2cbbfa542bc141f33f998420"
+     },
+     "starts": [
+      0,
+      32000,
+      55040
+     ],
+     "logits": [
+      [
+       -4.219454765319824,
+       4.300266742706299
+      ],
+      [
+       -4.247888088226318,
+       4.316620826721191
+      ],
+      [
+       -4.223860263824463,
+       4.311768054962158
+      ]
+     ],
+     "scores": [
+      0.9998005448149292,
+      0.9998092791379267,
+      0.9998036917924435
+     ],
+     "clip_score_mean": 0.9998045052484331,
+     "clip_score_max": 0.9998092791379267
+    },
+    "train_zscore": {
+     "windows": {
+      "file": "synthetic/windows_train_zscore.f32",
+      "shape": [
+       3,
+       64000
+      ],
+      "dtype": "<f4",
+      "sha256": "83b153949a812e2c900f4038f54b526f31b70aee1f4fb089942c173cac57d886"
+     },
+     "starts": [
+      0,
+      32000,
+      55040
+     ],
+     "logits": [
+      [
+       -2.3293352127075195,
+       2.3873441219329834
+      ],
+      [
+       -2.275310754776001,
+       2.3101754188537598
+      ],
+      [
+       -2.2312092781066895,
+       2.286857843399048
+      ]
+     ],
+     "scores": [
+      0.9911344686090973,
+      0.9899041750016622,
+      0.9892076542935864
+     ],
+     "clip_score_mean": 0.9900820993014486,
+     "clip_score_max": 0.9911344686090973
+    },
+    "api_replica": {
+     "windows": {
+      "file": "synthetic/windows_api_replica.f32",
+      "shape": [
+       1,
+       64000
+      ],
+      "dtype": "<f4",
+      "sha256": "da70b7801fb7e07ca20c98037e76ecdab6ccb40c30669a21aae7e392f3a52f91"
+     },
+     "starts": [
+      0
+     ],
+     "logits": [
+      [
+       -2.336398124694824,
+       2.4339611530303955
+      ]
+     ],
+     "scores": [
+      0.991593927190436
+     ],
+     "clip_score_mean": 0.991593927190436,
+     "clip_score_max": 0.991593927190436
+    }
+   }
+  }
+ }
+}

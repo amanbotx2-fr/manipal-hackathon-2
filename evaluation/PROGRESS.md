@@ -85,3 +85,28 @@ Unpacked into `runs/20261024T123319Z_pilot_train_peak/`; details are in `RUN_NOT
 - **Not done, by decision:** no threshold tuning, no label reversal, no preprocessing selection based on this pilot. `train_peak` and 0.5 stay as recorded; their status is "unvalidated", not "best".
 - **These 200 In-the-Wild clips are now development evidence.** They are excluded from any future held-out test. Any detector chosen after seeing this result (including any re-interpretation of Dhwani) must be evaluated on a fresh held-out selection: new seed, clip IDs disjoint from `manifest_in_the_wild.csv`, ideally disjoint speakers.
 - Next steps opened: (a) implementation audit of our pipeline against upstream Dhwani code (evidence first, no changes); (b) research into a replacement detector (research only).
+
+## 2026-10-24: audit done (no bug), candidate chosen, comparison notebook built (NOT yet run)
+
+- `dhwani_implementation_audit.md`: our pipeline matches upstream for label order (0 real / 1 fake), decoding (pilot files were 16 kHz mono float WAV: no resampling happened), peak −3 dBFS normalisation (identical formula) and windowing. Aggregation variants (mean, max, upstream consistency-max with T = 1.362, first window) all give AUC 0.44–0.47 on the saved logits. Reversed labels would give 0.544. **Nothing changed.** Flagged clips cluster by speaker, suggesting channel/speaker sensitivity rather than synthesis detection.
+- Replacement research (sources in `candidate_shortlist.md`): chosen **AntiDeepfake Wav2Vec2-Small** (HF `nii-yamagishilab/wav2vec-small-anti-deepfake` @ `9a13264`, 380,210,632 B, sha256 `828ee456…`, CC BY-NC-SA 4.0). Fallback: Nes2Net-X (Apache-2.0). DF Arena 500M rejected on size and licence.
+- Built: `antideepfake_hf.py` (fairseq-free loader, strict key mapping; `tests/test_antideepfake_mapping.py` passes: 210 encoder tensors mapped, 8 pre-training-only dropped, mismatches rejected), `eval_lib.select_subset(..., exclude_clip_ids=, exclude_speakers=)` (tested), `04_candidate_comparison_colab.ipynb` (18 code cells parse, embedded files identical, hashes consistent). Notebook 03 rebuilt with the new `eval_lib`.
+- **Not verified (needs Colab):** that the mapped weights reproduce the authors' model (gate in cell 9), transformers/torch versions, candidate scores, ONNX export. No candidate result exists yet.
+- Constraint: In-the-Wild has 54 speakers, all in the pilot → held-out is clip-disjoint only.
+
+**Next action:** run `04_candidate_comparison_colab.ipynb` on a T4 runtime; paste cells 5, 9, 11, 12; return the zip.
+
+## 2026-10-24: notebook 04 corrected before its first run
+
+- Gate wording fixed: dev-evidence AUC < 0.80 = stop and investigate; not proof of a mapping error; a high AUC is not proof of parity. File renamed `dev_evidence_gate.json`.
+- Architecture read side by side (fairseq v0.12.2 `wav2vec2.py` vs transformers `modeling_wav2vec2.py`): conv stack + GroupNorm on layer 0 + GELU, frame LayerNorm → Linear(512,768), positional conv (k 128, 16 groups, weight-norm dim 2, SamePad drop-last, GELU), post-LN encoder with `encoder.layer_norm` before the layers and no final norm, exact GELU, 12 heads, head_dim⁻⁰·⁵ scaling, mean-pool → Linear(768,2), fake = index 0. No attention mask on either side for a single clip; fairseq's pad-to-multiple-of-2 is masked and removed, so a no-op. `antideepfake_hf.architecture_check()` now asserts the 17 config fields that encode this. Remaining differences: decoder/resampler (irrelevant at 16 kHz) and our 2–10 s policy vs whole-file scoring.
+- Real parity check added (cell 13, default on): `uv` builds a Python 3.8 venv with torch 2.4.1 CPU + fairseq 0.12.2 (cp38 wheels exist on PyPI; verified), runs `fairseq_parity_ref.py` (the card's exact model code) on the same layer-normed arrays as the transformers path, and records max |Δ logit| and |Δ fake score| on 12 held-out clips. Anything short of a successful run is recorded as **unverified**, never skipped silently.
+- 0.8128 dropped as an operating point: it is the EER threshold *on In-the-Wild* from the authors' pipeline, i.e. tuned on our test data and tied to an unproven-identical pipeline. Only 0.5 is applied; 0.8128 is context.
+- Frozen before the run: candidate (AntiDeepfake W2V-Small @ `9a13264`), recipe (layer-norm whole clip, fake = softmax[0]; 4 s-window mean secondary), held-out selection (seed 20261026, 150 + 150, excludes the 200 pilot IDs), threshold 0.5. No tuning on the fresh subset afterwards.
+- Verified locally: 19 code cells parse, embedded files identical (hashes recorded), both test files pass, `src/vcd/dhwani_infer.py` unchanged. **Not run anywhere yet.**
+
+## 2026-10-24: notebook 04 first upload failed at the provenance check (fixed, not yet re-run)
+
+- Colab stopped in cell `# 3.` with all four code hashes mismatching. Cause: an escaping bug in `build_04_notebook.py` — the cell computed the hash of the file text plus the two characters `\n` (backslash, n) instead of a newline, so it could never match. Nothing was wrong with the embedded files themselves.
+- Fixed in the builder and rebuilt. My earlier local check only re-hashed the files with my own code; it now **executes the notebook's own hash lines** against the `%%writefile` contents, exactly as Colab does, for notebooks 03 and 04. Both pass.
+- No model or data cell ran in that attempt; nothing to preserve from it. Re-upload the rebuilt `04_candidate_comparison_colab.ipynb`.
