@@ -191,6 +191,9 @@ export default function HomeScreen({ onOpenDev, onOpenCall, onResult, onError, r
               <PrimaryButton testID="home-analyse" label="Analyse on device" onPress={onAnalyse} disabled={!installed} compact />
             </View>
             {!installed && <Text style={[type.small, styles.hint]}>Set up the model above to analyse this clip.</Text>}
+            <View style={styles.callRow}>
+              <SecondaryButton testID="home-call" label="Call a friend · live check" onPress={onOpenCall} />
+            </View>
           </>
         )}
 
@@ -212,9 +215,6 @@ export default function HomeScreen({ onOpenDev, onOpenCall, onResult, onError, r
           </>
         )}
 
-        <Text style={[type.small, styles.privacyNote]} maxFontSizeMultiplier={1.3}>
-          Your audio stays on this device. Works offline after model setup.
-        </Text>
       </View>
     </ScrollView>
   );
@@ -347,6 +347,5 @@ const styles = StyleSheet.create({
   errorCard: { backgroundColor: colors.dangerBg, borderColor: '#F0C2BA' },
   errorTitle: { fontWeight: '700', color: colors.danger },
   errorDetail: { color: '#7A271A', marginTop: 4 },
-  privacyNote: { textAlign: 'center', marginTop: space.sm, fontSize: 13, lineHeight: 19 },
   callRow: { flexDirection: 'row', marginTop: space.sm },
 });
