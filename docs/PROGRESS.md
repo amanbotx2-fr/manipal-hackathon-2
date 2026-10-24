@@ -233,3 +233,16 @@ Setup: local `calling/server` behind a temporary Cloudflare quick tunnel (HTTPS 
 **Environment incidents (not app bugs)**
 1. First attempt: the guest's `system_server` entered a watchdog restart loop (every ~72 s). Contributing: my join script ran `uiautomator dump` once per second (crash-looped it, 12 fatal exceptions at 1.1 s intervals), host swap at ~5.8 GB, and the emulator having been booted with `-no-audio`. Fixed by a forced restart with audio.
 2. Second attempt: the emulator exited after its own watchdog saw the QEMU main loop and all CPU threads hang for 15 s, with host swap at 6.3 GB of 7 GB and 1.7 GB disk free. Not restarted: free host memory first (Codex, Android Studio and the Claude app each hold ~1 GB).
+
+## 2026-10-24 (late) — Call reliability fix (branch `live-calling`, c76c104)
+
+Reported: no audio either way, calls dropping within ~10 s. Diagnosis: the signaling server handed clients **no ICE servers** (`/config` → `{"iceServers": []}`), so peers on different networks (or on mobile data) never found a media route; ICE timed out and the kit hung up with "Connection failed". The kit also ended the call whenever the signaling socket dropped.
+
+Changes (server + web page; no app rebuild needed for these, the WebView loads the page from the server):
+- `calling/server/server.mjs`: CLI start defaults to public STUN; `TURN_URLS` / `TURN_USERNAME` / `TURN_CREDENTIAL` add TURN; `ICE_SERVERS_JSON` still overrides. `createServer()` default unchanged (kit tests still 6/6). Startup log prints the ICE servers and warns when no TURN is set.
+- `calling/web/call.js`: a signaling drop no longer ends a connected call; `disconnected`/`failed` → ICE restart from the initiator (up to 3 tries) instead of an immediate stop; the status line shows the media route once connected (direct / NAT traversal / via TURN relay); failure text names STUN/TURN.
+- `VcdCallView.kt`: `keepScreenOn` during a call (a sleeping screen pauses the WebView).
+- `calling/deploy/turnserver.conf.example` + README section on STUN/TURN.
+
+Verified locally: `/config` returns STUN by default, TURN entries when env is set, and the override; kit tests pass; Kotlin compiles. **Not verified:** an actual cross-network call with these changes (needs the server redeployed with the new `web/` and `server/`, and TURN for mobile-data callers).
+- APK rebuilt with the screen-on fix: `mobile/dist/voice-check-livecalling-arm64-release-debugsigned.apk` (sha256 `d139f2f213e5…`), copied to `testing apk/`.
