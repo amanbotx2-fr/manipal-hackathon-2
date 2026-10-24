@@ -409,10 +409,13 @@ def at_threshold(labels, scores, thr: float) -> dict:
     rec = tp / P if P else None
     fpr = fp / N if N else None
     spec = tn / N if N else None
+    prec = tp / (tp + fp) if tp + fp else None
+    f1 = (2 * prec * rec / (prec + rec)) if prec is not None and rec is not None and (prec + rec) else None
     return {
         "threshold": thr,
         "confusion": {"tp_synthetic_as_synthetic": tp, "fn_synthetic_as_genuine": fn,
                       "fp_genuine_as_synthetic": fp, "tn_genuine_as_genuine": tn},
+        "synthetic_precision": prec, "f1_synthetic": f1,
         "synthetic_recall": rec, "synthetic_recall_wilson95": wilson(tp, P),
         "genuine_fpr": fpr, "genuine_fpr_wilson95": wilson(fp, N),
         "genuine_specificity": spec,
@@ -473,3 +476,80 @@ def reject_category(reason: str) -> str:
 def jdump(obj, path):
     with open(path, "w", encoding="utf-8") as f:
         json.dump(obj, f, indent=2, ensure_ascii=False, default=str)
+
+
+# ---- robustness verdict (official ratio) ---------------------------------------------
+ROBUSTNESS_RATIO_LIMIT = 2.5
+REQUIRED_CONDITIONS = ("clean", "narrowband_8k", "codec_1", "codec_2", "noise")
+
+
+def robustness_verdict(eers: dict, required=REQUIRED_CONDITIONS, limit: float = ROBUSTNESS_RATIO_LIMIT,
+                       n_pairs: int | None = None) -> dict:
+    """eers: {condition: EER or None} computed on the SAME paired clips.
+
+    PASS  : every required condition present, clean EER > 0, worst degraded / clean <= limit.
+    FAIL  : every required condition present, clean EER > 0, ratio > limit.
+    INCOMPLETE: a required condition is missing or None.
+    UNDEFINED_RATIO: clean EER == 0 (ratio undefined). The absolute degraded EERs are reported and, as an
+        auxiliary number only, the ratio against a one-error floor 1/n_pairs (never used for PASS).
+    """
+    missing = [c for c in required if eers.get(c) is None]
+    out = {"required": list(required), "missing": missing, "limit": limit, "eers": {c: eers.get(c) for c in required}}
+    if missing:
+        out.update(verdict="INCOMPLETE", ratio=None, worst_condition=None)
+        return out
+    clean = eers["clean"]
+    degraded = {c: eers[c] for c in required if c != "clean"}
+    worst = max(degraded, key=degraded.get)
+    out["worst_condition"], out["worst_eer"] = worst, degraded[worst]
+    out["eer_8k_minus_clean_pp"] = round((eers["narrowband_8k"] - clean) * 100, 3)
+    if clean == 0:
+        floor = (1.0 / n_pairs) if n_pairs else None
+        out.update(verdict="UNDEFINED_RATIO", ratio=None,
+                   auxiliary_ratio_vs_one_error_floor=(degraded[worst] / floor) if floor else None,
+                   note="clean EER is 0: the ratio is undefined; see absolute degraded EERs")
+        return out
+    ratio = degraded[worst] / clean
+    out.update(ratio=ratio, verdict="PASS" if ratio <= limit else "FAIL")
+    return out
+
+
+# ---- pre-registered denoiser-frontend selection (development evidence only) --------------
+def frontend_selection(dev_eers: dict, baseline: str = "none", margin_pp: float = 1.0,
+                       required=REQUIRED_CONDITIONS, order: list | None = None) -> dict:
+    """dev_eers: {frontend: {condition: EER}} on the SAME paired development clips.
+
+    Rule (fixed before looking at fresh data):
+      1. a frontend is eligible only if its clean EER <= clean EER of `baseline` + margin_pp/100
+         (it must not destroy synthesis artefacts on clean audio);
+      2. among eligible frontends pick the lowest worst EER over the degraded required conditions;
+      3. ties -> earlier in `order` (simplest first).
+    Returns the frozen choice (None if nothing is eligible) and the full table.
+    """
+    degraded = [c for c in required if c != "clean"]
+    base_clean = dev_eers[baseline]["clean"]
+    table = {}
+    for fe, e in dev_eers.items():
+        if any(e.get(c) is None for c in required):
+            table[fe] = {"eligible": False, "reason": "missing condition"}
+            continue
+        worst_c = max(degraded, key=lambda c: e[c])
+        table[fe] = {"clean_eer": e["clean"], "clean_delta_pp": (e["clean"] - base_clean) * 100,
+                     "worst_condition": worst_c, "worst_eer": e[worst_c],
+                     "ratio_unrounded": (e[worst_c] / e["clean"]) if e["clean"] > 0 else None,
+                     "eligible": fe != baseline and e["clean"] <= base_clean + margin_pp / 100}
+    order = order or [fe for fe in dev_eers if fe != baseline]
+    elig = [fe for fe in order if table.get(fe, {}).get("eligible")]
+    chosen = min(elig, key=lambda fe: (table[fe]["worst_eer"], order.index(fe))) if elig else None
+    improves = chosen is not None and table[chosen]["worst_eer"] < table[baseline]["worst_eer"]
+    return {"frozen_frontend": chosen if improves else None, "candidate_if_not_improving": chosen if not improves else None,
+            "margin_pp": margin_pp, "baseline": baseline, "table": table,
+            "rule": "eligible if clean EER <= baseline clean + margin; then min worst degraded EER; ties -> simplest; "
+                    "frozen only if it beats the baseline's worst EER"}
+
+
+def clean_margin_check(clean_eer: float, baseline_clean_eer: float, margin_pp: float) -> dict:
+    """Guards against a higher clean EER disguising a 'better' ratio."""
+    delta = (clean_eer - baseline_clean_eer) * 100
+    return {"clean_eer": clean_eer, "baseline_clean_eer": baseline_clean_eer, "delta_pp": delta,
+            "margin_pp": margin_pp, "within_margin": delta <= margin_pp}

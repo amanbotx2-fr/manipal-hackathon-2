@@ -1,0 +1,11 @@
+condition,ok,rejected_clean,rejected_degraded,selected,coverage
+clean,244,56,0,300,0.8133
+narrowband_8k,244,56,0,300,0.8133
+codec_1,244,56,0,300,0.8133
+codec_2,244,56,0,300,0.8133
+noise,244,56,0,300,0.8133
+loud_minus20db,226,56,18,300,0.7533
+loud_peak_minus1db,244,56,0,300,0.8133
+silence_pad_1s,244,56,0,300,0.8133
+duration_first3s,243,56,1,300,0.81
+telephone_quality,244,56,0,300,0.8133

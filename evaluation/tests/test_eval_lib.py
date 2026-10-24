@@ -54,6 +54,24 @@ def test_metrics():
             c["fp_genuine_as_synthetic"], c["tn_genuine_as_genuine"]) == (2, 1, 1, 1)  # 0.5 counts as synthetic
     assert abs(m["synthetic_recall"] - 2 / 3) < 1e-12 and m["genuine_fpr"] == 0.5
     assert abs(m["balanced_accuracy"] - (2 / 3 + 0.5) / 2) < 1e-12
+    assert abs(m["synthetic_precision"] - 2 / 3) < 1e-12 and abs(m["f1_synthetic"] - 2 / 3) < 1e-12
+    v = el.robustness_verdict({"clean": 0.02, "narrowband_8k": 0.04, "codec_1": 0.03, "codec_2": 0.05, "noise": 0.045})
+    assert v["verdict"] == "PASS" and abs(v["ratio"] - 2.5) < 1e-12 and v["worst_condition"] == "codec_2" and v["eer_8k_minus_clean_pp"] == 2.0
+    assert el.robustness_verdict({"clean": 0.02, "narrowband_8k": 0.06, "codec_1": 0.03, "codec_2": 0.05, "noise": 0.045})["verdict"] == "FAIL"
+    assert el.robustness_verdict({"clean": 0.02, "narrowband_8k": 0.06, "codec_1": None, "codec_2": 0.05, "noise": 0.045})["verdict"] == "INCOMPLETE"
+    assert el.robustness_verdict({"clean": 0.02, "narrowband_8k": 0.06, "codec_2": 0.05, "noise": 0.045})["verdict"] == "INCOMPLETE"
+    z = el.robustness_verdict({"clean": 0.0, "narrowband_8k": 0.01, "codec_1": 0.0, "codec_2": 0.0, "noise": 0.0}, n_pairs=200)
+    assert z["verdict"] == "UNDEFINED_RATIO" and z["ratio"] is None and abs(z["auxiliary_ratio_vs_one_error_floor"] - 2.0) < 1e-9
+    dev = {"none": {"clean": .02, "narrowband_8k": .04, "codec_1": .04, "codec_2": .02, "noise": .16},
+           "nr":   {"clean": .025, "narrowband_8k": .04, "codec_1": .05, "codec_2": .03, "noise": .06},
+           "dfn":  {"clean": .05, "narrowband_8k": .03, "codec_1": .03, "codec_2": .03, "noise": .03}}
+    f = el.frontend_selection(dev, margin_pp=1.0, order=["nr", "dfn"])
+    assert f["frozen_frontend"] == "nr" and f["table"]["dfn"]["eligible"] is False and f["table"]["nr"]["worst_condition"] == "noise"
+    assert abs(f["table"]["none"]["ratio_unrounded"] - 8.0) < 1e-12
+    f2 = el.frontend_selection(dev, margin_pp=5.0, order=["nr", "dfn"]); assert f2["frozen_frontend"] == "dfn"
+    worse = {"none": dev["none"], "nr": {"clean": .02, "narrowband_8k": .04, "codec_1": .04, "codec_2": .02, "noise": .20}}
+    f3 = el.frontend_selection(worse, margin_pp=1.0); assert f3["frozen_frontend"] is None and f3["candidate_if_not_improving"] == "nr"
+    assert el.clean_margin_check(0.03, 0.0246, 1.0)["within_margin"] and not el.clean_margin_check(0.04, 0.0246, 1.0)["within_margin"]
     lo, hi = el.wilson(0, 10)
     assert lo == 0.0 and 0.27 < hi < 0.29
     e = el.evaluate([1, 1, 0, 0] * 10, [0.9, 0.6, 0.4, 0.1] * 10, 0.5, n_boot=50, seed=3)

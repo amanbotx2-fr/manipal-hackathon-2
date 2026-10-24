@@ -1,0 +1,12 @@
+{
+  "source": "pasted by Aman from the Colab output of cell 12b (evaluation/colab_cells/12b_onnx_export_retry.py), 2026-10-24; onnx_retry.json itself not yet returned",
+  "attempted": true,
+  "exporter": "dynamo",
+  "ok": true,
+  "file_mb": 378.8,
+  "input_name": "wav",
+  "max_abs_fake_score_diff": 2.119046221271681e-07,
+  "ort_cpu_ms_median": 568.348925999998,
+  "n_clips": 8,
+  "notes": "fp32 ONNX, dynamic time axis (exported with Dim('time', min=16000, max=160000)); ORT CPUExecutionProvider on Colab (2 vCPU); int8/fp16 and on-device latency not measured; output name, opset and external-data files to be recorded by the packaging cell"
+}

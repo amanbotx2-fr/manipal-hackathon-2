@@ -151,3 +151,42 @@ Bounded T4 experiment on the candidate's head (and optionally the top encoder la
 - Splits grouped by speaker and by generator: train / validation (model + threshold selection) / test, with **≥ 3 generators held out of train and validation entirely**.
 - Budget: ≤ 2 h T4, frozen encoder first; log every run; report test only once.
 - Final check on a fresh In-the-Wild selection excluding the pilot and the 04 held-out IDs.
+
+## 7. EER-first protocol and robustness evaluation (2026-10-24)
+
+**Metric policy (from now on)**
+- Primary metric: **EER** computed on continuous synthetic scores; ROC-AUC alongside. Never on thresholded predictions.
+- Checkpoint selection (when we train) uses **validation EER** only. The **deployment threshold** is chosen on validation data only.
+- Test EER and its crossing threshold are reported separately, as descriptive numbers; the test threshold is never used for deployed classification.
+- Accuracy, precision, recall, F1 and FPR are reported at the frozen validation-selected threshold. **None exists yet → 0.5 is retained.**
+- Already-inspected subsets (200 pilot clips, 300 held-out clips of run 20261024T140853Z) are development evidence: no tuning on them.
+
+**Notebook 05: `05_robustness_eer_colab.ipynb`** (built by `build_05_notebook.py`; same Colab runtime as 04 preferred)
+- Clips: the 300 held-out clips (244 eligible), decoded once; every condition is applied to the same decoded clip (paired). Degraded audio passes the same validation gate; rejections/failures and coverage per condition are reported, never dropped silently.
+- Required conditions: clean 16 kHz; 16→8→16 kHz (soxr_hq); **Opus 16 kb/s VBR voip (libopus)**; **MP3 32 kb/s CBR (libmp3lame)**; white Gaussian noise at 10 dB SNR, seed `sha256("20261027:<clip_id>")`.
+- Official ratio: worst degraded EER / clean EER on the paired set; PASS ≤ 2.5; INCOMPLETE if a required condition is missing (e.g. ffmpeg lacks an encoder); clean EER = 0 → UNDEFINED_RATIO with absolute EERs. Also EER(8 kHz) − EER(clean) in percentage points.
+- Sensitivity (separate from the ratio): −20 dB gain, peak −1 dBFS, 1 s silence pad, first 3 s only, telephone band-pass + 8-bit μ-law. Reported as paired EER deltas, median |Δscore| and decision flips at 0.5.
+- Unseen generators: **not establishable** with In-the-Wild (no generator IDs) or MLAAD (in the candidate's training set). Section 9 scores user-supplied clips of a named generator with a provenance note, reported separately.
+- Dhwani re-run under conditions is optional (`RUN_DHWANI`), off by default.
+
+**Colab steps:** after notebook 04 (and `12b` ONNX retry) in the same runtime, upload `05_robustness_eer_colab.ipynb`, Run all (≈ 10–15 min on T4), return the zip and paste cells 3, 7, 8. If `ffmpeg` reports `libopus`/`libmp3lame` missing, the verdict is INCOMPLETE by design; tell me and I will switch to encoders that are present.
+
+## 8. Noise-robustness improvement: denoiser front-end experiment first (2026-10-24)
+
+Run 20261024T151905Z failed the official ratio on the noise condition only (15.98 % vs 2.46 % clean → 6.50). Noise stays a requirement; the
+checkpoint and the 0.5 threshold are untouched. The bounded improvement path is two steps; **only step 1 is built**.
+
+**Notebook 06: `06_denoiser_frontend_colab.ipynb`** (`build_06_notebook.py`; same runtime as 04/05 preferred; ≈ 25–35 min)
+- Front-ends (`frontend.py`, fixed settings): `nr_stationary` (spectral gating, pure DSP, Android-portable) and `deepfilternet3` (2 M params, optional install).
+  The same front-end is applied to *all* inputs: genuine and synthetic, clean and degraded.
+- Stage A (development evidence = the 244 inspected held-out clips): all front-ends × 5 required conditions, paired; artefact-removal check on clean audio
+  (clean EER and clean synthetic-score shifts); **pre-registered freeze rule** (`eval_lib.frontend_selection`): eligible only if clean EER ≤ baseline + `CLEAN_MARGIN_PP`,
+  then lowest worst-degraded EER, ties → simplest, frozen only if it beats the baseline's worst EER. If nothing qualifies, the experiment is declared failed.
+- Stage B (fresh): seed `20261028`, 150 + 150 clips excluding all **500** inspected IDs; baseline vs frozen front-end; absolute EERs, coverage, **unrounded** worst/clean
+  ratio, PASS/FAIL/INCOMPLETE, plus the clean-margin check so a higher clean EER cannot disguise a better ratio.
+- **Margins:** the supplied requirement says Phase-1 EERs must "remain within 2 points". We interpret this **provisionally as 2 percentage points** (`OFFICIAL_MARGIN_PP = 2.0`, pending organiser clarification) for the Stage B clean-margin check. Stage A uses a stricter **development selection margin** of 1 pp (`DEV_SELECTION_MARGIN_PP`) to pick a front-end; that is our own choice and is never presented as the official requirement.
+- Limitations reported with every number: speakers shared with inspected sets; VoxCeleb2 overlap possible; In-the-Wild not in the candidate's training table.
+
+**Step 2 (only if 06 fails): notebook 07, noise-augmented fine-tuning — not built, not started.** Start from the verified candidate weights; noise + codec
+augmentation on both classes; separate train/validation with grouped splits; checkpoint selection by validation EER (cross-entropy retained); deployment threshold
+from validation only; final evaluation on a new fresh selection (excluding all inspected IDs) under the same five conditions and clean-margin rule. Budget ≤ 2 h T4.

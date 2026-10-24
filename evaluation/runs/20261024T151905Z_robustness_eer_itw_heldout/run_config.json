@@ -1,0 +1,112 @@
+{
+  "settings": {
+    "FROZEN_THRESHOLD": 0.5,
+    "RUN_DHWANI": false,
+    "REQUIRED": [
+      "clean",
+      "narrowband_8k",
+      "codec_1",
+      "codec_2",
+      "noise"
+    ],
+    "SENSITIVITY": [
+      "loud_minus20db",
+      "loud_peak_minus1db",
+      "silence_pad_1s",
+      "duration_first3s",
+      "telephone_quality"
+    ],
+    "N_BOOT": 500,
+    "noise_seed": 20261027,
+    "conditions": {
+      "clean": {
+        "group": "required",
+        "desc": "decoded 16 kHz mono, no change"
+      },
+      "narrowband_8k": {
+        "group": "required",
+        "desc": "resample 16 kHz -> 8 kHz -> 16 kHz, librosa soxr_hq both ways"
+      },
+      "codec_1": {
+        "group": "required",
+        "desc": "Opus (libopus) 16 kb/s VBR, application=voip, 16 kHz in/out via ffmpeg",
+        "ffmpeg_encode": [
+          "-c:a",
+          "libopus",
+          "-b:a",
+          "16k",
+          "-vbr",
+          "on",
+          "-application",
+          "voip"
+        ],
+        "ext": ".opus"
+      },
+      "codec_2": {
+        "group": "required",
+        "desc": "MP3 (libmp3lame) 32 kb/s CBR mono, 16 kHz via ffmpeg",
+        "ffmpeg_encode": [
+          "-c:a",
+          "libmp3lame",
+          "-b:a",
+          "32k"
+        ],
+        "ext": ".mp3"
+      },
+      "noise": {
+        "group": "required",
+        "desc": "additive white Gaussian noise at 10 dB SNR (SNR vs clip RMS), seed sha256(seed:clip_id)",
+        "snr_db": 10.0
+      },
+      "loud_minus20db": {
+        "group": "sensitivity",
+        "desc": "gain -20 dB (quiet recording)"
+      },
+      "loud_peak_minus1db": {
+        "group": "sensitivity",
+        "desc": "peak-normalise to -1 dBFS (loud recording, no clipping)"
+      },
+      "silence_pad_1s": {
+        "group": "sensitivity",
+        "desc": "1.0 s of digital silence prepended and appended"
+      },
+      "duration_first3s": {
+        "group": "sensitivity",
+        "desc": "first 3.0 s only (clips shorter than 3 s unchanged, flagged)"
+      },
+      "telephone_quality": {
+        "group": "sensitivity",
+        "desc": "300-3400 Hz 4th-order Butterworth band-pass + 8-bit mu-law quantisation"
+      }
+    },
+    "source_run": "20261024T140853Z_heldout_itw_dhwani_vs_antideepfake_small",
+    "candidate": {
+      "repo": "nii-yamagishilab/wav2vec-small-anti-deepfake",
+      "revision": "9a13264b5dcc827a8d5a4f8e01fccefa392f886b",
+      "sha256": "828ee456122f86d5d631cb7895a10e5c62c78a4fcb8a8b1c42cb5838a9abcfe0"
+    }
+  },
+  "env": {
+    "python": "3.13.16",
+    "torch": "2.11.0+cu130",
+    "transformers": "5.20.2",
+    "numpy": "2.1.3",
+    "librosa": "0.11.0",
+    "soundfile": "0.14.0",
+    "scipy": "1.16.3",
+    "device": "cuda",
+    "gpu": "Tesla T4",
+    "ffmpeg": {
+      "ffmpeg": "/usr/bin/ffmpeg",
+      "libopus": true,
+      "libmp3lame": true
+    },
+    "code_sha256": {
+      "dhwani_infer.py": "8a7c9c8f4275fb27a0d6ba3dde43aaeedf98974b7057378c37122467ba756077",
+      "eval_lib.py": "b9da73452665a766b556fe222ffe32323b79eb4a348f2a79b8d01499037d790f",
+      "antideepfake_hf.py": "fba4d117443e6ff10dd0b7fdd64f89cff94960a73b8f0a85799ec884eb2b3db5",
+      "degrade.py": "26b94163c1d449972db72b2bd547ec972e66180cfd6677fe1e3a242b344571f2"
+    }
+  },
+  "started_utc": "20261024T151905Z"
+}

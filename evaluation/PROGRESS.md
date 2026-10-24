@@ -124,3 +124,40 @@ Unpacked into `runs/20261024T140853Z_heldout_itw_dhwani_vs_antideepfake_small/`,
 - Still open: licence (CC BY-NC-SA) for product use; VoxCeleb2 speaker overlap; ASVspoof still untested (403 from Colab); no on-device latency.
 
 **Next:** run `12b` in the same runtime for ONNX evidence; then decide on the deployment path (ONNX Runtime Mobile vs ExecuTorch) with the mobile session, which this session does not touch.
+
+## 2026-10-24: EER-first robustness notebook built (NOT yet run)
+
+- `eval_lib.at_threshold` now also returns precision and F1; `eval_lib.robustness_verdict()` implements PASS/FAIL/INCOMPLETE/UNDEFINED_RATIO and the 8 kHz delta (tests pass).
+- `degrade.py`: paired degradations (narrowband, Opus 16k, MP3 32k, white noise 10 dB seeded; sensitivity: −20 dB, peak −1 dBFS, silence pad, first 3 s, telephone + μ-law). Codec paths need ffmpeg's libopus/libmp3lame (checked at runtime; missing → INCOMPLETE).
+- `05_robustness_eer_colab.ipynb`: 15 code cells parse, embedded files identical, in-notebook hash check passes when executed locally. Not run.
+- Notebooks 03/04 rebuilt against the updated `eval_lib` (hash values changed accordingly; the executed runs keep their recorded hashes).
+- Unseen-generator evaluation: cannot be established from available data; optional user-supplied section only.
+- Threshold policy recorded (README §7): validation-selected thresholds only; 0.5 retained until then. No training started.
+
+## 2026-10-24: robustness run 20261024T151905Z received (paired, EER-first, 244 clips)
+
+Unpacked into `runs/20261024T151905Z_robustness_eer_itw_heldout/` (notes in `RUN_NOTES.md`). Paired EERs recomputed locally: identical to `metrics.json`. ffmpeg had libopus + libmp3lame → all required conditions complete (no INCOMPLETE).
+
+- Clean EER 2.46 % · 16→8→16 kHz 4.10 % (**+1.64 pp**) · Opus 16 kb/s 4.10 % · MP3 32 kb/s 2.46 % · **white noise 10 dB SNR 15.98 %**.
+- **Official verdict: FAIL** — worst/clean = 15.98/2.46 = **6.50 > 2.5** (noise). Excluding noise the worst ratio would be 1.67 (context only).
+- Noise failure is one-sided: spoofs drift toward "genuine" (recall at 0.5 drops 0.960 → 0.661; 41 of 47 flips are synthetic→genuine); genuine clips barely move. Not explained by clip length.
+- Sensitivity (separate): loudness changes are null (−20 dB: 18 quiet clips become *mostly silent* and are rejected by our gate, 0 flips otherwise; peak −1 dBFS identical to clean); 1 s silence pad +1.6 pp; first 3 s +2.5 pp; telephone band + μ-law +4.9 pp (7.38 %).
+- Threshold stayed 0.5; nothing tuned; unseen generators not performed; Dhwani not re-run.
+- Still outstanding from the previous run: the `12b` ONNX retry output (`onnx_retry.json`).
+
+**Decision needed (not taken):** how to address the noise failure — noise-robust fine-tuning (both-class augmentation, validation-EER checkpoint selection, fresh held-out), a denoiser front-end evaluated with the same paired protocol, or documenting it as a limitation. All three require a fresh evaluation selection excluding the 500 inspected clip IDs.
+
+## 2026-10-24: denoiser front-end experiment built (NOT yet run)
+
+- `frontend.py`: `nr_stationary` (noisereduce spectral gating, fixed settings) and optional `deepfilternet3`; same front-end for all inputs incl. clean.
+- `eval_lib.frontend_selection()` (pre-registered freeze rule) and `clean_margin_check()` added, tested.
+- `06_denoiser_frontend_colab.ipynb`: Stage A on the 244 inspected clips (dev evidence) with artefact-removal check → freeze; Stage B fresh selection seed 20261028 excluding the 500 inspected IDs; unrounded ratio + clean-margin verdict. 17 code cells parse, embedded files identical, hash check passes when executed. Fixed one f-string brace bug before building.
+- Notebooks 03/04/05 rebuilt against the updated `eval_lib`.
+- Not started: fine-tuning (notebook 07) — only if 06 fails. Mobile untouched. Thresholds unchanged. ONNX `12b` output still not received.
+
+## 2026-10-24: ONNX export recorded; Android hand-off package prepared; margin corrected
+
+- **12b succeeded** (pasted by Aman; `runs/20261024T140853Z…/onnx_retry_reported.json`): dynamo exporter, 378.8 MB fp32, input `wav`, ORT-vs-PyTorch max |Δ fake score| 2.1e-7 on 8 clips, ORT CPU median 568 ms/clip (Colab 2 vCPU). No re-export needed.
+- **Packaging cell** `colab_cells/14_package_for_android.py` (run in the 04 runtime after 12b; no re-export, no denoising): copies the ONNX and any external-data files, writes `SHA256SUMS`, `MODEL_SPEC.json` (files + SHA256, I/O names/shapes incl. the exported T range 16000–160000, exact whole-clip preprocessing with eps 1e-5 and biased variance, score mapping fake = softmax[0], frozen 0.5, evaluation evidence, licence), deterministic reference inputs (2 s/4 s/10 s arrays + a 16 kHz PCM16 WAV) with expected logits/scores from ORT and PyTorch and tolerances, `LICENSE_ATTRIBUTION.md`, `HANDOFF.md`; zips and downloads. No dataset audio is redistributed.
+- **Hand-off document for the development chat:** `handoff/ANDROID_HANDOFF.md`. Mobile files untouched.
+- **Margin corrected:** the supplied requirement ("Phase-1 EERs must remain within 2 points") is documented as a **provisional interpretation of 2 percentage points** (`OFFICIAL_MARGIN_PP`, pending organiser clarification) and used for the Stage B clean-margin verdict in notebook 06. The stricter 1 pp margin is kept only as a **development selection margin** (`DEV_SELECTION_MARGIN_PP`) for choosing a front-end and is never presented as the requirement. Notebook 06 rebuilt (17 cells parse, hash check passes). Denoising stays experimental; 06 not yet run.

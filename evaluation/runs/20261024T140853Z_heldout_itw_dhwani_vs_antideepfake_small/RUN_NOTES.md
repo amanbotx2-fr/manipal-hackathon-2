@@ -43,7 +43,7 @@ Dhwani is at chance again on fresh clips (AUC 0.512 vs 0.456 on the pilot), conf
 
 ## Runtime
 Candidate on T4: median 140 ms per clip including the secondary window pass. Dhwani on 2-vCPU: median 3.6 s per clip.
-ONNX export (cell 12) **failed**: `No module named 'onnxscript'` (torch 2.11's default exporter). Retry cell: `evaluation/colab_cells/12b_onnx_export_retry.py` (same runtime). No ONNX size or latency numbers exist yet.
+ONNX export (cell 12) first failed (`No module named 'onnxscript'`); the retry cell `12b` **succeeded** (reported by Aman, `onnx_retry_reported.json`): exporter `dynamo`, 378.8 MB fp32, input name `wav`, ORT-vs-PyTorch max |Δ fake score| 2.1e-7 on 8 clips, ORT CPU median 568 ms per clip on Colab's 2 vCPU. Opset, output name and any external-data files are recorded by the packaging cell.
 
 ## Caveats carried with these numbers
 - Candidate licence **CC BY-NC-SA 4.0** (research use). Not cleared for a commercial app.
