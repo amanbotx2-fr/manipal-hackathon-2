@@ -121,6 +121,8 @@ function updateRoomLink() {
   history.replaceState(null, '', url);
 }
 const invitedRoom = new URL(location.href).searchParams.get('room');
+// Read before updateRoomLink() rewrites the URL to the clean ?room= form.
+const autoJoinRequested = new URL(location.href).searchParams.get('autojoin') === '1';
 if (invitedRoom !== null) {
   if (validRoom(invitedRoom)) { $('room').value = invitedRoom; status('Room invitation loaded — tap Join call'); }
   else status('Invalid room invitation — generate a new room code');
@@ -135,7 +137,7 @@ if (invitedRoom !== null && validRoom(invitedRoom) && /Android/i.test(navigator.
   a.hidden = false; a.style.display = 'block';
 }
 // Opened by the Voice Check app with ?autojoin=1: join without a tap (the app already holds the mic permission).
-if (invitedRoom !== null && validRoom(invitedRoom) && new URL(location.href).searchParams.get('autojoin') === '1') {
+if (invitedRoom !== null && validRoom(invitedRoom) && autoJoinRequested) {
   setTimeout(() => { if (stopped && !joining) $('join').onclick(); }, 300);
 }
 $('room').addEventListener('input', updateRoomLink);
