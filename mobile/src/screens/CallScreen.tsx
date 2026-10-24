@@ -1,6 +1,6 @@
 import * as SecureStore from 'expo-secure-store';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { PermissionsAndroid, Platform, Pressable, ScrollView, Share, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Linking, PermissionsAndroid, Platform, Pressable, ScrollView, Share, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { VcdCallView, type LiveResult } from '../../modules/vcd-detector/src/calling';
 import detector, { type ModelStatus } from '../detector';
@@ -39,7 +39,7 @@ export default function CallScreen({ onBack, incomingUrl, onConsumedIncoming }: 
   const [msg, setMsg] = useState<string | null>(null);
   const [status, setStatus] = useState<ModelStatus | null>(null);
   const [preparing, setPreparing] = useState<string | null>(null);
-  const [call, setCall] = useState<{ server: string; room: string } | null>(null);
+  const [call, setCall] = useState<{ server: string; room: string; aiDemo?: boolean } | null>(null);
   const [callState, setCallState] = useState('');
   const [latest, setLatest] = useState<LiveResult | null>(null);
   const [history, setHistory] = useState<LiveResult[]>([]);
@@ -50,7 +50,7 @@ export default function CallScreen({ onBack, incomingUrl, onConsumedIncoming }: 
     detector.status().then(setStatus).catch(() => {});
   }, []);
 
-  const begin = useCallback(async (target: { server: string; room: string }) => {
+  const begin = useCallback(async (target: { server: string; room: string; aiDemo?: boolean }) => {
     if (starting.current) return;
     starting.current = true; setMsg(null);
     try {
@@ -91,6 +91,14 @@ export default function CallScreen({ onBack, incomingUrl, onConsumedIncoming }: 
     if (!isHttps(srv)) { setMsg('Enter the HTTPS address of the calling server.'); return; }
     begin({ server: srv, room: makeRoom() });
   };
+  // Demo: the other participant is a web page that streams a synthetic voice (no microphone).
+  const startAiDemo = () => {
+    const srv = normaliseServer(server);
+    if (!isHttps(srv)) { setMsg('Enter the HTTPS address of the calling server.'); return; }
+    begin({ server: srv, room: makeRoom(), aiDemo: true });
+  };
+  const botLink = call ? `${call.server}bot.html?room=${call.room}` : '';
+  const openBot = () => Linking.openURL(botLink).catch(() => setMsg('Could not open a browser for the AI caller page.'));
   const joinFromLink = () => {
     const parsed = parseInvite(invite.trim(), normaliseServer(server));
     if (!parsed) { setMsg('Paste a valid invitation link (…/?room=CODE).'); return; }
@@ -117,7 +125,13 @@ export default function CallScreen({ onBack, incomingUrl, onConsumedIncoming }: 
           </Pressable>
         </View>
         <Text style={[type.small, styles.stateLine]} testID="call-state" numberOfLines={2}>{callState || '…'}</Text>
-        <Text style={[type.fine, styles.stateLine]} testID="call-room">Room {call.room} · the other person opens your invite link and the app joins automatically</Text>
+        <Text style={[type.fine, styles.stateLine]} testID="call-room">Room {call.room} · {call.aiDemo ? 'AI caller demo: open the AI caller page (on this phone or any device) and tap Start' : 'the other person opens your invite link and the app joins automatically'}</Text>
+        {call.aiDemo && (
+          <View style={styles.aiRow}>
+            <PrimaryButton testID="call-open-bot" label="Open AI caller page" onPress={openBot} compact />
+            <SecondaryButton testID="call-share-bot" label="Share AI link" onPress={() => Share.share({ message: botLink, url: botLink }).catch(() => {})} />
+          </View>
+        )}
         <LiveStrip latest={latest} history={history} available={liveAvailable} />
         <VcdCallView style={styles.callView} serverUrl={`${call.server}?room=${call.room}&autojoin=1`} liveCheck={liveAvailable}
                      onCallState={(e) => setCallState(e.nativeEvent.state)} onLiveResult={onLive} />
@@ -141,6 +155,7 @@ export default function CallScreen({ onBack, incomingUrl, onConsumedIncoming }: 
         Start a call, share the invite link. When your friend opens it, this app opens on their phone and joins. While you talk, the other person’s audio is checked on this device in 4-second windows. Your own microphone is never scored.
       </Text>
       <PrimaryButton testID="call-start" label="Start a call" onPress={startCall} />
+      <View style={{ flexDirection: 'row', marginTop: space.sm }}><SecondaryButton testID="call-ai" label="Demo: call an AI voice" onPress={startAiDemo} /></View>
       {preparing && <Text style={[type.small, styles.hint]} testID="call-preparing">{preparing}</Text>}
       {msg && <Text style={[type.small, styles.error]} testID="call-msg">{msg}</Text>}
       <Text style={[type.small, styles.hint]}>
@@ -202,4 +217,5 @@ const styles = StyleSheet.create({
   stripBox: { marginHorizontal: space.lg, marginBottom: space.sm, padding: 12, borderRadius: 12, borderWidth: 1, borderColor: colors.hairline, backgroundColor: colors.surfaceStrong },
   stripVerdict: { fontSize: 18, fontWeight: '700' },
   callView: { flex: 1, marginHorizontal: space.md, borderRadius: 12, overflow: 'hidden', backgroundColor: colors.surface },
+  aiRow: { flexDirection: 'row', gap: 10, marginHorizontal: space.lg, marginBottom: space.sm },
 });

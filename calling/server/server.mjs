@@ -4,7 +4,8 @@ import { fileURLToPath } from 'node:url';
 import { WebSocketServer, WebSocket } from 'ws';
 
 export function createServer({ allowedOrigin, iceServers = [] } = {}) {
-  const assets = new Map([['/', ['index.html', 'text/html']], ['/call.js', ['call.js', 'text/javascript']], ['/pcm-worklet.js', ['pcm-worklet.js', 'text/javascript']]]);
+  const assets = new Map([['/', ['index.html', 'text/html']], ['/call.js', ['call.js', 'text/javascript']], ['/pcm-worklet.js', ['pcm-worklet.js', 'text/javascript']],
+    ['/bot.html', ['bot.html', 'text/html']], ['/bot.js', ['bot.js', 'text/javascript']], ['/samples/ai-voice-sample.wav', ['samples/ai-voice-sample.wav', 'audio/wav']]]);
   // Android App Links: lets https://<host>/?room=... open the Voice Check app directly. The statement
   // lists the app package and its signing certificate fingerprint(s) (ASSETLINKS_JSON env).
   const assetlinks = process.env.ASSETLINKS_JSON || '';
@@ -56,6 +57,14 @@ export function createServer({ allowedOrigin, iceServers = [] } = {}) {
           send(callee, { type: 'ready', initiator: false });
           send(caller, { type: 'ready', initiator: true });
         }
+      } else if (msg.type === 'verdict') {
+        // A participant's on-device live check about the OTHER participant; forwarded so the web side can show it.
+        if (!ws.room) return ws.close(1008, 'Join first');
+        const v = msg.verdict || {};
+        const safe = { type: 'verdict', prediction: ['genuine', 'synthetic'].includes(v.prediction) ? v.prediction : null,
+          status: String(v.status || '').slice(0, 16), score: Number.isFinite(v.score) ? Number(v.score) : null,
+          window: Number.isFinite(v.window) ? Number(v.window) : null, reason: String(v.reason || '').slice(0, 120) };
+        for (const peer of rooms.get(ws.room) ?? []) if (peer !== ws) send(peer, safe);
       } else if (['offer', 'answer', 'candidate'].includes(msg.type)) {
         if (!ws.room) return ws.close(1008, 'Join first');
         if (msg.type === 'candidate' ? !(msg.candidate && typeof msg.candidate.candidate === 'string') : typeof msg.sdp !== 'string') return ws.close(1008, 'Invalid signaling');

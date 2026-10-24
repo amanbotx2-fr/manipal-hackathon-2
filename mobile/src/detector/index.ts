@@ -3,10 +3,10 @@
 // its checksum, sample rate, windows, preprocessing, output mapping and threshold in AdapterSpec.
 import Native from '../../modules/vcd-detector/src';
 import type {
-  AdapterSpec, InstallProgress, LoadInfo, LocalResult, Memory, ModelStatus, ReferenceRun,
+  AdapterSpec, InstallProgress, LoadInfo, LocalResult, Memory, ModelStatus, ReferenceRun, TimelineResult,
 } from '../../modules/vcd-detector/src';
 
-export type { AdapterSpec, InstallProgress, LoadInfo, LocalResult, Memory, ModelStatus, ReferenceRun };
+export type { AdapterSpec, InstallProgress, LoadInfo, LocalResult, Memory, ModelStatus, ReferenceRun, TimelineResult };
 
 export type AnalyseOptions = {
   /** One of spec.preprocessingModes; defaults to spec.defaultMode. */
@@ -31,6 +31,8 @@ export interface Detector {
    * spec.sampleRate natively). Intended for remote-participant audio windows from in-app calls later.
    */
   analysePcm(samples: Float32Array, sampleRate: number, channels: number, opts?: AnalyseOptions): Promise<LocalResult>;
+  /** Segment timeline over the whole clip (up to maxSeconds): per-window verdicts, ~2 s resolution. */
+  analyseTimeline(uri: string, opts?: AnalyseOptions & { maxSeconds?: number }): Promise<TimelineResult>;
   /** Diagnostics: run exported reference windows through the device runtime. */
   runReferenceTensors(maxWindows?: number): Promise<ReferenceRun>;
   memory(): Promise<Memory>;
@@ -56,6 +58,7 @@ export const onDeviceDetector: Detector = {
     const bytes = new Uint8Array(samples.buffer, samples.byteOffset, samples.byteLength);
     return Native.analysePcm(bytes, sampleRate, channels, (await resolveMode(opts)) as any);
   },
+  analyseTimeline: async (uri, opts) => Native.analyseTimeline(uri, (await resolveMode(opts)) as any, opts?.maxSeconds ?? 60),
   runReferenceTensors: (maxWindows = 1000) => Native.runReferenceTensors(maxWindows),
   memory: () => Native.getMemory(),
 };

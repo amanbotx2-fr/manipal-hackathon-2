@@ -57,6 +57,11 @@ class VcdDetectorModule : Module() {
       engine.submit({ engine.analyseUri(Uri.parse(uri), mode, compare, dump) }, { promise.resolve(it) }, { promise.fail(it) })
     }
 
+    // Segment timeline over a whole clip (locates likely-synthetic windows). Same model/adapter.
+    AsyncFunction("analyseTimeline") { uri: String, mode: String, maxSeconds: Int, promise: Promise ->
+      engine.submit({ engine.analyseTimeline(Uri.parse(uri), mode, maxSeconds) }, { promise.resolve(it) }, { promise.fail(it) })
+    }
+
     // Future in-app call audio: little-endian float32 PCM bytes, interleaved channels.
     AsyncFunction("analysePcm") { pcm: ByteArray, sampleRate: Int, channels: Int, mode: String, promise: Promise ->
       engine.submit({ engine.analysePcm(pcm, sampleRate, channels, mode) }, { promise.resolve(it) }, { promise.fail(it) })

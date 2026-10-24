@@ -106,7 +106,9 @@ export default function HomeScreen({ onOpenDev, onOpenCall, onResult, onError, r
       setPhase('analysing');
       const t0 = Date.now();
       const r = await detector.analyseFile(file.uri);  // adapter default mode; no compare/dump
-      onResult({ result: r, file, loadMs, wallMs: Date.now() - t0, finishedAt: Date.now() });
+      // Clips longer than 10 s: also score every 4 s window across the whole clip (segment timeline).
+      const timeline = r.status === 'ok' && r.truncated ? await detector.analyseTimeline(file.uri) : undefined;
+      onResult({ result: r, file, loadMs, wallMs: Date.now() - t0, finishedAt: Date.now(), timeline });
       setPhase('selected');
     } catch (e: any) {
       const { title, detail } = readable(e);

@@ -1,0 +1,1 @@
+`ai-voice-sample.wav` = MLAAD `fake/en/Chatterbox/emerald_city_of_oz_20_f000055.wav` (Müller et al., https://huggingface.co/datasets/mueller91/MLAAD), CC-BY-NC-4.0, research/demo use only. Synthetic speech (Chatterbox TTS) used as the "AI caller" demo voice.

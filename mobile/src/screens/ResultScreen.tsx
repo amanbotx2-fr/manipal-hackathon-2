@@ -40,14 +40,30 @@ function AnalysisBody({ analysis, onAnother, onOpenDev }: Extract<ResultProps, {
       </View>
     );
   }
-  const synthetic = r.prediction === 'synthetic';
   const analysisS = r.timing_ms.total / 1000;
+  // Timeline: full-clip windows when available (clip > 10 s), else the single-verdict path's own windows.
+  const winLen = analysis.timeline?.window_s ?? 4;
+  const segs = analysis.timeline?.windows?.map((w) => ({ start: w.start_s, end: w.end_s, score: w.synthetic_score ?? null, status: w.status }))
+    ?? r.windows.map((w) => ({ start: w.start_s, end: Math.min(w.start_s + winLen, r.duration_s ?? w.start_s + winLen), score: w.synthetic_score, status: 'ok' as const }));
+  const total = analysis.timeline?.duration_s ?? r.duration_s ?? 0;
+  const scored = segs.filter((x) => x.status === 'ok' && x.score != null);
+  const nSyn = scored.filter((x) => (x.score as number) >= r.decision_threshold).length;
+  const mixed = scored.length > 1 && nSyn > 0 && nSyn < scored.length;
+  const allSyn = scored.length > 0 && nSyn === scored.length;
+  const synSpan = analysis.timeline?.synthetic_span_s ?? mergedSpan(scored.filter((x) => (x.score as number) >= r.decision_threshold));
+  const synthetic = analysis.timeline ? allSyn : r.prediction === 'synthetic';
   return (
     <View style={styles.body}>
       <Text style={[type.eyebrow, styles.eyebrow]}>Checked on this device</Text>
-      <Text style={[styles.verdict, { color: synthetic ? colors.danger : colors.ok }]} testID="result-prediction" maxFontSizeMultiplier={1.3}>
-        {synthetic ? 'Likely synthetic' : 'Likely genuine'}
+      <Text style={[styles.verdict, { color: mixed ? '#A15C00' : synthetic ? colors.danger : colors.ok }]} testID="result-prediction" maxFontSizeMultiplier={1.3}>
+        {mixed ? 'Mixed voices' : synthetic ? 'Likely synthetic' : 'Likely genuine'}
       </Text>
+      {segs.length > 1 && <Timeline segs={segs} total={total} threshold={r.decision_threshold} />}
+      {mixed && (
+        <Text style={[type.body, styles.explain]} maxFontSizeMultiplier={1.3} testID="result-mixed">
+          Likely synthetic speech in about {synSpan.toFixed(0)} s of this {total.toFixed(0)} s clip (orange segments); the rest reads as genuine. Segments are 4-second windows, so the boundary is approximate.
+        </Text>
+      )}
       <Text style={[type.body, styles.explain]} maxFontSizeMultiplier={1.3}>
         {synthetic
           ? 'The detector found patterns it associates with AI-generated speech. It can be wrong, especially for voices, languages or recordings unlike the ones it was built on.'
@@ -101,6 +117,31 @@ function plainReason(reason: string | null) {
   return r || 'The audio was rejected before analysis.';
 }
 
+function mergedSpan(segs: { start: number; end: number }[]) {
+  let span = 0, cs = -1, ce = -1;
+  for (const s of [...segs].sort((a, b) => a.start - b.start)) {
+    if (ce < 0 || s.start > ce) { if (ce >= 0) span += ce - cs; cs = s.start; ce = s.end; } else ce = Math.max(ce, s.end);
+  }
+  return ce >= 0 ? span + (ce - cs) : 0;
+}
+
+/** Horizontal bar of the clip: each window drawn from start to end, orange = likely synthetic, green = genuine, grey = not enough speech. */
+function Timeline({ segs, total, threshold }: { segs: { start: number; end: number; score: number | null; status: string }[]; total: number; threshold: number }) {
+  if (!total) return null;
+  return (
+    <View style={styles.tlWrap} testID="result-timeline">
+      <View style={styles.tlBar}>
+        {segs.map((s, i) => {
+          const c = s.status !== 'ok' || s.score == null ? '#C8C7BF' : s.score >= threshold ? colors.danger : colors.ok;
+          return <View key={i} style={[styles.tlSeg, { left: `${(100 * s.start) / total}%`, width: `${(100 * (s.end - s.start)) / total}%`, backgroundColor: c }]} />;
+        })}
+      </View>
+      <View style={styles.tlAxis}><Text style={type.fine}>0 s</Text><Text style={type.fine}>{total.toFixed(0)} s</Text></View>
+      <Text style={type.fine}>Green: likely genuine · Orange: likely synthetic · Grey: not enough speech. 4 s windows, every 2 s.</Text>
+    </View>
+  );
+}
+
 function Meta({ label, value, testID }: { label: string; value: string; testID?: string }) {
   return (
     <View style={styles.meta}>
@@ -126,6 +167,10 @@ const styles = StyleSheet.create({
   metaDivider: { width: 1, height: 34, backgroundColor: colors.hairline, marginHorizontal: space.md },
   metaValue: { fontSize: 18, fontWeight: '600', color: colors.ink },
   actions: { flexDirection: 'row', gap: 10, marginTop: space.sm },
+  tlWrap: { marginBottom: space.md },
+  tlBar: { height: 18, borderRadius: 6, backgroundColor: colors.hairline, overflow: 'hidden', position: 'relative' },
+  tlSeg: { position: 'absolute', top: 0, bottom: 0, opacity: 0.85 },
+  tlAxis: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 2, marginBottom: 4 },
   devLink: { alignSelf: 'center', paddingVertical: space.md },
   devLinkText: { color: colors.inkSoft, textDecorationLine: 'underline' },
   disclaimer: { marginTop: 'auto', textAlign: 'center', paddingTop: space.lg },

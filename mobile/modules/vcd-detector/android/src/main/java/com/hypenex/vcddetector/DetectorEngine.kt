@@ -193,6 +193,63 @@ class DetectorEngine(private val context: Context, val adapter: DetectorAdapter 
     return result
   }
 
+  /**
+   * Segment timeline: scores every window (spec.windowSamples long, spec.hopSamples apart, last one
+   * end-aligned) across the WHOLE clip (up to maxSeconds), each window validated and preprocessed on
+   * its own. Used for clips longer than the 2-10 s single-verdict path, to locate synthetic segments.
+   * Resolution ~ hop (2 s); windows straddling a change of voice are mixed. Same model, same adapter.
+   */
+  fun analyseTimeline(uri: Uri, mode: String, maxSeconds: Int = 60): Map<String, Any?> {
+    val t0 = System.nanoTime()
+    require(mode in spec.preprocessingModes) { "unknown preprocessing mode '$mode'" }
+    val decoded = try { AudioDecode.decode(context, uri) } catch (e: AudioDecode.Unreadable) {
+      return mapOf("status" to "rejected", "reject_reason" to (e.message ?: "unreadable audio"), "windows" to emptyList<Any>())
+    }
+    var x = Resampler.resample(decoded.mono, decoded.sampleRate, spec.sampleRate)
+    val truncated = x.size > maxSeconds * spec.sampleRate
+    if (truncated) x = x.copyOf(maxSeconds * spec.sampleRate)
+    val durationS = x.size.toDouble() / spec.sampleRate
+    if (durationS < spec.minDurationS) return mapOf("status" to "rejected", "reject_reason" to "too short: ${"%.2f".format(durationS)} s", "windows" to emptyList<Any>())
+    val win = spec.windowSamples; val hop = spec.hopSamples
+    val starts = ArrayList<Int>()
+    if (x.size <= win) starts.add(0) else { var st = 0; while (st + win <= x.size) { starts.add(st); st += hop }; if (starts.last() + win < x.size) starts.add(x.size - win) }
+    val (s, loadMs) = requireSession()
+    val out = ArrayList<Map<String, Any?>>()
+    var synth = 0; var ok = 0
+    val tm = System.nanoTime()
+    for (st in starts) {
+      val chunk = x.copyOfRange(st, minOf(st + win, x.size))
+      val row = linkedMapOf<String, Any?>("start_s" to st.toDouble() / spec.sampleRate, "end_s" to (st + chunk.size).toDouble() / spec.sampleRate)
+      try {
+        val v = adapter.validate(chunk)
+        val (wins, _) = adapter.windows(v.x, mode)
+        val logits = s.run(wins[0])
+        val p = adapter.windowScore(logits)
+        val label = adapter.label(p)
+        row["status"] = "ok"; row["synthetic_score"] = p; row["prediction"] = label; row["logits"] = logits.map { it.toDouble() }
+        ok++; if (label == "synthetic") synth++
+      } catch (e: AudioRejected) {
+        row["status"] = "rejected"; row["reject_reason"] = e.message
+      }
+      out.add(row)
+    }
+    // merged span of synthetic windows (each covers win samples) in seconds
+    var synthSpan = 0.0; var curStart = -1.0; var curEnd = -1.0
+    for (r in out) if (r["prediction"] == "synthetic") {
+      val a = r["start_s"] as Double; val b = r["end_s"] as Double
+      if (curEnd < 0 || a > curEnd) { if (curEnd >= 0) synthSpan += curEnd - curStart; curStart = a; curEnd = b } else curEnd = maxOf(curEnd, b)
+    }
+    if (curEnd >= 0) synthSpan += curEnd - curStart
+    return mapOf(
+      "status" to "ok", "duration_s" to durationS, "truncated" to truncated, "window_s" to win.toDouble() / spec.sampleRate,
+      "hop_s" to hop.toDouble() / spec.sampleRate, "windows" to out, "windows_ok" to ok, "windows_synthetic" to synth,
+      "synthetic_span_s" to synthSpan, "preprocessing" to mode, "score_is_calibrated" to spec.scoreCalibrated,
+      "decision_threshold" to spec.decisionThreshold,
+      "timing_ms" to mapOf("model_load" to loadMs, "model_total" to ms(tm), "total" to ms(t0)),
+      "note" to "Per-window verdicts at ~${hop / spec.sampleRate} s resolution; windows crossing a change of voice are mixed. Uncalibrated.",
+    )
+  }
+
   private fun rejected(mode: String, reason: String, t0: Long, source: Map<String, Any?>,
                        audio: Map<String, Any?>? = null) = mapOf(
     "status" to "rejected", "prediction" to null, "synthetic_score" to null, "synthetic_score_max" to null,

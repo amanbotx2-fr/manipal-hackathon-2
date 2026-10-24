@@ -73,10 +73,24 @@ async function signal(msg) {
     }
   } else if (msg.type === 'candidate') {
     if (pc.remoteDescription) await pc.addIceCandidate(msg.candidate); else candidates.push(msg.candidate);
-  } else if (msg.type === 'peer-left') await stop('Other participant left');
+  } else if (msg.type === 'verdict') showPeerVerdict(msg);
+  else if (msg.type === 'peer-left') await stop('Other participant left');
   else if (msg.type === 'error') await stop(msg.message);
 }
 
+// --- live verdict relay ----------------------------------------------------------------------
+// The Voice Check app computes a verdict about the remote voice on the phone and pushes it here;
+// we forward it so the other side can see what the phone concluded about THEIR voice.
+window.voiceCheckVerdict = v => {
+  try { if (socket?.readyState === WebSocket.OPEN) send({ type: 'verdict', verdict: v }); } catch {}
+};
+function showPeerVerdict(m) {
+  const el = $('verdict'); if (!el) return;
+  const ok = m.status === 'ok' && m.prediction;
+  el.textContent = ok ? `Other phone's Voice Check on your voice: ${m.prediction === 'synthetic' ? 'Likely synthetic' : 'Likely genuine'} (uncalibrated score ${m.score?.toFixed(4)}, window ${m.window})`
+    : `Other phone's Voice Check: ${m.reason || 'not enough speech yet'}`;
+  el.className = 'model ' + (ok ? (m.prediction === 'synthetic' ? 'bad' : 'good') : '');
+}
 // --- resilience helpers ---------------------------------------------------------------
 async function restartIce() {
   if (!pc || stopped || !initiator || socket?.readyState !== WebSocket.OPEN) return;

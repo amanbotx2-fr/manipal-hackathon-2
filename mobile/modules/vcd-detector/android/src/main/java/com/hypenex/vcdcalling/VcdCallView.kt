@@ -53,7 +53,13 @@ class VcdCallView(context: Context, appContext: AppContext) : ExpoView(context, 
     // window) are dropped and read as undefined in JS.
     analyser = LiveAnalyser(engine) { payload ->
       val clean = HashMap<String, Any>(); for ((k, v) in payload) if (v != null) clean[k] = v
-      post { onLiveResult(clean) }
+      post {
+        onLiveResult(clean)
+        // Tell the call page what we concluded about the remote voice; the page relays it to the peer.
+        val v = org.json.JSONObject().put("status", payload["status"]).put("prediction", payload["prediction"])
+          .put("score", payload["synthetic_score"]).put("window", payload["window_index"]).put("reason", payload["reject_reason"] ?: payload["message"])
+        call?.view?.evaluateJavascript("window.voiceCheckVerdict && window.voiceCheckVerdict($v)", null)
+      }
     }
   }
 

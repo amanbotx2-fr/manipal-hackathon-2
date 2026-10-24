@@ -37,3 +37,6 @@ genuine_hi_aman
 mobile/modules/*/android/build/
 mobile/modules/*/android/.cxx/
 mobile/modules/*/android/.gradle/
+
+# demo sample for the AI caller page (CC-BY-NC-4.0, see calling/web/samples/ATTRIBUTION.md)
+!calling/web/samples/ai-voice-sample.wav

@@ -122,3 +122,18 @@ export type ReferenceRun = {
   memory: Memory;
   session: Record<string, unknown>;
 };
+
+export type TimelineWindow = {
+  start_s: number; end_s: number; status: 'ok' | 'rejected';
+  synthetic_score?: number; prediction?: 'genuine' | 'synthetic'; logits?: number[]; reject_reason?: string;
+};
+export type TimelineResult = {
+  status: 'ok' | 'rejected';
+  reject_reason?: string;
+  duration_s?: number; truncated?: boolean; window_s?: number; hop_s?: number;
+  windows: TimelineWindow[];
+  windows_ok?: number; windows_synthetic?: number; synthetic_span_s?: number;
+  preprocessing?: string; score_is_calibrated?: boolean; decision_threshold?: number;
+  timing_ms?: { model_load?: number | null; model_total?: number; total: number };
+  note?: string;
+};
