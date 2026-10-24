@@ -177,3 +177,27 @@ Not covered: device window dumps for genuine api_replica and synthetic train_zsc
 - Adapter layer status unchanged: **compiles, unverified at runtime.**
 - `docs/DETECTOR_INTEGRATION_HANDOFF.md`: exact adapter files, the model input/output contract the engine enforces, the registration steps, and the parity/offline/crash checks (with Dhwani's measured results as the bar).
 - Note: two Gradle daemons from VS Code's Java extension (not from this project's builds) were running at the end of the session, reserving up to 2.5 GB of RAM. Left alone.
+
+## 2026-10-24 (evening) — Landing screen rebuilt; compact result screen; manual testing handed over
+
+**Installed on the Pixel_10a emulator and in `testing apk/`:** `voice-check-landing-arm64-release-debugsigned.apk`, sha256 `58bf36b2…`, versionName 1.0.0, package `com.hypenex.voiceclonecheck` (same package as the verified demo build, so the installed model is reused). The earlier demo APKs are untouched in `mobile/dist/` (`e51a2244…` offline demo, `867da954…` server-upload).
+
+**UI (React Native, no new dependencies):** `src/screens/HomeScreen.tsx` (home / selected / analysing), `src/screens/ResultScreen.tsx` (dedicated result: Back, "Analysis result", one prediction, plain-language explanation, duration + analysis + model-load row, Check another file, disclaimer "Experimental result. Verify the request through another channel."), `src/screens/DiagnosticsScreen.tsx` (Dev: now also shows the last check's raw score, threshold note, full filename, preprocessing, per-window scores/logits/ms, timing breakdown, attribution). `src/components/Dial.tsx`, `Icons.tsx`, `theme.ts`. Root `App.tsx` switches screens and handles Android hardware back. Inference, adapter and preprocessing code unchanged.
+
+**Verified on the emulator (screenshot-first replay, run 20:17–20:21; evidence in `runs/20261024_landing_replay/`):**
+- Home renders with the primary action on screen; Dev opens; hardware back returns home; app process stable (pid 13873 throughout).
+- genuine_hi_aman.m4a → result screen "Likely genuine", duration 8.3 s, **analysis 15.9 s, model load 21.3 s** (shown separately; cold load in this process). Result screen replaced the home content (home not visible). Back → result; Check another → home idle.
+- synthetic Chatterbox clip → "Likely synthetic", 7.4 s, analysis 10.3 s (model already loaded, no load row).
+- too_short_1s.wav → rejection screen "This clip couldn’t be checked".
+- Analysing state visible: screenshots at 2 s and 6 s after tapping Analyse show the busy row with "2 s elapsed" → "6 s elapsed", the dial's orange ticks moved, Dev greyed. The counter advancing during native inference shows the JS thread stays responsive.
+- Dev shows "Model loaded" after loading from the landing screen (shared native session; Dev re-reads status on show).
+
+**Timing note (56.7 s question):** that figure was analysis only; model load is a separate call and was not included. The UI now shows them separately. Measured today on this emulator: analysis 10–16 s per 7–8 s clip when the host is lightly loaded, 57–68 s when the Mac was swapping heavily (Gradle daemon + emulator). Cold load 4–44 s under the same conditions. These are emulator numbers, not phone numbers.
+
+**Not verified / open:**
+- The replay was stopped before the offline (airplane-mode) cold restart on *this* build; the offline path was verified on the previous landing build (`738024d8…`) and on the pre-refactor demo build. Same inference code.
+- The "Try again" path from the error screen and the model-download UI on a fresh install (model was already installed on the emulator) were not exercised.
+- Earlier automated runs reported empty readings during the analysing state and one unexplained return to the idle home screen; both traced to `uiautomator` returning stale UI trees while the dial animates (and two `uiautomator` instances crashing each other). Logcat confirms the app never crashed. Treat those earlier automation readings as invalid, not as app failures.
+- Real phones, iOS, accuracy, multilingual robustness: unchanged, unverified.
+
+**Repo repair (staged, not committed):** `mobile` was a gitlink (mode 160000 → the Expo template's local "Initial commit"), so GitHub showed an empty folder; `mobile.zip` (694 MB) was committed locally in `1956e34`. Nested history preserved in `runs/mobile-nested-repo-cdaee38.bundle` and `mobile/.git-nested-backup/`; gitlink replaced by the real tree; `.gitignore` now excludes node_modules, generated `mobile/android` and `mobile/ios`, module build dirs, APKs, zips, model weights and audio. Staged list: `runs/staged_files_20261024.txt`.

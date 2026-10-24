@@ -1,0 +1,11 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools">
+  <application>
+    <!-- onnxruntime-android ships a telemetry initializer that starts an HTTP client at app
+         launch. Detection must not use the network, so remove it from the merged manifest. -->
+    <provider
+      android:name="ai.onnxruntime.TelemetryInitializer"
+      android:authorities="${applicationId}.onnxruntime_telemetry_initializer"
+      tools:node="remove" />
+  </application>
+</manifest>

@@ -1,0 +1,25 @@
+20:17:23 == install voice-check-landing-arm64-release-debugsigned.apk sha 58bf36b231ed
+Success
+20:17:36 home: select=yes model='Detector model installed · loads on first check' pid=13873
+20:17:36 == dev / back
+20:17:42 dev: back=yes
+20:17:46 hw back -> home: yes
+20:17:46 == genuine (first run in this process: cold model load)
+20:18:01 selected: 'genuine_hi_aman.m4a' analyse=yes change=yes
+20:18:14 busy screenshots taken at 2 s and 6 s (compare visually: elapsed counter must advance)
+20:18:43 screen static after ~18 s (wall since tap: 40 s) pid=13873
+20:19:01 result: pred='Likely genuine' rejected='' error='' dur='8.3 s' analysis='15.9 s' load='21.3 s' back=yes disclaimer=yes home-visible=no
+20:19:01 == dev: last check detail
+20:19:19 dev: load-btn='' disabled=no score='0.000123' load='21.30 s' inference='14.49 s' windows=yes
+20:19:22 back -> result: yes
+20:19:28 check another -> home idle: yes
+20:19:28 == synthetic
+20:19:43 selected: 'synthetic__en__Chatterbox__emerald_city_of_oz_20_f000055.wav' analyse=yes change=yes
+20:19:53 busy screenshots taken at 2 s and 6 s (compare visually: elapsed counter must advance)
+20:20:01 screen static after ~7 s (wall since tap: 16 s) pid=13873
+20:20:19 result: pred='Likely synthetic' rejected='' error='' dur='7.4 s' analysis='10.3 s' load='' back=yes disclaimer=yes home-visible=no
+20:20:23 == too short (rejection)
+20:20:38 selected: 'too_short_1s.wav' analyse=yes change=yes
+20:20:47 busy screenshots taken at 2 s and 6 s (compare visually: elapsed counter must advance)
+20:20:48 screen static after ~2 s (wall since tap: 7 s) pid=13873
+20:21:06 result: pred='' rejected='This clip couldn’t be checked' error='' dur='' analysis='' load='' back=yes disclaimer=no home-visible=no

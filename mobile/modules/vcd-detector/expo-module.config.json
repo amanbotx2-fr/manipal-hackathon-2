@@ -1,0 +1,9 @@
+{
+  "platforms": ["android", "apple"],
+  "apple": {
+    "modules": ["VcdDetectorModule"]
+  },
+  "android": {
+    "modules": ["com.hypenex.vcddetector.VcdDetectorModule"]
+  }
+}

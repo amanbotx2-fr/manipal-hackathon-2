@@ -1,0 +1,24 @@
+plugins {
+  id 'com.android.library'
+  id 'expo-module-gradle-plugin'
+}
+
+group = 'com.hypenex.vcddetector'
+version = '0.1.0'
+
+android {
+  namespace "com.hypenex.vcddetector"
+  defaultConfig {
+    versionCode 1
+    versionName "0.1.0"
+    consumerProguardFiles 'consumer-rules.pro'
+  }
+  lintOptions {
+    abortOnError false
+  }
+}
+
+dependencies {
+  // Same ONNX Runtime version as the Colab reference run (keep ORT_VERSION in DhwaniSession.kt in sync).
+  implementation 'com.microsoft.onnxruntime:onnxruntime-android:1.31.0'
+}
