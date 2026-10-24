@@ -1,0 +1,62 @@
+{
+ "status": "ok",
+ "prediction": "synthetic",
+ "synthetic_score": 0.9915543630759266,
+ "synthetic_score_max": 0.9915543630759266,
+ "score_is_calibrated": false,
+ "decision_threshold": 0.5,
+ "reject_reason": null,
+ "duration_s": 7.44,
+ "analysed_duration_s": 7.44,
+ "truncated": false,
+ "audio": {
+  "native_sample_rate": 22050,
+  "channels": 1,
+  "native_frames": 164052,
+  "decoder": "wav-parser",
+  "decoder_notes": {
+   "bits": 16,
+   "format_tag": 1
+  },
+  "peak_dbfs": -0.37,
+  "rms_dbfs": -20.68,
+  "active_s": 5.6,
+  "clipping_frac": 0
+ },
+ "windows": [
+  {
+   "start_s": 0,
+   "logits": [
+    -2.3341267108917236,
+    2.431497097015381
+   ],
+   "synthetic_score": 0.9915543630759266,
+   "ms": 27668.105597
+  }
+ ],
+ "preprocessing": "api_replica",
+ "timing_ms": {
+  "decode": 10.680458,
+  "resample": 131.3685,
+  "preprocess": 1.406541,
+  "model_load": null,
+  "model_total": 27668.120097,
+  "per_window_mean": 27668.120097,
+  "total": 27811.74068
+ },
+ "session": {
+  "onnxruntime": "onnxruntime-android 1.31.0",
+  "executionProvider": "CPU",
+  "optimizationLevel": "ALL_OPT",
+  "executionMode": "SEQUENTIAL",
+  "intraOpThreads": 4,
+  "interOpThreads": 1,
+  "batchSize": 1,
+  "input": "input TensorInfo(javaType=FLOAT,onnxType=ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT,shape=[-1, -1],dimNames=[batch_size,time])",
+  "output": "TensorInfo(javaType=FLOAT,onnxType=ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT,shape=[1, 2])"
+ },
+ "source": {
+  "sha256": "9448a599a4d5cd420191182d20890592e69124c699f704903c22c3614f3fc0ac"
+ },
+ "on_device": true
+}

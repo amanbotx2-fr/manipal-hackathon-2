@@ -1,0 +1,122 @@
+# Evaluation: generalisation of the third-party Dhwani checkpoint
+
+This folder covers **evaluation only**. Nothing here trains, tunes or selects a model, a preprocessing recipe or a threshold.
+The model is the **third-party** `ayush2635/Dhwani-Multilingual-Deepfake-Audio-Detection-Model` `best_model.onnx`
+(MIT, revision `ee0187142973e1f02050e47d2a31c55ee0263065`, sha256 `d1c232bf…7342`). Our team has not trained any weights.
+
+| File | Purpose |
+|---|---|
+| `03_generalisation_eval_colab.ipynb` | Self-contained Colab notebook: pilot (default) and full evaluation |
+| `build_03_notebook.py` | Generates the notebook (stdlib only). It embeds a verbatim snapshot of `src/vcd/dhwani_infer.py` plus `eval_lib.py`, and records their sha256 |
+| `eval_lib.py` | Dataset pins, HTTP-range zip reader, protocol/metadata parsers, score-free selection, metrics (stdlib only) |
+| `tests/test_eval_lib.py` | Local stdlib-only tests (no ML, no network, no datasets) |
+| `PROGRESS.md` | What was done, what was verified, what still needs a Colab run |
+| `runs/<run_name>/` | Put each downloaded Colab run zip here, unpacked (create it when the first run comes back) |
+
+`src/vcd/dhwani_infer.py`, the notebooks in `notebooks/`, `mobile/` and `docs/` are read only from here and were not modified.
+If `dhwani_infer.py` changes later, rebuilding the notebook picks up the new code and a new hash. The hash is recorded in each run's `run_config.json`.
+
+## 1. Datasets: sources, licences, access, sizes, metadata
+
+Checked on 2026-10-24 from this Mac using only landing pages, APIs, README/licence text and HTTP headers, plus 4-byte range probes.
+**No audio and no archive contents were downloaded here.** The counts marked *literature* come from the dataset papers. The notebook recounts them from the protocol and metadata files and warns on any mismatch.
+
+### ASVspoof 2019 Logical Access (LA): evaluation partition
+- **Official source:** Edinburgh DataShare, <https://datashare.ed.ac.uk/handle/10283/3336>, DOI `10.7488/ds/2555`. No login needed.
+- **Archive:** `LA.zip`, 7,640,952,520 B. DSpace checksum is MD5 `30c98f11d8b2bc21f2c257bfd78bb5c5`, which equals the HTTP ETag. Last-Modified 2019-06-04.
+  Bitstream URL: `https://datashare.ed.ac.uk/server/api/core/bitstreams/a9f87c35-f055-4015-80e2-2fdff0d46269/content`.
+  The server answers byte-range requests (HTTP 206, checked).
+- **Licence:** Open Data Commons Attribution (ODC-By 1.0), from the COPYING section of `README.txt`
+  (README sha256 `a72c9527…5207`, `LICENSE_text.txt` sha256 `99a4d3e0…555d`). Citation: Todisco et al., Interspeech 2019, plus the DataShare record.
+- **Labels and metadata:** CM protocol `LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.eval.trl.txt` has 5 columns:
+  `SPEAKER_ID FILE_ID - SYSTEM_ID KEY`. `KEY` is `bonafide` or `spoof`, and `SYSTEM_ID` is the attack ID (A07–A19) for spoofs.
+  Audio is in `LA/ASVspoof2019_LA_eval/flac/<FILE_ID>.flac`, derived from VCTK. The eval set has 48 speakers (21 male, 27 female; README); its speakers are disjoint from train/dev.
+- **Size (literature):** 71,237 trials, 7,355 bona fide and 63,882 spoof.
+- **Benchmark caveat:** A07–A19 are "unknown" with respect to the *ASVspoof* training partition. A16 and A19 reuse the training attacks A04 and A06 (per the ASVspoof 2019 database paper; not re-verified here).
+  None of this establishes that the attacks are unseen *by Dhwani* (§2).
+
+### In-the-Wild (Müller et al., "Does Audio Deepfake Detection Generalize?", Interspeech 2022)
+- **Source:** Hugging Face dataset `mueller91/In-The-Wild`, pinned commit `eee168f92c367f8c82ff2cf42b6f61e362fd6211` (not gated).
+  The HF dataset is published under the first author's account and the Fraunhofer AISEC project page <https://deepfake-total.com/in_the_wild> links to it.
+- **Archive:** `release_in_the_wild.zip`, 8,161,489,023 B, LFS sha256 `46665f30a6758b45642c659c7e0e80da2ba3d121b064716824a56a010ddf9e1a`
+  (xet hash / CDN ETag `ec530d20…6f`). The CDN answers byte-range requests (HTTP 206, checked).
+- **Licence: conflicting.** The HF card says **CC-BY-SA-4.0**. The project page says the dataset and its documentation are under **Apache-2.0**.
+  The audio itself is public figures' speech taken from online videos. Use it for evaluation only, do not redistribute any audio, and cite the paper.
+  Resolve the conflict with the authors before using it beyond research evaluation.
+- **Labels and metadata:** `meta.csv` with columns `file, speaker, label` (`bona-fide` or `spoof`). The notebook parses these defensively and fails loudly on anything else.
+  58 speakers. **No attack or generator IDs are published**, so per-attack results are impossible for this dataset.
+- **Size:** 37.9 h total (20.7–20.8 h bona fide, 17.2 h spoof; HF card and project page). Literature: 31,779 clips, 19,963 bona fide and 11,816 spoof.
+
+## 2. Overlap with Dhwani's training data: **unknown**
+
+What Dhwani published:
+- **Model card:** real audio comes from Mozilla Common Voice v24.0 (Indic) and `garystafford/deepfake-audio-detection` (English). Fake audio comes from `vdivyasharma/IndicSynth` (Indic) and `garystafford/deepfake-audio-detection` (English).
+- **Training code** (GitHub `ayush2635/Dhwani-Deepfake-Audio-Detection-API` @ `efd512c`, `training/training_notebook.ipynb` cell 5) reads
+  `/kaggle/input/indic-spoof-dataset-sample/`. That is an unpublished Kaggle folder whose contents and composition are not documented. The notebook has no saved outputs.
+- `garystafford/deepfake-audio-detection` (CC-BY-4.0; current HF commit `fcf5344`, card v4) has 933 real clips from **14 unnamed public YouTube recordings**.
+  Its 933 fakes come from Amazon Polly, ElevenLabs, Kokoro, Hume AI, Luvvoice and Speechify. The card does not say which dataset version Dhwani used.
+
+Assessment:
+- **ASVspoof 2019 LA:** none of the named sources is ASVspoof or VCTK. That is *absence of evidence*, not evidence of no overlap, because the actual training folder is unpublished.
+  **Overlap: unknown.**
+- **In-the-Wild:** none of the named sources is In-the-Wild. However, Dhwani's English real audio is YouTube speech from unnamed sources, and In-the-Wild bona fide audio is public-figure speech from video platforms.
+  Speaker or recording overlap **cannot be ruled out**. **Overlap: unknown.**
+- **Pretraining:** the XLS-R encoder was pretrained without labels on large public speech corpora, including YouTube-derived VoxLingua107. That is not label leakage, but it limits any claim that the audio is "unseen".
+- Consequence: results here measure performance on these benchmarks. They are **not** proof of generalisation to generators or speakers unseen by Dhwani.
+
+## 3. Pilot design (pre-registered in the notebook's settings cell)
+
+- **Selection uses metadata only** (clip ID, speaker, label, attack ID), before any model call. The selection function refuses inputs with score-like fields.
+  - Seed `20261025`. Records are sorted by clip ID first.
+  - Each stratum has its own RNG, `random.Random("<seed>:<dataset>:<label>[:<attack>]:…")`. String seeds are SHA-512-hashed, so the sample is reproducible across machines and independent of input order.
+  - Within each stratum, clips are taken by **speaker round-robin** over a shuffled speaker order, to avoid concentrating on a few speakers.
+- **ASVspoof:** 8 spoof clips per attack × 13 attacks (A07–A19) = **104 synthetic**, plus **104 bona fide** (the 100 target was rounded up to equal strata).
+- **In-the-Wild:** **100 bona fide + 100 spoof**. There are no attack strata.
+- The manifests (`manifest_<dataset>.csv`) and `selection_<dataset>.json` are written before scoring. The JSON records the rule, seed, available and selected counts, shortfalls and the sha256 of the clip-ID list.
+  On resume, the selection is recomputed and must match.
+- **Model and preprocessing:**
+  - `dhwani_infer.analyse(..., mode="train_peak")`, unchanged: decode, mono, 16 kHz (soxr_hq), then validation.
+  - Clips under 2.0 s are **rejected and not replaced**. Clips over 10.0 s are cut to the first 10 s and flagged `truncated`.
+  - Silent or mostly-silent clips are rejected. Audio is peak-normalised to −3 dBFS.
+  - Clips of 4 s or less get one zero-padded window. Longer clips get 4 s windows with a 2 s hop, the last window aligned to the end.
+  - Each window runs at **batch size 1**. The clip score is the mean of the window synthetic-class softmax scores.
+- **Threshold:** a clip is synthetic if its score is ≥ 0.5 (provisional and untuned). Nothing is optimised on these clips, and they must never be used for training or tuning.
+- **Failures:** fetch failures, decode failures and policy rejections stay in `predictions.csv` with their reasons. They are reported as **coverage**, separately from accuracy metrics, which use scored clips only.
+  Container duration is recorded even for rejected clips.
+
+### Reported metrics (per dataset; ASVspoof also per attack)
+- **Threshold-free:**
+  - ROC-AUC (Mann–Whitney, ties = ½).
+  - EER using the ASVspoof reference convention (the threshold minimising |FNR − FPR|, reporting their mean). The EER threshold is descriptive only and is not an operating point.
+  - Both are cross-checked against scikit-learn in the notebook.
+- **At 0.5:** confusion matrix, balanced accuracy, synthetic recall and genuine false-positive rate, with Wilson 95 % intervals for the proportions.
+- **Uncertainty:** stratified bootstrap 95 % CIs for AUC, EER and balanced accuracy. These ignore speaker clustering, so they are optimistic.
+  With about 100 clips per class, and 8 per ASVspoof attack, intervals are wide and per-attack numbers are indicative only.
+- **Per attack (ASVspoof):** each attack's scored spoofs against *all* scored pilot bona fide clips.
+- **Also reported:** coverage and rejection reasons by dataset × label (and by attack), duration statistics, runtime (per clip, per window, total, plus a projection for the full partition), and every per-file prediction with window scores and logits.
+
+## 4. Colab steps
+
+1. Open <https://colab.research.google.com>, choose *File → Upload notebook*, and pick `evaluation/03_generalisation_eval_colab.ipynb`. A CPU runtime is fine for the pilot.
+2. Optional: set `USE_DRIVE = True` in cell 1 to reuse a Drive-cached checkpoint at `/content/drive/MyDrive/vcd_cache/best_model.onnx` and keep the run folder in Drive.
+   Otherwise the checkpoint is downloaded once (1.26 GB) into the runtime's HF cache. Its sha256 is verified in either case.
+3. Do **not** change any other setting for the pilot. Choose *Runtime → Run all*. No HF token or login is needed for either dataset.
+4. Expected behaviour:
+   - Step 7 opens both archives remotely and reads only the central directory and the label files. It prints counts against the literature values and any **BLOCKER**.
+   - Step 9 transfers only the selected clips, about 410, to tens of MB.
+   - Expected time is roughly 15–30 min, mostly model time (about 1.8 s per 4 s window on Colab CPU in the baseline run).
+5. Step 13 downloads `<run_name>.zip`, which contains no audio. Also download the executed notebook (*File → Download → .ipynb*).
+6. Put both in `evaluation/runs/<run_name>/` and paste the step 7, 10 and 11 outputs into chat.
+
+**If range access is blocked** (step 7 prints `RangeUnsupported` or HTTP errors), set `ACCESS = "download"` and rerun.
+This downloads the whole archives (7.6 GB + 8.2 GB) to local `/content` and verifies the full MD5 / sha256. Report the blocker text either way.
+
+## 5. Path to full evaluation (after the pilot)
+
+Run the same notebook with `RUN_KIND = "full"`, `ACCESS = "download"`, `KEEP_AUDIO = False`, `N_BOOT = 200` and `USE_DRIVE = True`.
+- Use `PROVIDER = "cuda"` on a GPU runtime. The first 20 clips are scored on CPU too, and the run aborts if any clip score differs by more than 0.002.
+- If a session dies, rerun with `RUN_NAME` set to the same folder. `predictions.jsonl` is appended per clip and the selection is re-verified.
+- Full scope is every eval protocol row: 71,237 for ASVspoof and 31,779 for In-the-Wild (literature counts).
+  On CPU that is tens of hours. Step 12 prints a projection from the pilot timings.
+
+Report the full run as a separate result and never merge it with the pilot. Any change to the preprocessing recipe, aggregation or threshold must be decided on separate validation data, and recorded in `docs/PROGRESS.md` before running.

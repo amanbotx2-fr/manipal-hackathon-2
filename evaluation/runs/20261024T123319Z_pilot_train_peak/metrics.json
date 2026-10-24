@@ -1,0 +1,236 @@
+{
+  "run_name": "20261024T123319Z_pilot_train_peak",
+  "run_kind": "pilot",
+  "scope_warning": "PILOT SUBSET ONLY - not a full-dataset benchmark result",
+  "overlap_with_dhwani_training": "unknown (training data not published; see evaluation/README.md)",
+  "settings": {
+    "RUN_KIND": "pilot",
+    "DATASETS": [
+      "asvspoof2019_la_eval",
+      "in_the_wild"
+    ],
+    "SELECTION_SEED": 20261025,
+    "ASV_N_PER_ATTACK": 8,
+    "ASV_N_GENUINE": 104,
+    "ITW_N_GENUINE": 100,
+    "ITW_N_SYNTHETIC": 100,
+    "PREPROCESSING": "train_peak",
+    "THRESHOLD": 0.5,
+    "ACCESS": "range",
+    "PROVIDER": "cpu",
+    "PARITY_N": 20,
+    "N_BOOT": 1000,
+    "KEEP_AUDIO": true,
+    "clip_score": "mean of window scores",
+    "batch_size": 1
+  },
+  "env": {
+    "python": "3.13.16",
+    "platform": "Linux-6.6.122+-x86_64-with-glibc2.39",
+    "onnxruntime": "1.31.0",
+    "ort_available_providers": [
+      "AzureExecutionProvider",
+      "CPUExecutionProvider"
+    ],
+    "numpy": "2.1.3",
+    "pandas": "2.2.3",
+    "librosa": "0.11.0",
+    "soundfile": "0.14.0",
+    "libsndfile": "1.2.2",
+    "sklearn": "1.6.1",
+    "cpu_count": 2,
+    "code_sha256": {
+      "dhwani_infer.py": "8a7c9c8f4275fb27a0d6ba3dde43aaeedf98974b7057378c37122467ba756077",
+      "eval_lib.py": "922385443e35020b2afb6213a52798e97c90dee606866b93be27c21b9a188639"
+    },
+    "torch_cuda": true,
+    "gpu": "Tesla T4"
+  },
+  "model": {
+    "repo": "ayush2635/Dhwani-Multilingual-Deepfake-Audio-Detection-Model",
+    "revision": "ee0187142973e1f02050e47d2a31c55ee0263065",
+    "sha256": "d1c232bf4d7990526804b375c15804c0ee4e9b566478b908c5a57431491b7342"
+  },
+  "access": {
+    "in_the_wild": {
+      "access": "http range",
+      "host": "us.gcp.cdn.hf.co",
+      "content_length_total": 8161489023,
+      "etag": "ec530d2076f973d40a8e388e559888f1b4fea467db8126c811d34dd508ee106f",
+      "last_modified": null,
+      "etag_matches_recorded": true,
+      "integrity_note": "range mode cannot hash the whole archive; size + server ETag are checked and zipfile verifies each extracted member's CRC-32",
+      "n_members": 31782,
+      "metadata_member": "release_in_the_wild/meta.csv",
+      "open_s": 5.4,
+      "requests_so_far": 6,
+      "bytes_fetched_so_far": 3577876
+    }
+  },
+  "blockers": [
+    {
+      "dataset": "asvspoof2019_la_eval",
+      "stage": "access",
+      "error": "HTTPError: HTTP Error 403: Forbidden",
+      "traceback": "Traceback (most recent call last):\n  File \"/tmp/ipykernel_721/2900957473.py\", line 29, in <cell line: 0>\n    zf, raw = el.open_remote_zip(src[\"url\"], src[\"bytes\"])\n              ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/content/eval_lib.py\", line 166, in open_remote_zip\n    raw = HTTPRangeFile(url)\n  File \"/content/eval_lib.py\", line 87, in __init__\n    size = self._probe_size()\n  File \"/content/eval_lib.py\", line 102, in _probe_size\n    h = self._resolve()\n  File \"/content/eval_lib.py\", line 93, in _resolve\n    with urllib.request.urlopen(req, timeout=self.timeout) as r:\n         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.13/urllib/request.py\", line 189, in urlopen\n    return opener.open(url, data, timeout)\n           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.13/urllib/request.py\", line 495, in open\n    response = meth(req, response)\n  File \"/usr/lib/python3.13/urllib/request.py\", line 604, in http_response\n    response = self.parent.error(\n        'http', request, response, code, msg, hdrs)\n  File \"/usr/lib/python3.13/urllib/request.py\", line 533, in error\n    return self._call_chain(*args)\n           ~~~~~~~~~~~~~~~~^^^^^^^\n  File \"/usr/lib/python3.13/urllib/request.py\", line 466, in _call_chain\n    result = func(*args)\n  File \"/usr/lib/python3.13/urllib/request.py\", line 613, in http_error_default\n    raise HTTPError(req.full_url, code, msg, hdrs, fp)\nurllib.error.HTTPError: HTTP Error 403: Forbidden\n"
+    }
+  ],
+  "metadata": {
+    "in_the_wild": {
+      "n": 31779,
+      "by_label": {
+        "genuine": 19963,
+        "synthetic": 11816
+      },
+      "by_attack": {},
+      "n_speakers_by_label": {
+        "genuine": 54,
+        "synthetic": 54
+      },
+      "n_speakers_total": 54,
+      "duplicate_clip_ids": 0,
+      "n_metadata_rows_without_audio": 0,
+      "expected_counts": {
+        "genuine": 19963,
+        "synthetic": 11816
+      },
+      "counts_match_expected": true
+    }
+  },
+  "coverage": [
+    {
+      "dataset": "in_the_wild",
+      "label": "genuine",
+      "selected": 100,
+      "fetch_failed": 0,
+      "rejected": 25,
+      "scored": 75,
+      "coverage": 0.75,
+      "truncated_to_10s": 9,
+      "single_padded_window(<=4s)": 36
+    },
+    {
+      "dataset": "in_the_wild",
+      "label": "synthetic",
+      "selected": 100,
+      "fetch_failed": 0,
+      "rejected": 20,
+      "scored": 80,
+      "coverage": 0.8,
+      "truncated_to_10s": 16,
+      "single_padded_window(<=4s)": 27
+    }
+  ],
+  "rejections": [
+    {
+      "dataset": "in_the_wild",
+      "label": "genuine",
+      "reject_category": "too_short",
+      "n": 25
+    },
+    {
+      "dataset": "in_the_wild",
+      "label": "synthetic",
+      "reject_category": "too_short",
+      "n": 20
+    }
+  ],
+  "metrics_by_dataset": {
+    "in_the_wild": {
+      "n_scored": 155,
+      "threshold_free": {
+        "roc_auc": 0.4558333333333333,
+        "eer": 0.56125,
+        "eer_threshold_descriptive_only": 0.0009
+      },
+      "at_threshold": {
+        "threshold": 0.5,
+        "confusion": {
+          "tp_synthetic_as_synthetic": 21,
+          "fn_synthetic_as_genuine": 59,
+          "fp_genuine_as_synthetic": 18,
+          "tn_genuine_as_genuine": 57
+        },
+        "synthetic_recall": 0.2625,
+        "synthetic_recall_wilson95": [
+          0.17857401432592873,
+          0.3681895975310528
+        ],
+        "genuine_fpr": 0.24,
+        "genuine_fpr_wilson95": [
+          0.15754873606374908,
+          0.34778766240753567
+        ],
+        "genuine_specificity": 0.76,
+        "balanced_accuracy": 0.51125,
+        "accuracy": 0.5032258064516129,
+        "n_synthetic": 80,
+        "n_genuine": 75
+      },
+      "bootstrap95": {
+        "roc_auc": [
+          0.36833333333333335,
+          0.5444166666666667
+        ],
+        "eer": [
+          0.48416666666666663,
+          0.645
+        ],
+        "balanced_accuracy@thr": [
+          0.4458333333333333,
+          0.5820833333333333
+        ],
+        "n_boot": 1000,
+        "seed": 20261025
+      },
+      "score_quantiles": {
+        "genuine": {
+          "count": 75.0,
+          "mean": 0.2236,
+          "std": 0.3789,
+          "min": 0.0001,
+          "5%": 0.0001,
+          "25%": 0.0002,
+          "50%": 0.0019,
+          "75%": 0.2844,
+          "95%": 0.995,
+          "max": 0.9982
+        },
+        "synthetic": {
+          "count": 80.0,
+          "mean": 0.2763,
+          "std": 0.4165,
+          "min": 0.0001,
+          "5%": 0.0001,
+          "25%": 0.0001,
+          "50%": 0.0003,
+          "75%": 0.6419,
+          "95%": 0.9996,
+          "max": 0.9998
+        }
+      }
+    }
+  },
+  "sklearn_crosscheck": {
+    "in_the_wild": {
+      "auc_ours": 0.4558333333333333,
+      "auc_sklearn": 0.45583333333333337,
+      "eer_ours": 0.56125,
+      "eer_sklearn_convention": 0.56125
+    }
+  },
+  "runtime": {
+    "in_the_wild": {
+      "clips_scored": 155,
+      "windows_scored": 346,
+      "model_ms_per_clip_median": 4033.6,
+      "model_ms_per_window_median": 2017.575,
+      "total_ms_per_clip_median": 4036.4,
+      "fetch_ms_per_clip_median": 760.1,
+      "sum_total_min": 15.3,
+      "provider": "CPUExecutionProvider",
+      "rough_full_partition_hours_same_hardware": 49.6
+    }
+  },
+  "finished_utc": "20261024T125424Z"
+}

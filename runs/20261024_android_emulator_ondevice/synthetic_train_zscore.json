@@ -1,0 +1,80 @@
+{
+ "status": "ok",
+ "prediction": "synthetic",
+ "synthetic_score": 0.9900303833282509,
+ "synthetic_score_max": 0.9910799386603905,
+ "score_is_calibrated": false,
+ "decision_threshold": 0.5,
+ "reject_reason": null,
+ "duration_s": 7.44,
+ "analysed_duration_s": 7.44,
+ "truncated": false,
+ "audio": {
+  "native_sample_rate": 22050,
+  "channels": 1,
+  "native_frames": 164052,
+  "decoder": "wav-parser",
+  "decoder_notes": {
+   "bits": 16,
+   "format_tag": 1
+  },
+  "peak_dbfs": -0.37,
+  "rms_dbfs": -20.68,
+  "active_s": 5.6,
+  "clipping_frac": 0
+ },
+ "windows": [
+  {
+   "start_s": 0,
+   "logits": [
+    -2.3263280391693115,
+    2.384164333343506
+   ],
+   "synthetic_score": 0.9910799386603905,
+   "ms": 23170.683344
+  },
+  {
+   "start_s": 2,
+   "logits": [
+    -2.2723968029022217,
+    2.3069164752960205
+   ],
+   "synthetic_score": 0.9898422967750881,
+   "ms": 12272.699965
+  },
+  {
+   "start_s": 3.44,
+   "logits": [
+    -2.229458808898926,
+    2.2849860191345215
+   ],
+   "synthetic_score": 0.9891689145492742,
+   "ms": 23275.775136
+  }
+ ],
+ "preprocessing": "train_zscore",
+ "timing_ms": {
+  "decode": 6.963417,
+  "resample": 146.387625,
+  "preprocess": 1.648167,
+  "model_load": null,
+  "model_total": 58719.245153,
+  "per_window_mean": 19573.081717666668,
+  "total": 58874.511028
+ },
+ "session": {
+  "onnxruntime": "onnxruntime-android 1.31.0",
+  "executionProvider": "CPU",
+  "optimizationLevel": "ALL_OPT",
+  "executionMode": "SEQUENTIAL",
+  "intraOpThreads": 4,
+  "interOpThreads": 1,
+  "batchSize": 1,
+  "input": "input TensorInfo(javaType=FLOAT,onnxType=ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT,shape=[-1, -1],dimNames=[batch_size,time])",
+  "output": "TensorInfo(javaType=FLOAT,onnxType=ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT,shape=[1, 2])"
+ },
+ "source": {
+  "sha256": "9448a599a4d5cd420191182d20890592e69124c699f704903c22c3614f3fc0ac"
+ },
+ "on_device": true
+}

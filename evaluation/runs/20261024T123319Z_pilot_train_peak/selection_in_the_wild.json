@@ -1,0 +1,56 @@
+{
+  "dataset": "in_the_wild",
+  "seed": 20261025,
+  "full": false,
+  "rule": "genuine: 100, synthetic: 100, each by speaker round-robin; seed 20261025; per-stratum random.Random('20261025:in_the_wild:<label>[:<attack>]:...'); input sorted by clip_id; metadata only (no audio, no detector output)",
+  "n_selected": 200,
+  "selected": {
+    "n": 200,
+    "by_label": {
+      "genuine": 100,
+      "synthetic": 100
+    },
+    "by_attack": {},
+    "n_speakers_by_label": {
+      "genuine": 54,
+      "synthetic": 54
+    },
+    "n_speakers_total": 54,
+    "duplicate_clip_ids": 0
+  },
+  "available": {
+    "n": 31779,
+    "by_label": {
+      "genuine": 19963,
+      "synthetic": 11816
+    },
+    "by_attack": {},
+    "n_speakers_by_label": {
+      "genuine": 54,
+      "synthetic": 54
+    },
+    "n_speakers_total": 54,
+    "duplicate_clip_ids": 0
+  },
+  "clip_id_list_sha256": "90a285f8c938404e13f8e4d5e8e16c48cec738d0239879e9cead2d31b5b89b20",
+  "shortfalls": {},
+  "source": {
+    "title": "In-the-Wild audio deepfake dataset (Mueller et al., Interspeech 2022)",
+    "landing_page": "https://huggingface.co/datasets/mueller91/In-The-Wild",
+    "project_page": "https://deepfake-total.com/in_the_wild",
+    "hf_repo": "mueller91/In-The-Wild",
+    "revision": "eee168f92c367f8c82ff2cf42b6f61e362fd6211",
+    "archive": "release_in_the_wild.zip",
+    "url": "https://huggingface.co/datasets/mueller91/In-The-Wild/resolve/eee168f92c367f8c82ff2cf42b6f61e362fd6211/release_in_the_wild.zip",
+    "bytes": 8161489023,
+    "sha256": "46665f30a6758b45642c659c7e0e80da2ba3d121b064716824a56a010ddf9e1a",
+    "xet_hash": "ec530d2076f973d40a8e388e559888f1b4fea467db8126c811d34dd508ee106f",
+    "license": "CONFLICT: HF card says CC-BY-SA-4.0; Fraunhofer project page says Apache-2.0",
+    "meta_suffix": "meta.csv",
+    "expected_counts": {
+      "genuine": 19963,
+      "synthetic": 11816
+    }
+  },
+  "python": "3.13.16"
+}

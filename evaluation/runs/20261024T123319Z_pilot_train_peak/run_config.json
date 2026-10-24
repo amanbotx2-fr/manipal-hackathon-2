@@ -1,0 +1,122 @@
+{
+  "settings": {
+    "RUN_KIND": "pilot",
+    "DATASETS": [
+      "asvspoof2019_la_eval",
+      "in_the_wild"
+    ],
+    "SELECTION_SEED": 20261025,
+    "ASV_N_PER_ATTACK": 8,
+    "ASV_N_GENUINE": 104,
+    "ITW_N_GENUINE": 100,
+    "ITW_N_SYNTHETIC": 100,
+    "PREPROCESSING": "train_peak",
+    "THRESHOLD": 0.5,
+    "ACCESS": "range",
+    "PROVIDER": "cpu",
+    "PARITY_N": 20,
+    "N_BOOT": 1000,
+    "KEEP_AUDIO": true,
+    "clip_score": "mean of window scores",
+    "batch_size": 1
+  },
+  "env": {
+    "python": "3.13.16",
+    "platform": "Linux-6.6.122+-x86_64-with-glibc2.39",
+    "onnxruntime": "1.31.0",
+    "ort_available_providers": [
+      "AzureExecutionProvider",
+      "CPUExecutionProvider"
+    ],
+    "numpy": "2.1.3",
+    "pandas": "2.2.3",
+    "librosa": "0.11.0",
+    "soundfile": "0.14.0",
+    "libsndfile": "1.2.2",
+    "sklearn": "1.6.1",
+    "cpu_count": 2,
+    "code_sha256": {
+      "dhwani_infer.py": "8a7c9c8f4275fb27a0d6ba3dde43aaeedf98974b7057378c37122467ba756077",
+      "eval_lib.py": "922385443e35020b2afb6213a52798e97c90dee606866b93be27c21b9a188639"
+    },
+    "torch_cuda": true,
+    "gpu": "Tesla T4"
+  },
+  "model": {
+    "repo": "ayush2635/Dhwani-Multilingual-Deepfake-Audio-Detection-Model",
+    "revision": "ee0187142973e1f02050e47d2a31c55ee0263065",
+    "sha256": "d1c232bf4d7990526804b375c15804c0ee4e9b566478b908c5a57431491b7342",
+    "path": "/root/.cache/huggingface/hub/models--ayush2635--Dhwani-Multilingual-Deepfake-Audio-Detection-Model/snapshots/ee0187142973e1f02050e47d2a31c55ee0263065/best_model.onnx",
+    "source": "downloaded"
+  },
+  "session": {
+    "onnxruntime_version": "1.31.0",
+    "available_providers": [
+      "AzureExecutionProvider",
+      "CPUExecutionProvider"
+    ],
+    "session_providers": [
+      "CPUExecutionProvider"
+    ],
+    "inputs": [
+      [
+        "input",
+        [
+          "batch_size",
+          "time"
+        ],
+        "tensor(float)"
+      ]
+    ],
+    "outputs": [
+      [
+        "output",
+        [
+          1,
+          2
+        ],
+        "tensor(float)"
+      ]
+    ]
+  },
+  "probe": {
+    "len_64000_batch1": {
+      "ok": true,
+      "shape": [
+        1,
+        2
+      ]
+    },
+    "len_32000_batch1": {
+      "ok": true,
+      "shape": [
+        1,
+        2
+      ]
+    },
+    "len_48000_batch1": {
+      "ok": true,
+      "shape": [
+        1,
+        2
+      ]
+    },
+    "len_96000_batch1": {
+      "ok": true,
+      "shape": [
+        1,
+        2
+      ]
+    },
+    "batch2": {
+      "ok": false,
+      "shape": [
+        1,
+        2
+      ],
+      "max_abs_diff_vs_individual": null
+    },
+    "deterministic": true
+  },
+  "started_utc": "20261024T123319Z"
+}

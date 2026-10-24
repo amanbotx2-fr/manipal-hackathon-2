@@ -1,0 +1,95 @@
+{
+ "status": "ok",
+ "prediction": "genuine",
+ "synthetic_score": 1.2347783645604666E-4,
+ "synthetic_score_max": 1.2409068900152403E-4,
+ "score_is_calibrated": false,
+ "decision_threshold": 0.5,
+ "reject_reason": null,
+ "duration_s": 8.256,
+ "analysed_duration_s": 8.256,
+ "truncated": false,
+ "audio": {
+  "native_sample_rate": 48000,
+  "channels": 1,
+  "native_frames": 396288,
+  "decoder": "mediacodec",
+  "decoder_notes": {
+   "mime": "audio\/mp4a-latm",
+   "track_sample_rate": 48000,
+   "track_channels": 1,
+   "track_duration_us": 8256000,
+   "encoder_delay": null,
+   "encoder_padding": null,
+   "codec": "c2.android.aac.decoder",
+   "pcm_encoding": "s16"
+  },
+  "peak_dbfs": -22.12,
+  "rms_dbfs": -39.15,
+  "active_s": 8.025,
+  "clipping_frac": 0
+ },
+ "windows": [
+  {
+   "start_s": 0,
+   "logits": [
+    4.173814296722412,
+    -4.829572677612305
+   ],
+   "synthetic_score": 1.229774000017743E-4,
+   "ms": 21617.941469
+  },
+  {
+   "start_s": 2,
+   "logits": [
+    4.163846015930176,
+    -4.8305277824401855
+   ],
+   "synthetic_score": 1.2409068900152403E-4,
+   "ms": 6388.138045
+  },
+  {
+   "start_s": 4,
+   "logits": [
+    4.16707181930542,
+    -4.834608554840088
+   ],
+   "synthetic_score": 1.2318742656685264E-4,
+   "ms": 2012.384293
+  },
+  {
+   "start_s": 4.256,
+   "logits": [
+    4.1649322509765625,
+    -4.832952499389648
+   ],
+   "synthetic_score": 1.2365583025403566E-4,
+   "ms": 1892.249125
+  }
+ ],
+ "preprocessing": "train_peak",
+ "timing_ms": {
+  "decode": 5297.861336,
+  "resample": 1211.069292,
+  "preprocess": 26.288667,
+  "model_load": null,
+  "model_total": 31910.791015,
+  "per_window_mean": 7977.69775375,
+  "total": 38482.397935
+ },
+ "session": {
+  "onnxruntime": "onnxruntime-android 1.31.0",
+  "executionProvider": "CPU",
+  "optimizationLevel": "ALL_OPT",
+  "executionMode": "SEQUENTIAL",
+  "intraOpThreads": 4,
+  "interOpThreads": 1,
+  "batchSize": 1,
+  "input": "input TensorInfo(javaType=FLOAT,onnxType=ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT,shape=[-1, -1],dimNames=[batch_size,time])",
+  "output": "TensorInfo(javaType=FLOAT,onnxType=ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT,shape=[1, 2])"
+ },
+ "source": {
+  "sha256": "8b03de0923525b54aa73cd0c9b940444f652681f9605cfdaa617762970085bae"
+ },
+ "on_device": true
+}

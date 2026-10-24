@@ -1,0 +1,38 @@
+{
+  "file_name": "synthetic__en__Chatterbox__emerald_city_of_oz_20_f000055.wav",
+  "label": "synthetic",
+  "language": "en",
+  "generator": "Chatterbox",
+  "sample_id": "emerald_city_of_oz_20_f000055",
+  "dataset": "mueller91/MLAAD",
+  "dataset_revision": "30c3dec763fa4803f11c2df1557d3b0828395366",
+  "license": "CC-BY-NC-4.0",
+  "repo_path": "fake/en/Chatterbox/emerald_city_of_oz_20_f000055.wav",
+  "sha256": "9448a599a4d5cd420191182d20890592e69124c699f704903c22c3614f3fc0ac",
+  "selection_rule": "meta.csv sorted by 'path', random.Random(20261024).shuffle, first clip 5-10 s",
+  "clips_downloaded": [
+    [
+      "fake/en/Chatterbox/emerald_city_of_oz_20_f000055.wav",
+      7.44
+    ]
+  ],
+  "audio": {
+    "samplerate": 22050,
+    "channels": 1,
+    "duration_s": 7.44,
+    "format": "WAV",
+    "subtype": "PCM_16"
+  },
+  "meta_csv_row": {
+    "path": "./fake/en/Chatterbox/emerald_city_of_oz_20_f000055.wav",
+    "original_file": "en_US/by_book/female/judy_bieber/emerald_city_of_oz/wavs/emerald_city_of_oz_20_f000055.wav",
+    "language": "en",
+    "is_original_language": "True",
+    "duration": "7.440",
+    "training_data": "unknown",
+    "model_name": "Chatterbox",
+    "architecture": "Chatterbox",
+    "transcript": "I was a real rabbit, as nature made me wild and free! and I even enjoyed listening to the startled throbbing of my own heart!",
+    "speaker_similarity": "-"
+  }
+}

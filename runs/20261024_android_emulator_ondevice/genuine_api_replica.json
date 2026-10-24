@@ -1,0 +1,68 @@
+{
+ "status": "ok",
+ "prediction": "genuine",
+ "synthetic_score": 1.3220677080756944E-4,
+ "synthetic_score_max": 1.3220677080756944E-4,
+ "score_is_calibrated": false,
+ "decision_threshold": 0.5,
+ "reject_reason": null,
+ "duration_s": 8.256,
+ "analysed_duration_s": 8.256,
+ "truncated": false,
+ "audio": {
+  "native_sample_rate": 48000,
+  "channels": 1,
+  "native_frames": 396288,
+  "decoder": "mediacodec",
+  "decoder_notes": {
+   "mime": "audio\/mp4a-latm",
+   "track_sample_rate": 48000,
+   "track_channels": 1,
+   "track_duration_us": 8256000,
+   "encoder_delay": null,
+   "encoder_padding": null,
+   "codec": "c2.android.aac.decoder",
+   "pcm_encoding": "s16"
+  },
+  "peak_dbfs": -22.12,
+  "rms_dbfs": -39.15,
+  "active_s": 8.025,
+  "clipping_frac": 0
+ },
+ "windows": [
+  {
+   "start_s": 0,
+   "logits": [
+    4.156890869140625,
+    -4.774120330810547
+   ],
+   "synthetic_score": 1.3220677080756944E-4,
+   "ms": 2710.552252
+  }
+ ],
+ "preprocessing": "api_replica",
+ "timing_ms": {
+  "decode": 762.091876,
+  "resample": 78.749083,
+  "preprocess": 0.89575,
+  "model_load": null,
+  "model_total": 2710.556085,
+  "per_window_mean": 2710.556085,
+  "total": 3552.35246
+ },
+ "session": {
+  "onnxruntime": "onnxruntime-android 1.31.0",
+  "executionProvider": "CPU",
+  "optimizationLevel": "ALL_OPT",
+  "executionMode": "SEQUENTIAL",
+  "intraOpThreads": 4,
+  "interOpThreads": 1,
+  "batchSize": 1,
+  "input": "input TensorInfo(javaType=FLOAT,onnxType=ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT,shape=[-1, -1],dimNames=[batch_size,time])",
+  "output": "TensorInfo(javaType=FLOAT,onnxType=ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT,shape=[1, 2])"
+ },
+ "source": {
+  "sha256": "8b03de0923525b54aa73cd0c9b940444f652681f9605cfdaa617762970085bae"
+ },
+ "on_device": true
+}

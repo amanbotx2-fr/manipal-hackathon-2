@@ -1,0 +1,101 @@
+{
+  "sources": {
+    "asvspoof2019_la_eval": {
+      "title": "ASVspoof 2019 Logical Access (LA), evaluation partition",
+      "landing_page": "https://datashare.ed.ac.uk/handle/10283/3336",
+      "doi": "10.7488/ds/2555",
+      "archive": "LA.zip",
+      "url": "https://datashare.ed.ac.uk/server/api/core/bitstreams/a9f87c35-f055-4015-80e2-2fdff0d46269/content",
+      "bytes": 7640952520,
+      "md5": "30c98f11d8b2bc21f2c257bfd78bb5c5",
+      "last_modified": "Tue, 04 Jun 2019 09:38:20 GMT",
+      "license": "ODC-By 1.0 (archive README.txt, COPYING section)",
+      "protocol_suffix": "ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.eval.trl.txt",
+      "audio_dir_suffix": "ASVspoof2019_LA_eval/flac/",
+      "audio_ext": ".flac",
+      "expected_counts": {
+        "genuine": 7355,
+        "synthetic": 63882
+      },
+      "expected_attacks": [
+        "A07",
+        "A08",
+        "A09",
+        "A10",
+        "A11",
+        "A12",
+        "A13",
+        "A14",
+        "A15",
+        "A16",
+        "A17",
+        "A18",
+        "A19"
+      ]
+    },
+    "in_the_wild": {
+      "title": "In-the-Wild audio deepfake dataset (Mueller et al., Interspeech 2022)",
+      "landing_page": "https://huggingface.co/datasets/mueller91/In-The-Wild",
+      "project_page": "https://deepfake-total.com/in_the_wild",
+      "hf_repo": "mueller91/In-The-Wild",
+      "revision": "eee168f92c367f8c82ff2cf42b6f61e362fd6211",
+      "archive": "release_in_the_wild.zip",
+      "url": "https://huggingface.co/datasets/mueller91/In-The-Wild/resolve/eee168f92c367f8c82ff2cf42b6f61e362fd6211/release_in_the_wild.zip",
+      "bytes": 8161489023,
+      "sha256": "46665f30a6758b45642c659c7e0e80da2ba3d121b064716824a56a010ddf9e1a",
+      "xet_hash": "ec530d2076f973d40a8e388e559888f1b4fea467db8126c811d34dd508ee106f",
+      "license": "CONFLICT: HF card says CC-BY-SA-4.0; Fraunhofer project page says Apache-2.0",
+      "meta_suffix": "meta.csv",
+      "expected_counts": {
+        "genuine": 19963,
+        "synthetic": 11816
+      }
+    }
+  },
+  "access": {
+    "in_the_wild": {
+      "access": "http range",
+      "host": "us.gcp.cdn.hf.co",
+      "content_length_total": 8161489023,
+      "etag": "ec530d2076f973d40a8e388e559888f1b4fea467db8126c811d34dd508ee106f",
+      "last_modified": null,
+      "etag_matches_recorded": true,
+      "integrity_note": "range mode cannot hash the whole archive; size + server ETag are checked and zipfile verifies each extracted member's CRC-32",
+      "n_members": 31782,
+      "metadata_member": "release_in_the_wild/meta.csv",
+      "open_s": 5.4,
+      "requests_so_far": 6,
+      "bytes_fetched_so_far": 3577876
+    }
+  },
+  "metadata": {
+    "in_the_wild": {
+      "n": 31779,
+      "by_label": {
+        "genuine": 19963,
+        "synthetic": 11816
+      },
+      "by_attack": {},
+      "n_speakers_by_label": {
+        "genuine": 54,
+        "synthetic": 54
+      },
+      "n_speakers_total": 54,
+      "duplicate_clip_ids": 0,
+      "n_metadata_rows_without_audio": 0,
+      "expected_counts": {
+        "genuine": 19963,
+        "synthetic": 11816
+      },
+      "counts_match_expected": true
+    }
+  },
+  "blockers": [
+    {
+      "dataset": "asvspoof2019_la_eval",
+      "stage": "access",
+      "error": "HTTPError: HTTP Error 403: Forbidden",
+      "traceback": "Traceback (most recent call last):\n  File \"/tmp/ipykernel_721/2900957473.py\", line 29, in <cell line: 0>\n    zf, raw = el.open_remote_zip(src[\"url\"], src[\"bytes\"])\n              ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/content/eval_lib.py\", line 166, in open_remote_zip\n    raw = HTTPRangeFile(url)\n  File \"/content/eval_lib.py\", line 87, in __init__\n    size = self._probe_size()\n  File \"/content/eval_lib.py\", line 102, in _probe_size\n    h = self._resolve()\n  File \"/content/eval_lib.py\", line 93, in _resolve\n    with urllib.request.urlopen(req, timeout=self.timeout) as r:\n         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.13/urllib/request.py\", line 189, in urlopen\n    return opener.open(url, data, timeout)\n           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.13/urllib/request.py\", line 495, in open\n    response = meth(req, response)\n  File \"/usr/lib/python3.13/urllib/request.py\", line 604, in http_response\n    response = self.parent.error(\n        'http', request, response, code, msg, hdrs)\n  File \"/usr/lib/python3.13/urllib/request.py\", line 533, in error\n    return self._call_chain(*args)\n           ~~~~~~~~~~~~~~~~^^^^^^^\n  File \"/usr/lib/python3.13/urllib/request.py\", line 466, in _call_chain\n    result = func(*args)\n  File \"/usr/lib/python3.13/urllib/request.py\", line 613, in http_error_default\n    raise HTTPError(req.full_url, code, msg, hdrs, fp)\nurllib.error.HTTPError: HTTP Error 403: Forbidden\n"
+    }
+  ]
+}

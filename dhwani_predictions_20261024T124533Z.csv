@@ -1,0 +1,118 @@
+file_name,ground_truth,language,generator,note,source_meta,provider,file,status,reject_reason,file_sha256,native_sr,channels,preprocessing,window_starts_s,window_logits,window_scores,clip_score_mean,clip_score_max,predicted_label,latency_ms_model,latency_ms_total,duration_s,truncated,analysed_duration_s,peak_dbfs,rms_dbfs,active_s,clipping_frac,decision_threshold,label_mapping,model_repo,model_revision,model_sha256,n_win,run_utc,onnxruntime
+genuine_hi_aman.m4a,unknown,,,,,CPUExecutionProvider,/content/vcd_uploads/genuine_hi_aman.m4a,ok,,8b03de0923525b54aa73cd0c9b940444f652681f9605cfdaa617762970085bae,48000,1,train_peak,"[0.0, 2.0, 4.0, 4.256]","[[4.1738, -4.8296], [4.1639, -4.8306], [4.1671, -4.8346], [4.1649, -4.833]]","[0.0001, 0.0001, 0.0001, 0.0001]",0.0001,0.0001,genuine,10751.9,10887.4,8.256,False,8.256,-22.12,-39.15,8.025,0.0,0.5,"{""0"": ""genuine"", ""1"": ""synthetic""}",ayush2635/Dhwani-Multilingual-Deepfake-Audio-Detection-Model,ee0187142973e1f02050e47d2a31c55ee0263065,d1c232bf4d7990526804b375c15804c0ee4e9b566478b908c5a57431491b7342,4,20261024T124533Z,1.31.0
+genuine_hi_aman.m4a,unknown,,,,,CPUExecutionProvider,/content/vcd_uploads/genuine_hi_aman.m4a,ok,,8b03de0923525b54aa73cd0c9b940444f652681f9605cfdaa617762970085bae,48000,1,train_zscore,"[0.0, 2.0, 4.0, 4.256]","[[4.1597, -4.808], [4.1858, -4.8537], [4.1857, -4.8464], [4.1814, -4.8428]]","[0.0001, 0.0001, 0.0001, 0.0001]",0.0001,0.0001,genuine,7143.6,7261.2,8.256,False,8.256,-22.12,-39.15,8.025,0.0,0.5,"{""0"": ""genuine"", ""1"": ""synthetic""}",ayush2635/Dhwani-Multilingual-Deepfake-Audio-Detection-Model,ee0187142973e1f02050e47d2a31c55ee0263065,d1c232bf4d7990526804b375c15804c0ee4e9b566478b908c5a57431491b7342,4,20261024T124533Z,1.31.0
+genuine_hi_aman.m4a,unknown,,,,,CPUExecutionProvider,/content/vcd_uploads/genuine_hi_aman.m4a,ok,,8b03de0923525b54aa73cd0c9b940444f652681f9605cfdaa617762970085bae,48000,1,api_replica,[0.0],"[[4.1566, -4.7737]]",[0.0001],0.0001,0.0001,genuine,1763.6,1871.6,8.256,False,8.256,-22.12,-39.15,8.025,0.0,0.5,"{""0"": ""genuine"", ""1"": ""synthetic""}",ayush2635/Dhwani-Multilingual-Deepfake-Audio-Detection-Model,ee0187142973e1f02050e47d2a31c55ee0263065,d1c232bf4d7990526804b375c15804c0ee4e9b566478b908c5a57431491b7342,1,20261024T124533Z,1.31.0
+synthetic__en__Chatterbox__emerald_city_of_oz_20_f000055.wav,synthetic,en,Chatterbox,emerald_city_of_oz_20_f000055,"{
+  ""file_name"": ""synthetic__en__Chatterbox__emerald_city_of_oz_20_f000055.wav"",
+  ""label"": ""synthetic"",
+  ""language"": ""en"",
+  ""generator"": ""Chatterbox"",
+  ""sample_id"": ""emerald_city_of_oz_20_f000055"",
+  ""dataset"": ""mueller91/MLAAD"",
+  ""dataset_revision"": ""30c3dec763fa4803f11c2df1557d3b0828395366"",
+  ""license"": ""CC-BY-NC-4.0"",
+  ""repo_path"": ""fake/en/Chatterbox/emerald_city_of_oz_20_f000055.wav"",
+  ""sha256"": ""9448a599a4d5cd420191182d20890592e69124c699f704903c22c3614f3fc0ac"",
+  ""selection_rule"": ""meta.csv sorted by 'path', random.Random(20261024).shuffle, first clip 5-10 s"",
+  ""clips_downloaded"": [
+    [
+      ""fake/en/Chatterbox/emerald_city_of_oz_20_f000055.wav"",
+      7.44
+    ]
+  ],
+  ""audio"": {
+    ""samplerate"": 22050,
+    ""channels"": 1,
+    ""duration_s"": 7.44,
+    ""format"": ""WAV"",
+    ""subtype"": ""PCM_16""
+  },
+  ""meta_csv_row"": {
+    ""path"": ""./fake/en/Chatterbox/emerald_city_of_oz_20_f000055.wav"",
+    ""original_file"": ""en_US/by_book/female/judy_bieber/emerald_city_of_oz/wavs/emerald_city_of_oz_20_f000055.wav"",
+    ""language"": ""en"",
+    ""is_original_language"": ""True"",
+    ""duration"": ""7.440"",
+    ""training_data"": ""unknown"",
+    ""model_name"": ""Chatterbox"",
+    ""architecture"": ""Chatterbox"",
+    ""transcript"": ""I was a real rabbit, as nature made me wild and free! and I even enjoyed listening to the startled throbbing of my own heart!"",
+    ""speaker_similarity"": ""-""
+  }
+}",CPUExecutionProvider,/content/vcd_uploads/synthetic__en__Chatterbox__emerald_city_of_oz_20_f000055.wav,ok,,9448a599a4d5cd420191182d20890592e69124c699f704903c22c3614f3fc0ac,22050,1,train_peak,"[0.0, 2.0, 3.44]","[[-4.2195, 4.3003], [-4.2479, 4.3166], [-4.2239, 4.3118]]","[0.9998, 0.9998, 0.9998]",0.9998,0.9998,synthetic,5303.8,5310.5,7.44,False,7.44,-0.37,-20.68,5.6,0.0,0.5,"{""0"": ""genuine"", ""1"": ""synthetic""}",ayush2635/Dhwani-Multilingual-Deepfake-Audio-Detection-Model,ee0187142973e1f02050e47d2a31c55ee0263065,d1c232bf4d7990526804b375c15804c0ee4e9b566478b908c5a57431491b7342,3,20261024T124533Z,1.31.0
+synthetic__en__Chatterbox__emerald_city_of_oz_20_f000055.wav,synthetic,en,Chatterbox,emerald_city_of_oz_20_f000055,"{
+  ""file_name"": ""synthetic__en__Chatterbox__emerald_city_of_oz_20_f000055.wav"",
+  ""label"": ""synthetic"",
+  ""language"": ""en"",
+  ""generator"": ""Chatterbox"",
+  ""sample_id"": ""emerald_city_of_oz_20_f000055"",
+  ""dataset"": ""mueller91/MLAAD"",
+  ""dataset_revision"": ""30c3dec763fa4803f11c2df1557d3b0828395366"",
+  ""license"": ""CC-BY-NC-4.0"",
+  ""repo_path"": ""fake/en/Chatterbox/emerald_city_of_oz_20_f000055.wav"",
+  ""sha256"": ""9448a599a4d5cd420191182d20890592e69124c699f704903c22c3614f3fc0ac"",
+  ""selection_rule"": ""meta.csv sorted by 'path', random.Random(20261024).shuffle, first clip 5-10 s"",
+  ""clips_downloaded"": [
+    [
+      ""fake/en/Chatterbox/emerald_city_of_oz_20_f000055.wav"",
+      7.44
+    ]
+  ],
+  ""audio"": {
+    ""samplerate"": 22050,
+    ""channels"": 1,
+    ""duration_s"": 7.44,
+    ""format"": ""WAV"",
+    ""subtype"": ""PCM_16""
+  },
+  ""meta_csv_row"": {
+    ""path"": ""./fake/en/Chatterbox/emerald_city_of_oz_20_f000055.wav"",
+    ""original_file"": ""en_US/by_book/female/judy_bieber/emerald_city_of_oz/wavs/emerald_city_of_oz_20_f000055.wav"",
+    ""language"": ""en"",
+    ""is_original_language"": ""True"",
+    ""duration"": ""7.440"",
+    ""training_data"": ""unknown"",
+    ""model_name"": ""Chatterbox"",
+    ""architecture"": ""Chatterbox"",
+    ""transcript"": ""I was a real rabbit, as nature made me wild and free! and I even enjoyed listening to the startled throbbing of my own heart!"",
+    ""speaker_similarity"": ""-""
+  }
+}",CPUExecutionProvider,/content/vcd_uploads/synthetic__en__Chatterbox__emerald_city_of_oz_20_f000055.wav,ok,,9448a599a4d5cd420191182d20890592e69124c699f704903c22c3614f3fc0ac,22050,1,train_zscore,"[0.0, 2.0, 3.44]","[[-2.3293, 2.3873], [-2.2753, 2.3102], [-2.2312, 2.2869]]","[0.9911, 0.9899, 0.9892]",0.9901,0.9911,synthetic,5428.5,5435.4,7.44,False,7.44,-0.37,-20.68,5.6,0.0,0.5,"{""0"": ""genuine"", ""1"": ""synthetic""}",ayush2635/Dhwani-Multilingual-Deepfake-Audio-Detection-Model,ee0187142973e1f02050e47d2a31c55ee0263065,d1c232bf4d7990526804b375c15804c0ee4e9b566478b908c5a57431491b7342,3,20261024T124533Z,1.31.0
+synthetic__en__Chatterbox__emerald_city_of_oz_20_f000055.wav,synthetic,en,Chatterbox,emerald_city_of_oz_20_f000055,"{
+  ""file_name"": ""synthetic__en__Chatterbox__emerald_city_of_oz_20_f000055.wav"",
+  ""label"": ""synthetic"",
+  ""language"": ""en"",
+  ""generator"": ""Chatterbox"",
+  ""sample_id"": ""emerald_city_of_oz_20_f000055"",
+  ""dataset"": ""mueller91/MLAAD"",
+  ""dataset_revision"": ""30c3dec763fa4803f11c2df1557d3b0828395366"",
+  ""license"": ""CC-BY-NC-4.0"",
+  ""repo_path"": ""fake/en/Chatterbox/emerald_city_of_oz_20_f000055.wav"",
+  ""sha256"": ""9448a599a4d5cd420191182d20890592e69124c699f704903c22c3614f3fc0ac"",
+  ""selection_rule"": ""meta.csv sorted by 'path', random.Random(20261024).shuffle, first clip 5-10 s"",
+  ""clips_downloaded"": [
+    [
+      ""fake/en/Chatterbox/emerald_city_of_oz_20_f000055.wav"",
+      7.44
+    ]
+  ],
+  ""audio"": {
+    ""samplerate"": 22050,
+    ""channels"": 1,
+    ""duration_s"": 7.44,
+    ""format"": ""WAV"",
+    ""subtype"": ""PCM_16""
+  },
+  ""meta_csv_row"": {
+    ""path"": ""./fake/en/Chatterbox/emerald_city_of_oz_20_f000055.wav"",
+    ""original_file"": ""en_US/by_book/female/judy_bieber/emerald_city_of_oz/wavs/emerald_city_of_oz_20_f000055.wav"",
+    ""language"": ""en"",
+    ""is_original_language"": ""True"",
+    ""duration"": ""7.440"",
+    ""training_data"": ""unknown"",
+    ""model_name"": ""Chatterbox"",
+    ""architecture"": ""Chatterbox"",
+    ""transcript"": ""I was a real rabbit, as nature made me wild and free! and I even enjoyed listening to the startled throbbing of my own heart!"",
+    ""speaker_similarity"": ""-""
+  }
+}",CPUExecutionProvider,/content/vcd_uploads/synthetic__en__Chatterbox__emerald_city_of_oz_20_f000055.wav,ok,,9448a599a4d5cd420191182d20890592e69124c699f704903c22c3614f3fc0ac,22050,1,api_replica,[0.0],"[[-2.3364, 2.434]]",[0.9916],0.9916,0.9916,synthetic,1773.7,1780.1,7.44,False,7.44,-0.37,-20.68,5.6,0.0,0.5,"{""0"": ""genuine"", ""1"": ""synthetic""}",ayush2635/Dhwani-Multilingual-Deepfake-Audio-Detection-Model,ee0187142973e1f02050e47d2a31c55ee0263065,d1c232bf4d7990526804b375c15804c0ee4e9b566478b908c5a57431491b7342,1,20261024T124533Z,1.31.0

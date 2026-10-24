@@ -1,0 +1,56 @@
+{
+  "asvspoof2019_la_eval": {
+    "status": "NOT TESTED",
+    "reason": "access blocker: HTTPError: HTTP Error 403: Forbidden",
+    "planned_clips": 208,
+    "manifest_clips": 0,
+    "prediction_rows": 0,
+    "metadata": null,
+    "access": null,
+    "blockers": [
+      "HTTPError: HTTP Error 403: Forbidden"
+    ]
+  },
+  "in_the_wild": {
+    "status": "scored",
+    "reason": "",
+    "planned_clips": 200,
+    "manifest_clips": 200,
+    "prediction_rows": 200,
+    "metadata": {
+      "n": 31779,
+      "by_label": {
+        "genuine": 19963,
+        "synthetic": 11816
+      },
+      "by_attack": {},
+      "n_speakers_by_label": {
+        "genuine": 54,
+        "synthetic": 54
+      },
+      "n_speakers_total": 54,
+      "duplicate_clip_ids": 0,
+      "n_metadata_rows_without_audio": 0,
+      "expected_counts": {
+        "genuine": 19963,
+        "synthetic": 11816
+      },
+      "counts_match_expected": true
+    },
+    "access": {
+      "access": "http range",
+      "host": "us.gcp.cdn.hf.co",
+      "content_length_total": 8161489023,
+      "etag": "ec530d2076f973d40a8e388e559888f1b4fea467db8126c811d34dd508ee106f",
+      "last_modified": null,
+      "etag_matches_recorded": true,
+      "integrity_note": "range mode cannot hash the whole archive; size + server ETag are checked and zipfile verifies each extracted member's CRC-32",
+      "n_members": 31782,
+      "metadata_member": "release_in_the_wild/meta.csv",
+      "open_s": 5.4,
+      "requests_so_far": 6,
+      "bytes_fetched_so_far": 3577876
+    },
+    "blockers": []
+  }
+}

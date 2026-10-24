@@ -1,0 +1,201 @@
+clip_id,speaker_id,attack_id,label,original_label,archive_member,stratum,selection_rank,dataset
+10055.wav,Bill Burr,,genuine,bona-fide,release_in_the_wild/10055.wav,genuine,0,in_the_wild
+8846.wav,Queen Elizabeth II,,genuine,bona-fide,release_in_the_wild/8846.wav,genuine,1,in_the_wild
+26460.wav,Nelson Mandela,,genuine,bona-fide,release_in_the_wild/26460.wav,genuine,2,in_the_wild
+13957.wav,Louis C.K.,,genuine,bona-fide,release_in_the_wild/13957.wav,genuine,3,in_the_wild
+3520.wav,Norm MacDonald,,genuine,bona-fide,release_in_the_wild/3520.wav,genuine,4,in_the_wild
+13659.wav,FDR,,genuine,bona-fide,release_in_the_wild/13659.wav,genuine,5,in_the_wild
+4914.wav,Arnold Schwarzenegger,,genuine,bona-fide,release_in_the_wild/4914.wav,genuine,6,in_the_wild
+20156.wav,Adam Driver,,genuine,bona-fide,release_in_the_wild/20156.wav,genuine,7,in_the_wild
+20520.wav,Lyndon Johnson,,genuine,bona-fide,release_in_the_wild/20520.wav,genuine,8,in_the_wild
+5705.wav,2Pac,,genuine,bona-fide,release_in_the_wild/5705.wav,genuine,9,in_the_wild
+10864.wav,Orson Welles,,genuine,bona-fide,release_in_the_wild/10864.wav,genuine,10,in_the_wild
+13586.wav,Boris Johnson,,genuine,bona-fide,release_in_the_wild/13586.wav,genuine,11,in_the_wild
+5020.wav,Alexandria Ocasio-Cortez,,genuine,bona-fide,release_in_the_wild/5020.wav,genuine,12,in_the_wild
+777.wav,Malcolm X,,genuine,bona-fide,release_in_the_wild/777.wav,genuine,13,in_the_wild
+30117.wav,Bernie Sanders,,genuine,bona-fide,release_in_the_wild/30117.wav,genuine,14,in_the_wild
+2906.wav,Jimmy Carter,,genuine,bona-fide,release_in_the_wild/2906.wav,genuine,15,in_the_wild
+28252.wav,Barack Obama,,genuine,bona-fide,release_in_the_wild/28252.wav,genuine,16,in_the_wild
+13583.wav,Donald Trump,,genuine,bona-fide,release_in_the_wild/13583.wav,genuine,17,in_the_wild
+15467.wav,Jerry Seinfeld,,genuine,bona-fide,release_in_the_wild/15467.wav,genuine,18,in_the_wild
+5784.wav,John Cleese,,genuine,bona-fide,release_in_the_wild/5784.wav,genuine,19,in_the_wild
+19894.wav,JFK,,genuine,bona-fide,release_in_the_wild/19894.wav,genuine,20,in_the_wild
+27151.wav,Ronald Reagan,,genuine,bona-fide,release_in_the_wild/27151.wav,genuine,21,in_the_wild
+30441.wav,Dave Chappelle,,genuine,bona-fide,release_in_the_wild/30441.wav,genuine,22,in_the_wild
+5967.wav,Billie Eilish,,genuine,bona-fide,release_in_the_wild/5967.wav,genuine,23,in_the_wild
+6075.wav,Bob Ross,,genuine,bona-fide,release_in_the_wild/6075.wav,genuine,24,in_the_wild
+17368.wav,Christopher Hitchens,,genuine,bona-fide,release_in_the_wild/17368.wav,genuine,25,in_the_wild
+4590.wav,George Carlin,,genuine,bona-fide,release_in_the_wild/4590.wav,genuine,26,in_the_wild
+234.wav,Winston Churchill,,genuine,bona-fide,release_in_the_wild/234.wav,genuine,27,in_the_wild
+27706.wav,Ayn Rand,,genuine,bona-fide,release_in_the_wild/27706.wav,genuine,28,in_the_wild
+12681.wav,Richard Nixon,,genuine,bona-fide,release_in_the_wild/12681.wav,genuine,29,in_the_wild
+21309.wav,Harry Truman,,genuine,bona-fide,release_in_the_wild/21309.wav,genuine,30,in_the_wild
+17921.wav,Alan Watts,,genuine,bona-fide,release_in_the_wild/17921.wav,genuine,31,in_the_wild
+30610.wav,Jeff Goldblum,,genuine,bona-fide,release_in_the_wild/30610.wav,genuine,32,in_the_wild
+30665.wav,George W. Bush,,genuine,bona-fide,release_in_the_wild/30665.wav,genuine,33,in_the_wild
+5052.wav,Calvin Coolidge,,genuine,bona-fide,release_in_the_wild/5052.wav,genuine,34,in_the_wild
+14782.wav,Gilbert Gottfried,,genuine,bona-fide,release_in_the_wild/14782.wav,genuine,35,in_the_wild
+25073.wav,Mark Zuckerberg,,genuine,bona-fide,release_in_the_wild/25073.wav,genuine,36,in_the_wild
+5511.wav,Tucker Carlson,,genuine,bona-fide,release_in_the_wild/5511.wav,genuine,37,in_the_wild
+8618.wav,Mitch Hedberg,,genuine,bona-fide,release_in_the_wild/8618.wav,genuine,38,in_the_wild
+19890.wav,Martin Luther King,,genuine,bona-fide,release_in_the_wild/19890.wav,genuine,39,in_the_wild
+3236.wav,Louis Farrakhan,,genuine,bona-fide,release_in_the_wild/3236.wav,genuine,40,in_the_wild
+21906.wav,Scarlett Johansson,,genuine,bona-fide,release_in_the_wild/21906.wav,genuine,41,in_the_wild
+1194.wav,Robert Kardashian,,genuine,bona-fide,release_in_the_wild/1194.wav,genuine,42,in_the_wild
+27536.wav,Kamala Harris,,genuine,bona-fide,release_in_the_wild/27536.wav,genuine,43,in_the_wild
+24162.wav,The Notorious B.I.G.,,genuine,bona-fide,release_in_the_wild/24162.wav,genuine,44,in_the_wild
+9266.wav,Kanye West,,genuine,bona-fide,release_in_the_wild/9266.wav,genuine,45,in_the_wild
+22081.wav,Dwight Eisenhower,,genuine,bona-fide,release_in_the_wild/22081.wav,genuine,46,in_the_wild
+2803.wav,Alec Guinness,,genuine,bona-fide,release_in_the_wild/2803.wav,genuine,47,in_the_wild
+2513.wav,Bill Clinton,,genuine,bona-fide,release_in_the_wild/2513.wav,genuine,48,in_the_wild
+11044.wav,Nick Offerman,,genuine,bona-fide,release_in_the_wild/11044.wav,genuine,49,in_the_wild
+3910.wav,Milton Friedman,,genuine,bona-fide,release_in_the_wild/3910.wav,genuine,50,in_the_wild
+15829.wav,William F. Buckley,,genuine,bona-fide,release_in_the_wild/15829.wav,genuine,51,in_the_wild
+4199.wav,Mr. Rogers,,genuine,bona-fide,release_in_the_wild/4199.wav,genuine,52,in_the_wild
+20859.wav,Frank Sinatra,,genuine,bona-fide,release_in_the_wild/20859.wav,genuine,53,in_the_wild
+26603.wav,Bill Burr,,genuine,bona-fide,release_in_the_wild/26603.wav,genuine,54,in_the_wild
+9027.wav,Queen Elizabeth II,,genuine,bona-fide,release_in_the_wild/9027.wav,genuine,55,in_the_wild
+20495.wav,Nelson Mandela,,genuine,bona-fide,release_in_the_wild/20495.wav,genuine,56,in_the_wild
+1645.wav,Louis C.K.,,genuine,bona-fide,release_in_the_wild/1645.wav,genuine,57,in_the_wild
+18847.wav,Norm MacDonald,,genuine,bona-fide,release_in_the_wild/18847.wav,genuine,58,in_the_wild
+25114.wav,FDR,,genuine,bona-fide,release_in_the_wild/25114.wav,genuine,59,in_the_wild
+1558.wav,Arnold Schwarzenegger,,genuine,bona-fide,release_in_the_wild/1558.wav,genuine,60,in_the_wild
+23318.wav,Adam Driver,,genuine,bona-fide,release_in_the_wild/23318.wav,genuine,61,in_the_wild
+22423.wav,Lyndon Johnson,,genuine,bona-fide,release_in_the_wild/22423.wav,genuine,62,in_the_wild
+2726.wav,2Pac,,genuine,bona-fide,release_in_the_wild/2726.wav,genuine,63,in_the_wild
+3708.wav,Orson Welles,,genuine,bona-fide,release_in_the_wild/3708.wav,genuine,64,in_the_wild
+23195.wav,Boris Johnson,,genuine,bona-fide,release_in_the_wild/23195.wav,genuine,65,in_the_wild
+13421.wav,Alexandria Ocasio-Cortez,,genuine,bona-fide,release_in_the_wild/13421.wav,genuine,66,in_the_wild
+1959.wav,Malcolm X,,genuine,bona-fide,release_in_the_wild/1959.wav,genuine,67,in_the_wild
+11729.wav,Bernie Sanders,,genuine,bona-fide,release_in_the_wild/11729.wav,genuine,68,in_the_wild
+16428.wav,Jimmy Carter,,genuine,bona-fide,release_in_the_wild/16428.wav,genuine,69,in_the_wild
+7852.wav,Barack Obama,,genuine,bona-fide,release_in_the_wild/7852.wav,genuine,70,in_the_wild
+27564.wav,Donald Trump,,genuine,bona-fide,release_in_the_wild/27564.wav,genuine,71,in_the_wild
+22745.wav,Jerry Seinfeld,,genuine,bona-fide,release_in_the_wild/22745.wav,genuine,72,in_the_wild
+21486.wav,John Cleese,,genuine,bona-fide,release_in_the_wild/21486.wav,genuine,73,in_the_wild
+30389.wav,JFK,,genuine,bona-fide,release_in_the_wild/30389.wav,genuine,74,in_the_wild
+10756.wav,Ronald Reagan,,genuine,bona-fide,release_in_the_wild/10756.wav,genuine,75,in_the_wild
+26404.wav,Dave Chappelle,,genuine,bona-fide,release_in_the_wild/26404.wav,genuine,76,in_the_wild
+5268.wav,Billie Eilish,,genuine,bona-fide,release_in_the_wild/5268.wav,genuine,77,in_the_wild
+21273.wav,Bob Ross,,genuine,bona-fide,release_in_the_wild/21273.wav,genuine,78,in_the_wild
+16049.wav,Christopher Hitchens,,genuine,bona-fide,release_in_the_wild/16049.wav,genuine,79,in_the_wild
+11124.wav,George Carlin,,genuine,bona-fide,release_in_the_wild/11124.wav,genuine,80,in_the_wild
+28491.wav,Winston Churchill,,genuine,bona-fide,release_in_the_wild/28491.wav,genuine,81,in_the_wild
+5937.wav,Ayn Rand,,genuine,bona-fide,release_in_the_wild/5937.wav,genuine,82,in_the_wild
+18833.wav,Richard Nixon,,genuine,bona-fide,release_in_the_wild/18833.wav,genuine,83,in_the_wild
+24648.wav,Harry Truman,,genuine,bona-fide,release_in_the_wild/24648.wav,genuine,84,in_the_wild
+27937.wav,Alan Watts,,genuine,bona-fide,release_in_the_wild/27937.wav,genuine,85,in_the_wild
+1323.wav,Jeff Goldblum,,genuine,bona-fide,release_in_the_wild/1323.wav,genuine,86,in_the_wild
+29120.wav,George W. Bush,,genuine,bona-fide,release_in_the_wild/29120.wav,genuine,87,in_the_wild
+16744.wav,Calvin Coolidge,,genuine,bona-fide,release_in_the_wild/16744.wav,genuine,88,in_the_wild
+28925.wav,Gilbert Gottfried,,genuine,bona-fide,release_in_the_wild/28925.wav,genuine,89,in_the_wild
+5319.wav,Mark Zuckerberg,,genuine,bona-fide,release_in_the_wild/5319.wav,genuine,90,in_the_wild
+9107.wav,Tucker Carlson,,genuine,bona-fide,release_in_the_wild/9107.wav,genuine,91,in_the_wild
+4541.wav,Mitch Hedberg,,genuine,bona-fide,release_in_the_wild/4541.wav,genuine,92,in_the_wild
+20952.wav,Martin Luther King,,genuine,bona-fide,release_in_the_wild/20952.wav,genuine,93,in_the_wild
+1542.wav,Louis Farrakhan,,genuine,bona-fide,release_in_the_wild/1542.wav,genuine,94,in_the_wild
+26962.wav,Scarlett Johansson,,genuine,bona-fide,release_in_the_wild/26962.wav,genuine,95,in_the_wild
+6971.wav,Robert Kardashian,,genuine,bona-fide,release_in_the_wild/6971.wav,genuine,96,in_the_wild
+1159.wav,Kamala Harris,,genuine,bona-fide,release_in_the_wild/1159.wav,genuine,97,in_the_wild
+10476.wav,The Notorious B.I.G.,,genuine,bona-fide,release_in_the_wild/10476.wav,genuine,98,in_the_wild
+5792.wav,Kanye West,,genuine,bona-fide,release_in_the_wild/5792.wav,genuine,99,in_the_wild
+29606.wav,Martin Luther King,,synthetic,spoof,release_in_the_wild/29606.wav,synthetic,100,in_the_wild
+2165.wav,Richard Nixon,,synthetic,spoof,release_in_the_wild/2165.wav,synthetic,101,in_the_wild
+10400.wav,Donald Trump,,synthetic,spoof,release_in_the_wild/10400.wav,synthetic,102,in_the_wild
+9548.wav,Alexandria Ocasio-Cortez,,synthetic,spoof,release_in_the_wild/9548.wav,synthetic,103,in_the_wild
+31078.wav,Orson Welles,,synthetic,spoof,release_in_the_wild/31078.wav,synthetic,104,in_the_wild
+10516.wav,Robert Kardashian,,synthetic,spoof,release_in_the_wild/10516.wav,synthetic,105,in_the_wild
+26179.wav,Scarlett Johansson,,synthetic,spoof,release_in_the_wild/26179.wav,synthetic,106,in_the_wild
+29927.wav,William F. Buckley,,synthetic,spoof,release_in_the_wild/29927.wav,synthetic,107,in_the_wild
+19088.wav,Norm MacDonald,,synthetic,spoof,release_in_the_wild/19088.wav,synthetic,108,in_the_wild
+28222.wav,Harry Truman,,synthetic,spoof,release_in_the_wild/28222.wav,synthetic,109,in_the_wild
+2923.wav,The Notorious B.I.G.,,synthetic,spoof,release_in_the_wild/2923.wav,synthetic,110,in_the_wild
+12185.wav,Louis C.K.,,synthetic,spoof,release_in_the_wild/12185.wav,synthetic,111,in_the_wild
+26297.wav,Bob Ross,,synthetic,spoof,release_in_the_wild/26297.wav,synthetic,112,in_the_wild
+29785.wav,Jeff Goldblum,,synthetic,spoof,release_in_the_wild/29785.wav,synthetic,113,in_the_wild
+24562.wav,John Cleese,,synthetic,spoof,release_in_the_wild/24562.wav,synthetic,114,in_the_wild
+11225.wav,2Pac,,synthetic,spoof,release_in_the_wild/11225.wav,synthetic,115,in_the_wild
+16164.wav,JFK,,synthetic,spoof,release_in_the_wild/16164.wav,synthetic,116,in_the_wild
+15660.wav,Lyndon Johnson,,synthetic,spoof,release_in_the_wild/15660.wav,synthetic,117,in_the_wild
+4605.wav,Christopher Hitchens,,synthetic,spoof,release_in_the_wild/4605.wav,synthetic,118,in_the_wild
+21464.wav,Barack Obama,,synthetic,spoof,release_in_the_wild/21464.wav,synthetic,119,in_the_wild
+12720.wav,Milton Friedman,,synthetic,spoof,release_in_the_wild/12720.wav,synthetic,120,in_the_wild
+22217.wav,Nick Offerman,,synthetic,spoof,release_in_the_wild/22217.wav,synthetic,121,in_the_wild
+27252.wav,Dwight Eisenhower,,synthetic,spoof,release_in_the_wild/27252.wav,synthetic,122,in_the_wild
+29835.wav,Adam Driver,,synthetic,spoof,release_in_the_wild/29835.wav,synthetic,123,in_the_wild
+30559.wav,Queen Elizabeth II,,synthetic,spoof,release_in_the_wild/30559.wav,synthetic,124,in_the_wild
+18831.wav,Dave Chappelle,,synthetic,spoof,release_in_the_wild/18831.wav,synthetic,125,in_the_wild
+9278.wav,Mr. Rogers,,synthetic,spoof,release_in_the_wild/9278.wav,synthetic,126,in_the_wild
+14378.wav,Nelson Mandela,,synthetic,spoof,release_in_the_wild/14378.wav,synthetic,127,in_the_wild
+16528.wav,Arnold Schwarzenegger,,synthetic,spoof,release_in_the_wild/16528.wav,synthetic,128,in_the_wild
+23722.wav,Calvin Coolidge,,synthetic,spoof,release_in_the_wild/23722.wav,synthetic,129,in_the_wild
+13152.wav,Alec Guinness,,synthetic,spoof,release_in_the_wild/13152.wav,synthetic,130,in_the_wild
+5490.wav,Billie Eilish,,synthetic,spoof,release_in_the_wild/5490.wav,synthetic,131,in_the_wild
+29059.wav,Boris Johnson,,synthetic,spoof,release_in_the_wild/29059.wav,synthetic,132,in_the_wild
+6154.wav,Winston Churchill,,synthetic,spoof,release_in_the_wild/6154.wav,synthetic,133,in_the_wild
+21050.wav,Mitch Hedberg,,synthetic,spoof,release_in_the_wild/21050.wav,synthetic,134,in_the_wild
+1575.wav,Frank Sinatra,,synthetic,spoof,release_in_the_wild/1575.wav,synthetic,135,in_the_wild
+12368.wav,Mark Zuckerberg,,synthetic,spoof,release_in_the_wild/12368.wav,synthetic,136,in_the_wild
+9924.wav,Gilbert Gottfried,,synthetic,spoof,release_in_the_wild/9924.wav,synthetic,137,in_the_wild
+28015.wav,Kamala Harris,,synthetic,spoof,release_in_the_wild/28015.wav,synthetic,138,in_the_wild
+29657.wav,Alan Watts,,synthetic,spoof,release_in_the_wild/29657.wav,synthetic,139,in_the_wild
+703.wav,Bill Burr,,synthetic,spoof,release_in_the_wild/703.wav,synthetic,140,in_the_wild
+15148.wav,Bernie Sanders,,synthetic,spoof,release_in_the_wild/15148.wav,synthetic,141,in_the_wild
+7293.wav,FDR,,synthetic,spoof,release_in_the_wild/7293.wav,synthetic,142,in_the_wild
+21238.wav,Ayn Rand,,synthetic,spoof,release_in_the_wild/21238.wav,synthetic,143,in_the_wild
+22274.wav,Ronald Reagan,,synthetic,spoof,release_in_the_wild/22274.wav,synthetic,144,in_the_wild
+7818.wav,George Carlin,,synthetic,spoof,release_in_the_wild/7818.wav,synthetic,145,in_the_wild
+25771.wav,Malcolm X,,synthetic,spoof,release_in_the_wild/25771.wav,synthetic,146,in_the_wild
+6606.wav,George W. Bush,,synthetic,spoof,release_in_the_wild/6606.wav,synthetic,147,in_the_wild
+31752.wav,Tucker Carlson,,synthetic,spoof,release_in_the_wild/31752.wav,synthetic,148,in_the_wild
+28742.wav,Kanye West,,synthetic,spoof,release_in_the_wild/28742.wav,synthetic,149,in_the_wild
+19041.wav,Bill Clinton,,synthetic,spoof,release_in_the_wild/19041.wav,synthetic,150,in_the_wild
+10241.wav,Jerry Seinfeld,,synthetic,spoof,release_in_the_wild/10241.wav,synthetic,151,in_the_wild
+25765.wav,Louis Farrakhan,,synthetic,spoof,release_in_the_wild/25765.wav,synthetic,152,in_the_wild
+14840.wav,Jimmy Carter,,synthetic,spoof,release_in_the_wild/14840.wav,synthetic,153,in_the_wild
+10496.wav,Martin Luther King,,synthetic,spoof,release_in_the_wild/10496.wav,synthetic,154,in_the_wild
+20736.wav,Richard Nixon,,synthetic,spoof,release_in_the_wild/20736.wav,synthetic,155,in_the_wild
+11835.wav,Donald Trump,,synthetic,spoof,release_in_the_wild/11835.wav,synthetic,156,in_the_wild
+31118.wav,Alexandria Ocasio-Cortez,,synthetic,spoof,release_in_the_wild/31118.wav,synthetic,157,in_the_wild
+9851.wav,Orson Welles,,synthetic,spoof,release_in_the_wild/9851.wav,synthetic,158,in_the_wild
+27941.wav,Robert Kardashian,,synthetic,spoof,release_in_the_wild/27941.wav,synthetic,159,in_the_wild
+16855.wav,Scarlett Johansson,,synthetic,spoof,release_in_the_wild/16855.wav,synthetic,160,in_the_wild
+25438.wav,William F. Buckley,,synthetic,spoof,release_in_the_wild/25438.wav,synthetic,161,in_the_wild
+24262.wav,Norm MacDonald,,synthetic,spoof,release_in_the_wild/24262.wav,synthetic,162,in_the_wild
+19715.wav,Harry Truman,,synthetic,spoof,release_in_the_wild/19715.wav,synthetic,163,in_the_wild
+29129.wav,The Notorious B.I.G.,,synthetic,spoof,release_in_the_wild/29129.wav,synthetic,164,in_the_wild
+16034.wav,Louis C.K.,,synthetic,spoof,release_in_the_wild/16034.wav,synthetic,165,in_the_wild
+15487.wav,Bob Ross,,synthetic,spoof,release_in_the_wild/15487.wav,synthetic,166,in_the_wild
+14411.wav,Jeff Goldblum,,synthetic,spoof,release_in_the_wild/14411.wav,synthetic,167,in_the_wild
+8837.wav,John Cleese,,synthetic,spoof,release_in_the_wild/8837.wav,synthetic,168,in_the_wild
+6718.wav,2Pac,,synthetic,spoof,release_in_the_wild/6718.wav,synthetic,169,in_the_wild
+31176.wav,JFK,,synthetic,spoof,release_in_the_wild/31176.wav,synthetic,170,in_the_wild
+3936.wav,Lyndon Johnson,,synthetic,spoof,release_in_the_wild/3936.wav,synthetic,171,in_the_wild
+15865.wav,Christopher Hitchens,,synthetic,spoof,release_in_the_wild/15865.wav,synthetic,172,in_the_wild
+22330.wav,Barack Obama,,synthetic,spoof,release_in_the_wild/22330.wav,synthetic,173,in_the_wild
+22036.wav,Milton Friedman,,synthetic,spoof,release_in_the_wild/22036.wav,synthetic,174,in_the_wild
+21372.wav,Nick Offerman,,synthetic,spoof,release_in_the_wild/21372.wav,synthetic,175,in_the_wild
+13027.wav,Dwight Eisenhower,,synthetic,spoof,release_in_the_wild/13027.wav,synthetic,176,in_the_wild
+10902.wav,Adam Driver,,synthetic,spoof,release_in_the_wild/10902.wav,synthetic,177,in_the_wild
+5387.wav,Queen Elizabeth II,,synthetic,spoof,release_in_the_wild/5387.wav,synthetic,178,in_the_wild
+15381.wav,Dave Chappelle,,synthetic,spoof,release_in_the_wild/15381.wav,synthetic,179,in_the_wild
+1428.wav,Mr. Rogers,,synthetic,spoof,release_in_the_wild/1428.wav,synthetic,180,in_the_wild
+25229.wav,Nelson Mandela,,synthetic,spoof,release_in_the_wild/25229.wav,synthetic,181,in_the_wild
+30695.wav,Arnold Schwarzenegger,,synthetic,spoof,release_in_the_wild/30695.wav,synthetic,182,in_the_wild
+14579.wav,Calvin Coolidge,,synthetic,spoof,release_in_the_wild/14579.wav,synthetic,183,in_the_wild
+4266.wav,Alec Guinness,,synthetic,spoof,release_in_the_wild/4266.wav,synthetic,184,in_the_wild
+12142.wav,Billie Eilish,,synthetic,spoof,release_in_the_wild/12142.wav,synthetic,185,in_the_wild
+27970.wav,Boris Johnson,,synthetic,spoof,release_in_the_wild/27970.wav,synthetic,186,in_the_wild
+17174.wav,Winston Churchill,,synthetic,spoof,release_in_the_wild/17174.wav,synthetic,187,in_the_wild
+1309.wav,Mitch Hedberg,,synthetic,spoof,release_in_the_wild/1309.wav,synthetic,188,in_the_wild
+15860.wav,Frank Sinatra,,synthetic,spoof,release_in_the_wild/15860.wav,synthetic,189,in_the_wild
+2817.wav,Mark Zuckerberg,,synthetic,spoof,release_in_the_wild/2817.wav,synthetic,190,in_the_wild
+20336.wav,Gilbert Gottfried,,synthetic,spoof,release_in_the_wild/20336.wav,synthetic,191,in_the_wild
+344.wav,Kamala Harris,,synthetic,spoof,release_in_the_wild/344.wav,synthetic,192,in_the_wild
+16256.wav,Alan Watts,,synthetic,spoof,release_in_the_wild/16256.wav,synthetic,193,in_the_wild
+30066.wav,Bill Burr,,synthetic,spoof,release_in_the_wild/30066.wav,synthetic,194,in_the_wild
+4084.wav,Bernie Sanders,,synthetic,spoof,release_in_the_wild/4084.wav,synthetic,195,in_the_wild
+1845.wav,FDR,,synthetic,spoof,release_in_the_wild/1845.wav,synthetic,196,in_the_wild
+4129.wav,Ayn Rand,,synthetic,spoof,release_in_the_wild/4129.wav,synthetic,197,in_the_wild
+25957.wav,Ronald Reagan,,synthetic,spoof,release_in_the_wild/25957.wav,synthetic,198,in_the_wild
+25610.wav,George Carlin,,synthetic,spoof,release_in_the_wild/25610.wav,synthetic,199,in_the_wild

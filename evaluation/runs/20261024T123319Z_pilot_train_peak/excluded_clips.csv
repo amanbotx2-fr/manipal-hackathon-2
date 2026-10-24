@@ -1,0 +1,46 @@
+dataset,clip_id,label,attack_id,speaker_id,status,reject_category,reject_reason,container_duration_s
+in_the_wild,10055.wav,genuine,,Bill Burr,rejected,too_short,too short: 1.90 s < 2.0 s minimum,1.904
+in_the_wild,20520.wav,genuine,,Lyndon Johnson,rejected,too_short,too short: 1.69 s < 2.0 s minimum,1.693
+in_the_wild,10864.wav,genuine,,Orson Welles,rejected,too_short,too short: 1.13 s < 2.0 s minimum,1.13
+in_the_wild,5020.wav,genuine,,Alexandria Ocasio-Cortez,rejected,too_short,too short: 1.56 s < 2.0 s minimum,1.558
+in_the_wild,28252.wav,genuine,,Barack Obama,rejected,too_short,too short: 1.92 s < 2.0 s minimum,1.924
+in_the_wild,27151.wav,genuine,,Ronald Reagan,rejected,too_short,too short: 1.54 s < 2.0 s minimum,1.541
+in_the_wild,17921.wav,genuine,,Alan Watts,rejected,too_short,too short: 1.15 s < 2.0 s minimum,1.145
+in_the_wild,25073.wav,genuine,,Mark Zuckerberg,rejected,too_short,too short: 1.77 s < 2.0 s minimum,1.767
+in_the_wild,1194.wav,genuine,,Robert Kardashian,rejected,too_short,too short: 1.82 s < 2.0 s minimum,1.823
+in_the_wild,22081.wav,genuine,,Dwight Eisenhower,rejected,too_short,too short: 1.84 s < 2.0 s minimum,1.84
+in_the_wild,11044.wav,genuine,,Nick Offerman,rejected,too_short,too short: 1.26 s < 2.0 s minimum,1.261
+in_the_wild,26603.wav,genuine,,Bill Burr,rejected,too_short,too short: 1.79 s < 2.0 s minimum,1.789
+in_the_wild,1645.wav,genuine,,Louis C.K.,rejected,too_short,too short: 0.94 s < 2.0 s minimum,0.936
+in_the_wild,18847.wav,genuine,,Norm MacDonald,rejected,too_short,too short: 1.62 s < 2.0 s minimum,1.618
+in_the_wild,1558.wav,genuine,,Arnold Schwarzenegger,rejected,too_short,too short: 1.82 s < 2.0 s minimum,1.819
+in_the_wild,2726.wav,genuine,,2Pac,rejected,too_short,too short: 1.40 s < 2.0 s minimum,1.395
+in_the_wild,16428.wav,genuine,,Jimmy Carter,rejected,too_short,too short: 1.52 s < 2.0 s minimum,1.524
+in_the_wild,7852.wav,genuine,,Barack Obama,rejected,too_short,too short: 1.80 s < 2.0 s minimum,1.796
+in_the_wild,27564.wav,genuine,,Donald Trump,rejected,too_short,too short: 1.91 s < 2.0 s minimum,1.906
+in_the_wild,5937.wav,genuine,,Ayn Rand,rejected,too_short,too short: 0.91 s < 2.0 s minimum,0.91
+in_the_wild,27937.wav,genuine,,Alan Watts,rejected,too_short,too short: 1.35 s < 2.0 s minimum,1.354
+in_the_wild,1323.wav,genuine,,Jeff Goldblum,rejected,too_short,too short: 1.89 s < 2.0 s minimum,1.885
+in_the_wild,28925.wav,genuine,,Gilbert Gottfried,rejected,too_short,too short: 0.64 s < 2.0 s minimum,0.639
+in_the_wild,20952.wav,genuine,,Martin Luther King,rejected,too_short,too short: 1.23 s < 2.0 s minimum,1.231
+in_the_wild,5792.wav,genuine,,Kanye West,rejected,too_short,too short: 1.25 s < 2.0 s minimum,1.245
+in_the_wild,10516.wav,synthetic,,Robert Kardashian,rejected,too_short,too short: 1.28 s < 2.0 s minimum,1.282
+in_the_wild,29927.wav,synthetic,,William F. Buckley,rejected,too_short,too short: 0.92 s < 2.0 s minimum,0.917
+in_the_wild,28222.wav,synthetic,,Harry Truman,rejected,too_short,too short: 1.85 s < 2.0 s minimum,1.849
+in_the_wild,2923.wav,synthetic,,The Notorious B.I.G.,rejected,too_short,too short: 1.23 s < 2.0 s minimum,1.227
+in_the_wild,11225.wav,synthetic,,2Pac,rejected,too_short,too short: 1.71 s < 2.0 s minimum,1.708
+in_the_wild,16528.wav,synthetic,,Arnold Schwarzenegger,rejected,too_short,too short: 1.22 s < 2.0 s minimum,1.223
+in_the_wild,29059.wav,synthetic,,Boris Johnson,rejected,too_short,too short: 1.22 s < 2.0 s minimum,1.221
+in_the_wild,21050.wav,synthetic,,Mitch Hedberg,rejected,too_short,too short: 1.98 s < 2.0 s minimum,1.98
+in_the_wild,29657.wav,synthetic,,Alan Watts,rejected,too_short,too short: 1.47 s < 2.0 s minimum,1.47
+in_the_wild,15148.wav,synthetic,,Bernie Sanders,rejected,too_short,too short: 1.89 s < 2.0 s minimum,1.892
+in_the_wild,19041.wav,synthetic,,Bill Clinton,rejected,too_short,too short: 1.25 s < 2.0 s minimum,1.25
+in_the_wild,25765.wav,synthetic,,Louis Farrakhan,rejected,too_short,too short: 1.59 s < 2.0 s minimum,1.593
+in_the_wild,10496.wav,synthetic,,Martin Luther King,rejected,too_short,too short: 1.59 s < 2.0 s minimum,1.594
+in_the_wild,27941.wav,synthetic,,Robert Kardashian,rejected,too_short,too short: 1.31 s < 2.0 s minimum,1.31
+in_the_wild,14411.wav,synthetic,,Jeff Goldblum,rejected,too_short,too short: 1.19 s < 2.0 s minimum,1.194
+in_the_wild,22036.wav,synthetic,,Milton Friedman,rejected,too_short,too short: 1.79 s < 2.0 s minimum,1.786
+in_the_wild,25229.wav,synthetic,,Nelson Mandela,rejected,too_short,too short: 1.67 s < 2.0 s minimum,1.673
+in_the_wild,30695.wav,synthetic,,Arnold Schwarzenegger,rejected,too_short,too short: 1.22 s < 2.0 s minimum,1.218
+in_the_wild,27970.wav,synthetic,,Boris Johnson,rejected,too_short,too short: 1.35 s < 2.0 s minimum,1.354
+in_the_wild,16256.wav,synthetic,,Alan Watts,rejected,too_short,too short: 1.02 s < 2.0 s minimum,1.022
