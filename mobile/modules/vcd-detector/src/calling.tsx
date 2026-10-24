@@ -29,6 +29,8 @@ export type VcdCallViewProps = ViewProps & {
   serverUrl: string;
   /** Score the remote participant's audio on-device (default true). Never scores the local mic. */
   liveCheck?: boolean;
+  /** Demo: send the looping AI-voice sample instead of the microphone (the other phone should flag it). */
+  aiVoice?: boolean;
   onCallState?: (e: CallStateEvent) => void;
   onLiveResult?: (e: LiveResultEvent) => void;
 };

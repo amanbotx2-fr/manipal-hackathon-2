@@ -13,6 +13,7 @@ class VcdCallingModule : Module() {
 
       Prop("serverUrl") { view: VcdCallView, url: String -> view.setServerUrl(url) }
       Prop("liveCheck") { view: VcdCallView, enabled: Boolean -> view.liveCheckEnabled = enabled }
+      Prop("aiVoice") { view: VcdCallView, on: Boolean -> view.aiVoice = on }
 
       AsyncFunction("hangup") { view: VcdCallView -> view.hangup() }
       AsyncFunction("liveStats") { view: VcdCallView -> view.liveStats() }

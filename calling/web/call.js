@@ -8,7 +8,7 @@ const status = message => {
 };
 function controls(active) {
   $('join').disabled = active; $('new').disabled = active; $('room').disabled = active;
-  $('mute').disabled = !active; $('hangup').disabled = !active;
+  $('mute').disabled = !active; $('hangup').disabled = !active; $('aivoice').disabled = !active;
   if (!active) {
     document.body.classList.remove('in-call');
     $('dial-title').textContent = 'Ready to connect';
@@ -28,6 +28,7 @@ async function stop(message = 'Call ended') {
   const ctx = context; context = null; if (ctx) ctx.close().catch(() => {});
   $('remote').srcObject = null; remoteStream = null; candidates = []; restarts = 0; initiator = false;
   clearTimeout(restartTimer); clearInterval(routeTimer); restartTimer = routeTimer = null;
+  stopAiVoice(); aiWanted = false;
   $('mute').textContent = 'Mute microphone'; controls(false); status(message);
 }
 async function remoteAudio(track) {
@@ -81,6 +82,36 @@ async function signal(msg) {
 // --- live verdict relay ----------------------------------------------------------------------
 // The Voice Check app computes a verdict about the remote voice on the phone and pushes it here;
 // we forward it so the other side can see what the phone concluded about THEIR voice.
+// Demo: replace the outgoing microphone track with a looping AI-voice sample (same clip the AI caller
+// page uses) so the OTHER participant's Voice Check has synthetic speech to score. No renegotiation:
+// RTCRtpSender.replaceTrack swaps the media in place. Callable from the page button and from the app.
+let aiCtx = null, aiSource = null, aiOn = false, aiWanted = false;
+async function applyAiVoice(on) {
+  aiWanted = on;
+  const sender = pc?.getSenders().find(s => s.track?.kind === 'audio' || s.track === null);
+  if (!sender || !mic) { $('aivoice').textContent = on ? 'AI voice (starts when connected)' : 'Play AI voice into call'; return; }
+  if (on && !aiOn) {
+    status('Loading the AI voice sample');
+    aiCtx = new AudioContext();
+    const buf = await aiCtx.decodeAudioData(await (await fetch('/samples/ai-voice-sample.wav')).arrayBuffer());
+    const dest = aiCtx.createMediaStreamDestination();
+    aiSource = aiCtx.createBufferSource(); aiSource.buffer = buf; aiSource.loop = true; aiSource.connect(dest); aiSource.start();
+    await aiCtx.resume();
+    await sender.replaceTrack(dest.stream.getAudioTracks()[0]);
+    aiOn = true; $('aivoice').textContent = 'Stop AI voice (back to microphone)';
+    status('AI voice is speaking into the call instead of your microphone');
+  } else if (!on && aiOn) {
+    await sender.replaceTrack(mic.getAudioTracks()[0] || null);
+    stopAiVoice(); status('Back to your microphone');
+  }
+}
+function stopAiVoice() {
+  try { aiSource?.stop(); } catch {}
+  aiSource = null; const c = aiCtx; aiCtx = null; if (c) c.close().catch(() => {});
+  aiOn = false; $('aivoice').textContent = 'Play AI voice into call';
+}
+window.voiceCheckAiVoice = on => applyAiVoice(!!on).catch(e => status(`AI voice failed: ${e.message}`));
+$('aivoice').onclick = () => window.voiceCheckAiVoice(!aiOn);
 window.voiceCheckVerdict = v => {
   try { if (socket?.readyState === WebSocket.OPEN) send({ type: 'verdict', verdict: v }); } catch {}
 };
@@ -193,6 +224,7 @@ $('join').onclick = async () => {
     if (stopped || token !== generation) return;
     pc = new RTCPeerConnection(config);
     for (const track of mic.getAudioTracks()) pc.addTrack(track, mic);
+    if (aiWanted) window.voiceCheckAiVoice(true);
     pc.onicecandidate = ({ candidate }) => { if (candidate && !stopped) { try { send({ type: 'candidate', candidate: candidate.toJSON() }); } catch (e) { stop(e.message); } } };
     pc.ontrack = ({ track }) => { if (track.kind === 'audio') remoteAudio(track); };
     pc.onconnectionstatechange = () => {

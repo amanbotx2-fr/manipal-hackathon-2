@@ -41,6 +41,7 @@ export default function CallScreen({ onBack, incomingUrl, onConsumedIncoming }: 
   const [preparing, setPreparing] = useState<string | null>(null);
   const [call, setCall] = useState<{ server: string; room: string; aiDemo?: boolean } | null>(null);
   const [callState, setCallState] = useState('');
+  const [aiVoice, setAiVoice] = useState(false);
   const [latest, setLatest] = useState<LiveResult | null>(null);
   const [history, setHistory] = useState<LiveResult[]>([]);
   const starting = useRef(false);
@@ -106,7 +107,7 @@ export default function CallScreen({ onBack, incomingUrl, onConsumedIncoming }: 
   };
   const inviteLink = call ? `${call.server}?room=${call.room}` : '';
   const shareInvite = () => Share.share({ message: `Join my Voice Check call: ${inviteLink}`, url: inviteLink }).catch(() => {});
-  const end = useCallback(() => { setCall(null); setCallState(''); }, []);
+  const end = useCallback(() => { setCall(null); setCallState(''); setAiVoice(false); }, []);
   const onLive = useCallback((e: { nativeEvent: LiveResult }) => {
     const r = e.nativeEvent; setLatest(r); setHistory((h) => [r, ...h].slice(0, 6));
   }, []);
@@ -133,7 +134,11 @@ export default function CallScreen({ onBack, incomingUrl, onConsumedIncoming }: 
           </View>
         )}
         <LiveStrip latest={latest} history={history} available={liveAvailable} />
-        <VcdCallView style={styles.callView} serverUrl={`${call.server}?room=${call.room}&autojoin=1`} liveCheck={liveAvailable}
+        <View style={styles.aiRow}>
+          <SecondaryButton testID="call-ai-voice" label={aiVoice ? 'Stop AI voice · back to mic' : 'Demo: play AI voice into call'} onPress={() => setAiVoice((v) => !v)} />
+        </View>
+        {aiVoice && <Text style={[type.fine, styles.stateLine]} testID="call-ai-voice-note">The other phone hears a looping AI voice instead of your microphone; its live check should say synthetic.</Text>}
+        <VcdCallView style={styles.callView} serverUrl={`${call.server}?room=${call.room}&autojoin=1`} liveCheck={liveAvailable} aiVoice={aiVoice}
                      onCallState={(e) => setCallState(e.nativeEvent.state)} onLiveResult={onLive} />
         <Text style={[type.fine, styles.foot]}>Experimental live check of the other participant’s audio. Verify requests through another channel.</Text>
       </View>

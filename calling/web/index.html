@@ -10,6 +10,7 @@
 <a id="openapp" class="primary" hidden style="display:none;text-align:center;text-decoration:none;line-height:54px;margin-bottom:14px">Open in the Voice Check app →</a>
 <section class="card" aria-label="Room invitation"><label for="room">Your calling room</label><input id="room" minlength="8" maxlength="64" autocomplete="off" placeholder="Enter a room code" spellcheck="false"><div class="row"><button id="new">New room</button><button id="share">Share room link</button></div><label id="link-label" for="room-link">Invitation link</label><input id="room-link" readonly placeholder="Generate or enter a room code"><button id="join" class="primary">Join call →</button></section>
 <div class="row"><button id="mute" disabled>Mute microphone</button><button id="hangup" disabled>End call</button></div>
+<div class="row"><button id="aivoice" disabled title="Demo: the other phone's Voice Check should flag this as synthetic">Play AI voice into call</button></div>
 <audio id="remote" autoplay controls aria-label="Other participant audio"></audio>
 <footer>Microphone audio goes to the other participant.<br>Internet required · Keep this screen open.<span id="verdict" class="model">Voice check: shown here once the other phone's app has scored your voice</span></footer>
 <script type="module" src="/call.js"></script></body></html>

@@ -19,6 +19,9 @@ class VcdCallView(context: Context, appContext: AppContext) : ExpoView(context, 
   private var call: WebRtcCallView? = null
   private var analyser: LiveAnalyser? = null
   private var url: String? = null
+  /** Demo: when true the call page sends the looping AI-voice sample instead of this phone's microphone. */
+  var aiVoice = false
+    set(v) { field = v; call?.view?.evaluateJavascript("window.voiceCheckAiVoice && window.voiceCheckAiVoice($v)", null) }
   var liveCheckEnabled = true
     set(v) { field = v; if (!v) analyser?.let { it.close(); analyser = null } else if (call != null && analyser == null) startAnalyser() }
 
