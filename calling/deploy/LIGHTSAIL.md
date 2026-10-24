@@ -46,3 +46,38 @@ sudo -i; cd /tmp && rm -rf vcd-src && git clone --depth 1 --branch live-calling 
 Logs: `journalctl -u livecalling -f`, `journalctl -u coturn -f`, `journalctl -u caddy -f`.
 Security notes: room codes are the only access control; the TURN password is a long-term credential,
 so rotate it after the event (edit `/etc/turnserver.conf` and `/etc/livecalling.env`, restart both services).
+
+## Doing the console steps with the AWS CLI (from any machine with `aws` configured)
+
+Set your region once (the one your instance is in, e.g. `ap-south-1`), then:
+
+```sh
+export AWS_DEFAULT_REGION=ap-south-1
+aws lightsail get-instances --query 'instances[].{name:name,state:state.name,ip:publicIpAddress,static:isStaticIp,os:blueprintName}' --output table
+```
+
+1. Static IP (free while attached). Replace `INSTANCE` with the name from the table:
+```sh
+aws lightsail allocate-static-ip --static-ip-name vcd-call-ip
+aws lightsail attach-static-ip --static-ip-name vcd-call-ip --instance-name INSTANCE
+aws lightsail get-static-ip --static-ip-name vcd-call-ip --query 'staticIp.ipAddress' --output text
+```
+2. Firewall rules (adds to the existing ones):
+```sh
+for rule in "80 80 tcp" "443 443 tcp" "3478 3478 tcp" "3478 3478 udp" "49160 49200 udp"; do set -- $rule
+  aws lightsail open-instance-public-ports --instance-name INSTANCE --port-info fromPort=$1,toPort=$2,protocol=$3
+done
+aws lightsail get-instance-port-states --instance-name INSTANCE --output table
+```
+3. SSH key and login (Ubuntu images use the `ubuntu` user):
+```sh
+aws lightsail download-default-key-pair --query privateKeyBase64 --output text > lightsail.pem && chmod 600 lightsail.pem
+ssh -i lightsail.pem ubuntu@STATIC_IP
+```
+4. On the instance, run the setup with the sslip.io hostname built from the static IP (dots → dashes):
+```sh
+sudo -i
+curl -fsSL https://raw.githubusercontent.com/amanbotx2-fr/manipal-hackathon-2/live-calling/calling/deploy/setup-lightsail.sh -o setup-lightsail.sh
+bash setup-lightsail.sh 13-233-1-2.sslip.io
+```
+5. Check from anywhere: `curl https://13-233-1-2.sslip.io/config` must list `stun:` and `turn:` entries.
