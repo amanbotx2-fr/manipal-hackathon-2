@@ -10,7 +10,7 @@ import expo.modules.kotlin.modules.ModuleDefinition
  * these functions only dispatch and resolve. Audio never leaves the device.
  */
 class VcdDetectorModule : Module() {
-  private val engine by lazy { DetectorEngine(appContext.reactContext!!.applicationContext) }
+  private val engine by lazy { DetectorEngine.get(appContext.reactContext!!.applicationContext) }
 
   private fun Promise.fail(t: Throwable) {
     val code = when (t) {

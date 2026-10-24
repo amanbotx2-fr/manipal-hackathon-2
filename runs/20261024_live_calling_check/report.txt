@@ -1,0 +1,11 @@
+22:25:23 install: Success
+22:25:38 home: model='Detector model installed · loads on first check' call-link=yes select=yes
+22:25:48 call screen: open-btn=yes back=yes hint=' Detector model installed · loads when the call starts'
+22:25:53 empty submit -> msg='Enter the HTTPS address of your calling server, or paste a room invitation link.'
+22:26:03 http:// -> msg='Enter the HTTPS address of your calling server, or paste a room invitation link.'
+22:26:15 permission dialog: 2 match(es)
+22:26:19 granted: 1
+22:26:37 in-call screen: state='Could not load calling server. Check the address and connection.' end-btn=yes live-strip='Live check waiting for the other participant’s audio…'
+22:26:43 end call -> setup screen: yes
+22:26:46 hardware back -> home: yes
+22:26:46 crashes: 1 app alive: 20217

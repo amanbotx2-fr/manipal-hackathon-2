@@ -83,6 +83,25 @@ adb shell am start -n com.hypenex.voiceclonecheck/.MainActivity
 
 Then pick each clip from Downloads and analyse.
 
+## In-app calls with a live check (branch `live-calling`)
+
+Built on Devansh Modi's **LiveCalling** kit (https://github.com/DevanshModi09/LiveCalling, commit `1a01138`):
+a WebView-hosted WebRTC audio call whose JS bridge delivers the *other* participant's 16 kHz mono PCM
+to native in 320-sample chunks. Our additions:
+
+- `modules/vcd-detector/android/.../vcdcalling/WebRtcCallView.kt`: vendored from the kit (package renamed).
+- `LiveAnalyser.kt`: rolling 10 s buffer of remote PCM; every 2 s scores the latest 4 s window via the
+  **shared** `DetectorEngine` (same model and session as file analysis), skipping a window if the previous
+  one is still running. The local microphone is never scored.
+- `VcdCallView.kt` + `VcdCallingModule.kt`: Expo view (`serverUrl`, `liveCheck`, `onCallState`, `onLiveResult`).
+- `src/screens/CallScreen.tsx`: server/invitation entry, microphone permission, the call view, and a live
+  strip with the latest window's verdict and uncalibrated score. Reached from Home ("start an in-app call").
+- `../calling/`: the kit's signaling server and web page for deployment (see its README).
+
+Requirements: an **HTTPS** calling server (the WebView rejects anything else), both people in the same
+room, screen kept in the foreground. STUN/TURN for cross-network calls. Android only; no ringing,
+identity or background calls. Live-check results are model outputs at an untuned threshold.
+
 ## iOS
 
 Not implemented or tested. The Swift module is a stub. The plan is `onnxruntime-objc` 1.31.0 + AVAudioFile decoding +

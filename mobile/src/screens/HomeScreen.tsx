@@ -18,6 +18,8 @@ const MB = 1024 * 1024;
 
 type Props = {
   onOpenDev: () => void;
+  /** Opens the in-app call screen (live check of the other participant). */
+  onOpenCall: () => void;
   onResult: (a: Analysis) => void;
   onError: (title: string, detail: string, file: PickedFile) => void;
   /** Bumped by the parent to clear the selected file ("Check another file"). */
@@ -26,7 +28,7 @@ type Props = {
   retryToken: number;
 };
 
-export default function HomeScreen({ onOpenDev, onResult, onError, resetToken, retryToken }: Props) {
+export default function HomeScreen({ onOpenDev, onOpenCall, onResult, onError, resetToken, retryToken }: Props) {
   const { width, height } = useWindowDimensions();
   // ~62% of width, smaller on short screens, so the primary action stays on screen without clipping
   const dialSize = Math.round(Math.min(width * 0.62, height * 0.3, 256));
@@ -167,6 +169,9 @@ export default function HomeScreen({ onOpenDev, onResult, onError, resetToken, r
             </View>
             <View style={styles.rule} />
             <PrimaryButton testID="home-select" label="Select audio" onPress={onPick} left={<UploadIcon />} right={<ArrowRight />} spread />
+            <Pressable testID="home-call" onPress={onOpenCall} hitSlop={8} style={styles.callLink} accessibilityRole="button">
+              <Text style={[type.small, styles.callLinkText]} maxFontSizeMultiplier={1.3}>Or start an in-app call with a live check ›</Text>
+            </Pressable>
           </>
         )}
 
@@ -341,4 +346,6 @@ const styles = StyleSheet.create({
   errorTitle: { fontWeight: '700', color: colors.danger },
   errorDetail: { color: '#7A271A', marginTop: 4 },
   privacyNote: { textAlign: 'center', marginTop: space.sm, fontSize: 13, lineHeight: 19 },
+  callLink: { alignSelf: 'center', paddingTop: space.sm },
+  callLinkText: { color: colors.ink, textDecorationLine: 'underline' },
 });

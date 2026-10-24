@@ -1,9 +1,17 @@
 {
-  "platforms": ["android", "apple"],
+  "platforms": [
+    "android",
+    "apple"
+  ],
   "apple": {
-    "modules": ["VcdDetectorModule"]
+    "modules": [
+      "VcdDetectorModule"
+    ]
   },
   "android": {
-    "modules": ["com.hypenex.vcddetector.VcdDetectorModule"]
+    "modules": [
+      "com.hypenex.vcddetector.VcdDetectorModule",
+      "com.hypenex.vcdcalling.VcdCallingModule"
+    ]
   }
 }

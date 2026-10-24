@@ -201,3 +201,17 @@ Not covered: device window dumps for genuine api_replica and synthetic train_zsc
 - Real phones, iOS, accuracy, multilingual robustness: unchanged, unverified.
 
 **Repo repair (staged, not committed):** `mobile` was a gitlink (mode 160000 → the Expo template's local "Initial commit"), so GitHub showed an empty folder; `mobile.zip` (694 MB) was committed locally in `1956e34`. Nested history preserved in `runs/mobile-nested-repo-cdaee38.bundle` and `mobile/.git-nested-backup/`; gitlink replaced by the real tree; `.gitignore` now excludes node_modules, generated `mobile/android` and `mobile/ios`, module build dirs, APKs, zips, model weights and audio. Staged list: `runs/staged_files_20261024.txt`.
+
+## 2026-10-24 (night) — In-app calling with live check (branch `live-calling`)
+
+Source: Devansh Modi's LiveCalling kit (github.com/DevanshModi09/LiveCalling @ `1a01138`): WebView-hosted WebRTC audio call, Node signaling server, 16 kHz remote-PCM bridge. Vendored `server/`, `web/`, `deploy/` into `calling/` and `WebRtcCallView.kt` (package renamed) into our native module. Kit's own 6 server tests pass on the vendored copy.
+
+**Implemented**
+- `LiveAnalyser.kt`: rolling 10 s buffer of the *remote* participant's PCM; every 2 s scores the latest 4 s window through the **shared** `DetectorEngine` (now a process singleton) using the adapter's default mode; skips windows while one is in flight; never scores the local mic. `analysePcm` gained a float overload (byte version delegates; inference unchanged).
+- `VcdCallView` / `VcdCallingModule`: Expo view in the existing `vcd-detector` Gradle module (`serverUrl`, `liveCheck`, `onCallState`, `onLiveResult`). RECORD_AUDIO/MODIFY_AUDIO_SETTINGS/INTERNET added to the module manifest; R8 keep for the JS bridge.
+- `CallScreen.tsx`: server or invitation entry (server remembered in SecureStore), runtime mic permission, pre-loads the model if installed, hosts the call view with a live strip (latest window verdict + uncalibrated score + skipped count). Reached from Home ("start an in-app call"); hardware back returns.
+- APK: `mobile/dist/voice-check-livecalling-arm64-release-debugsigned.apk` (sha256 `f3fa1dd0…`), installed on the emulator (same package; model kept).
+
+**Verified on the emulator (`runs/20261024_live_calling_check/`)**: Home shows the call entry; call screen renders; empty and `http://` inputs rejected with a message; mic permission dialog shown and grant works; with `https://unreachable.invalid/` the native view reports "Could not load calling server…" via `onCallState` and the live strip shows its waiting state; End call → setup; hardware back → Home. App process never restarted (the one logcat fatal is UiAutomation, my test tool).
+
+**Not verified**: an actual two-party call and the remote-PCM → live-check path. The kit's WebView only accepts HTTPS, so a test needs either a deployed HTTPS calling server or a temporary tunnel to the local server; starting a tunnel from this session was blocked by the permission policy. Also unverified: audio quality/echo, TURN across networks, real phones, inference latency during a call, and behaviour when the model is not installed (code path: call runs, live check off).

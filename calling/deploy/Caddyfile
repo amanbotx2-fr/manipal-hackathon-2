@@ -1,0 +1,4 @@
+# Replace with a domain whose DNS points to this host.
+call.YOUR_DOMAIN.com {
+    reverse_proxy 127.0.0.1:8788
+}

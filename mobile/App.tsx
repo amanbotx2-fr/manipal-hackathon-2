@@ -5,6 +5,7 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 import type { Analysis, PickedFile } from './src/analysis';
 import DiagnosticsScreen from './src/screens/DiagnosticsScreen';
+import CallScreen from './src/screens/CallScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import ResultScreen from './src/screens/ResultScreen';
 import { colors } from './src/theme';
@@ -13,7 +14,7 @@ import { colors } from './src/theme';
 // Home and Dev stay mounted so their state survives navigation; the detector is a native singleton
 // (one model, one session) shared by all screens.
 
-type Screen = 'home' | 'result' | 'dev';
+type Screen = 'home' | 'result' | 'dev' | 'call';
 type Outcome = { kind: 'analysis'; analysis: Analysis } | { kind: 'error'; title: string; detail: string; file: PickedFile };
 
 export default function App() {
@@ -44,12 +45,16 @@ export default function App() {
         <View style={[styles.fill, screen !== 'home' && styles.hidden]}>
           <HomeScreen
             onOpenDev={() => openDev('home')}
+            onOpenCall={() => setScreen('call')}
             onResult={(a) => { setLastAnalysis(a); setOutcome({ kind: 'analysis', analysis: a }); setScreen('result'); }}
             onError={(title, detail, file) => { setOutcome({ kind: 'error', title, detail, file }); setScreen('result'); }}
             resetToken={resetToken}
             retryToken={retryToken}
           />
         </View>
+        {screen === 'call' && (
+          <View style={styles.fill}><CallScreen onBack={goHome} /></View>
+        )}
         {screen === 'result' && outcome && (
           <View style={styles.fill}>
             {outcome.kind === 'analysis'

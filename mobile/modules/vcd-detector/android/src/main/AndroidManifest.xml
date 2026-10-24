@@ -1,5 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools">
+  <!-- In-app calling (WebView WebRTC): microphone for the local participant. -->
+  <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.RECORD_AUDIO" />
+  <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
   <application>
     <!-- onnxruntime-android ships a telemetry initializer that starts an HTTP client at app
          launch. Detection must not use the network, so remove it from the merged manifest. -->

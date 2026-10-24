@@ -22,6 +22,12 @@ import kotlin.math.sqrt
  * No network use except installModel().
  */
 class DetectorEngine(private val context: Context, val adapter: DetectorAdapter = Adapters.default) {
+  companion object {
+    @Volatile private var instance: DetectorEngine? = null
+    /** One engine per process (one model, one session), shared by the detector and calling modules. */
+    fun get(context: Context): DetectorEngine =
+      instance ?: synchronized(this) { instance ?: DetectorEngine(context.applicationContext).also { instance = it } }
+  }
   private val spec get() = adapter.spec
   val store = ModelStore(context.filesDir, adapter.spec.model, adapter.spec.id)
   private val worker = Executors.newSingleThreadExecutor { r -> Thread(r, "vcd-inference") }
@@ -105,11 +111,15 @@ class DetectorEngine(private val context: Context, val adapter: DetectorAdapter 
     return analyseDecoded(decoded, mode, t0, tDecode, mapOf("sha256" to sha), compare, dump)
   }
 
-  /** In-memory float32 PCM (interleaved): the entry point for remote audio windows from in-app calls later. */
+  /** In-memory float32 PCM bytes (little-endian, interleaved); delegates to analysePcmFloats. */
   fun analysePcm(pcmLe: ByteArray, sampleRate: Int, channels: Int, mode: String): Map<String, Any?> {
-    val t0 = System.nanoTime()
     val fb = ByteBuffer.wrap(pcmLe).order(ByteOrder.LITTLE_ENDIAN).asFloatBuffer()
-    val inter = FloatArray(fb.remaining()).also { fb.get(it) }
+    return analysePcmFloats(FloatArray(fb.remaining()).also { fb.get(it) }, sampleRate, channels, mode)
+  }
+
+  /** In-memory float32 PCM (interleaved): used for remote audio windows from in-app calls. */
+  fun analysePcmFloats(inter: FloatArray, sampleRate: Int, channels: Int, mode: String): Map<String, Any?> {
+    val t0 = System.nanoTime()
     if (channels < 1 || sampleRate <= 0) throw IllegalArgumentException("bad sampleRate/channels")
     if (inter.isEmpty()) return rejected(mode, "empty audio (0 samples)", t0, emptyMap())
     if (inter.any { !it.isFinite() }) return rejected(mode, "audio contains NaN/Inf samples", t0, emptyMap())
