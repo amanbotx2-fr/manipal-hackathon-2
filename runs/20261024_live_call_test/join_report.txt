@@ -1,0 +1,9 @@
+22:32:17 opened room; waiting for model load + page
+22:34:33 state after load: ''
+22:48:07 home model line: 'Detector model installed · loads on first check'
+22:48:22 opened call screen
+22:48:59 tapped Open calling room (model load if needed)
+22:49:24 call state: 'Call connected'
+22:49:39 tapped Join call in WebView
+22:50:14 state after join: 'Waiting for the other participant'  strip: ''
+22:50:14 app pid: 3578  system_server: 643

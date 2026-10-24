@@ -1,0 +1,12 @@
+INFO         | Warning: skipping QEventPoint(id=1 ts=0 pos=0,0 scn=1276.35,240.927 gbl=1276.35,240.927 Released ellipse=(1x1 ∡ 0) vel=0,0 press=-1276.35,-240.927 last=-1276.35,-240.927 Δ 1276.35,240.927) : no target window (:0, )
+INFO         | Warning: skipping QEventPoint(id=1 ts=0 pos=0,0 scn=1264.15,448.94 gbl=1264.15,448.94 Released ellipse=(1x1 ∡ 0) vel=0,0 press=-1264.15,-448.94 last=-1264.15,-448.94 Δ 1264.15,448.94) : no target window (:0, )
+INFO         | Warning: skipping QEventPoint(id=1 ts=0 pos=0,0 scn=1298.27,567.923 gbl=1298.27,567.923 Released ellipse=(1x1 ∡ 0) vel=0,0 press=-1298.27,-567.923 last=-1298.27,-567.923 Δ 1298.27,567.923) : no target window (:0, )
+INFO         | Warning: skipping QEventPoint(id=1 ts=0 pos=0,0 scn=1464.03,675.971 gbl=1464.03,675.971 Released ellipse=(1x1 ∡ 0) vel=0,0 press=-1464.03,-675.971 last=-1464.03,-675.971 Δ 1464.03,675.971) : no target window (:0, )
+INFO         | Warning: skipping QEventPoint(id=1 ts=0 pos=0,0 scn=1354.94,388.579 gbl=1354.94,388.579 Released ellipse=(1x1 ∡ 0) vel=0,0 press=-1354.94,-388.579 last=-1354.94,-388.579 Δ 1354.94,388.579) : no target window (:0, )
+INFO         | Warning: skipping QEventPoint(id=1 ts=0 pos=0,0 scn=1311.61,437.15 gbl=1311.61,437.15 Released ellipse=(1x1 ∡ 0) vel=0,0 press=-1311.61,-437.15 last=-1311.61,-437.15 Δ 1311.61,437.15) : no target window (:0, )
+ERROR        | detected a hanging thread 'QEMU2 main loop'. No response for 15011 ms
+ERROR        | detected a hanging thread 'QEMU2 CPU0 thread'. No response for 15014 ms
+ERROR        | detected a hanging thread 'QEMU2 CPU1 thread'. No response for 15014 ms
+ERROR        | detected a hanging thread 'QEMU2 CPU2 thread'. No response for 15014 ms
+ERROR        | detected a hanging thread 'QEMU2 CPU3 thread'. No response for 15014 ms
+ERROR        | detected a hanging thread 'QEMU2 main loop'. No response for 15014 ms

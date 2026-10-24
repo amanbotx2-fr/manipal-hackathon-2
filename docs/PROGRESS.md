@@ -215,3 +215,21 @@ Source: Devansh Modi's LiveCalling kit (github.com/DevanshModi09/LiveCalling @ `
 **Verified on the emulator (`runs/20261024_live_calling_check/`)**: Home shows the call entry; call screen renders; empty and `http://` inputs rejected with a message; mic permission dialog shown and grant works; with `https://unreachable.invalid/` the native view reports "Could not load calling server…" via `onCallState` and the live strip shows its waiting state; End call → setup; hardware back → Home. App process never restarted (the one logcat fatal is UiAutomation, my test tool).
 
 **Not verified**: an actual two-party call and the remote-PCM → live-check path. The kit's WebView only accepts HTTPS, so a test needs either a deployed HTTPS calling server or a temporary tunnel to the local server; starting a tunnel from this session was blocked by the permission policy. Also unverified: audio quality/echo, TURN across networks, real phones, inference latency during a call, and behaviour when the model is not installed (code path: call runs, live check off).
+
+## 2026-10-24 (late) — Live call smoke test: live-check path confirmed end to end; emulator lost to host memory
+
+Setup: local `calling/server` behind a temporary Cloudflare quick tunnel (HTTPS origin, `ALLOWED_ORIGIN` set), room `822523f0d06b4a4c`; emulator rebooted with audio enabled; second participant joined from the Mac (Chrome), not automated (the Claude in Chrome extension is not connected; the built-in browser pane blocks microphone capture). Tunnel and server were shut down afterwards. Evidence: `runs/20261024_live_call_test/`.
+
+**Verified**
+- The emulator app joined the room over the WebView bridge; microphone capture worked (`-no-audio` had to be dropped).
+- A real WebRTC call connected ("Call connected"), and the remote participant's audio flowed through the JS bridge → `LiveAnalyser` → shared `DetectorEngine` → `onLiveResult` → UI. The live strip reached **window 25** (≥ ~50 s of remote audio), showing "Likely genuine · score 0.0001–0.0002 (uncalibrated)" with per-window inference of **0.7–3.0 s** and 1–2 skipped windows (skip-when-busy working). Screenshots 01/03/04.
+- Rejoin after "Call ended" worked ("Waiting for the other participant").
+
+**Not verified / caveats**
+- The remote audio was the Mac's microphone (ambient/speech); no synthetic clip was played into the call, so only the genuine side of the live verdict was exercised.
+- Calls ended more than once with "Call ended" (local stop) during the automated steps; the cause was not isolated (my scripted taps on a shifting layout are the prime suspect). Needs a manual two-phone run.
+- TURN/cross-network, audio quality, echo, and phone performance remain untested.
+
+**Environment incidents (not app bugs)**
+1. First attempt: the guest's `system_server` entered a watchdog restart loop (every ~72 s). Contributing: my join script ran `uiautomator dump` once per second (crash-looped it, 12 fatal exceptions at 1.1 s intervals), host swap at ~5.8 GB, and the emulator having been booted with `-no-audio`. Fixed by a forced restart with audio.
+2. Second attempt: the emulator exited after its own watchdog saw the QEMU main loop and all CPU threads hang for 15 s, with host swap at 6.3 GB of 7 GB and 1.7 GB disk free. Not restarted: free host memory first (Codex, Android Studio and the Claude app each hold ~1 GB).
