@@ -40,7 +40,6 @@ function AnalysisBody({ analysis, onAnother, onOpenDev }: Extract<ResultProps, {
       </View>
     );
   }
-  const analysisS = r.timing_ms.total / 1000;
   // Timeline: full-clip windows when available (clip > 10 s), else the single-verdict path's own windows.
   const winLen = analysis.timeline?.window_s ?? 4;
   const segs = analysis.timeline?.windows?.map((w) => ({ start: w.start_s, end: w.end_s, score: w.synthetic_score ?? null, status: w.status }))
@@ -65,15 +64,17 @@ function AnalysisBody({ analysis, onAnother, onOpenDev }: Extract<ResultProps, {
         </Text>
       )}
       <Text style={[type.body, styles.explain]} maxFontSizeMultiplier={1.3}>
-        {synthetic
+        {mixed
+          ? 'Part of this clip sounds like a real person and part like AI-generated speech. Treat the whole clip with caution; it can be wrong for voices or recordings unlike the ones the detector was built on.'
+          : synthetic
           ? 'The detector found patterns it associates with AI-generated speech. It can be wrong, especially for voices, languages or recordings unlike the ones it was built on.'
           : 'The detector did not find patterns it associates with AI-generated speech. That does not confirm who is speaking or that the request is legitimate.'}
       </Text>
 
       <View style={styles.metaRow}>
-        <Meta label="Duration" value={`${r.duration_s?.toFixed(1) ?? '–'} s${r.truncated ? '*' : ''}`} testID="result-duration" />
+        <Meta label="Duration" value={`${(analysis.timeline?.duration_s ?? r.duration_s)?.toFixed(1) ?? '–'} s${r.truncated ? '*' : ''}`} testID="result-duration" />
         <View style={styles.metaDivider} />
-        <Meta label="Analysis" value={`${analysisS.toFixed(1)} s`} testID="result-time" />
+        <Meta label="Analysis" value={`${((r.timing_ms.total + (analysis.timeline?.timing_ms?.total ?? 0)) / 1000).toFixed(1)} s`} testID="result-time" />
         {loadMs != null && (
           <>
             <View style={styles.metaDivider} />
@@ -81,7 +82,7 @@ function AnalysisBody({ analysis, onAnother, onOpenDev }: Extract<ResultProps, {
           </>
         )}
       </View>
-      {r.truncated && <Text style={type.fine}>* Only the first 10 seconds were analysed.</Text>}
+      {r.truncated && <Text style={type.fine}>{analysis.timeline ? '* Timeline covers the whole clip; the duration shown is the full length.' : '* Only the first 10 seconds were analysed.'}</Text>}
 
       <PrimaryButton testID="result-another" label="Check another file" onPress={onAnother} />
       <Pressable testID="result-dev" onPress={onOpenDev} hitSlop={8} style={styles.devLink} accessibilityRole="button">
