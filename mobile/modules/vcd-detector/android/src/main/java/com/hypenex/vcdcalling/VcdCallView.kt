@@ -22,6 +22,10 @@ class VcdCallView(context: Context, appContext: AppContext) : ExpoView(context, 
   var liveCheckEnabled = true
     set(v) { field = v; if (!v) analyser?.let { it.close(); analyser = null } else if (call != null && analyser == null) startAnalyser() }
 
+  init {
+    keepScreenOn = true // the call is foreground-only; a sleeping screen would pause the WebView and drop it
+  }
+
   fun setServerUrl(serverUrl: String) {
     if (serverUrl == url) return
     teardown()

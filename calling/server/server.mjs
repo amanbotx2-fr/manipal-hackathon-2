@@ -66,7 +66,21 @@ export function createServer({ allowedOrigin, iceServers = [] } = {}) {
   server.on('close', () => clearInterval(heartbeat));
   return { server, wss };
 }
+// ICE servers for a deployment. Without STUN, peers on different networks (or on mobile data)
+// never find a route: no audio, then "Connection failed" after ~10 s. ICE_SERVERS_JSON overrides
+// everything; otherwise public STUN is used, plus TURN when TURN_URLS/TURN_USERNAME/TURN_CREDENTIAL
+// are set (needed when both sides sit behind strict NAT/CGNAT, common on mobile data).
+export function iceServersFromEnv(env = process.env) {
+  if (env.ICE_SERVERS_JSON) return JSON.parse(env.ICE_SERVERS_JSON);
+  const servers = [{ urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302'] }];
+  if (env.TURN_URLS && env.TURN_USERNAME && env.TURN_CREDENTIAL) {
+    servers.push({ urls: env.TURN_URLS.split(',').map(u => u.trim()).filter(Boolean), username: env.TURN_USERNAME, credential: env.TURN_CREDENTIAL });
+  }
+  return servers;
+}
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  const { server } = createServer({ allowedOrigin: process.env.ALLOWED_ORIGIN, iceServers: JSON.parse(process.env.ICE_SERVERS_JSON || '[]') });
+  const iceServers = iceServersFromEnv();
+  console.log('ICE servers:', iceServers.map(s => s.urls).flat().join(', '), iceServers.some(s => s.username) ? '(TURN configured)' : '(no TURN: cross-network calls may fail)');
+  const { server } = createServer({ allowedOrigin: process.env.ALLOWED_ORIGIN, iceServers });
   server.listen(Number(process.env.PORT || 8788), '0.0.0.0', () => console.log('WebRTC demo on port', server.address().port));
 }

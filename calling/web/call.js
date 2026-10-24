@@ -1,6 +1,7 @@
 const $ = id => document.getElementById(id);
 let pc, socket, mic, context, source, tap, remoteStream;
 let candidates = [], stopped = true, joining = false, generation = 0;
+let initiator = false, restarts = 0, restartTimer = null, routeTimer = null;
 const status = message => {
   $('status').textContent = message;
   window.VoiceCheckAndroid?.onCallState(message);
@@ -25,7 +26,8 @@ async function stop(message = 'Call ended') {
   mic?.getTracks().forEach(t => t.stop()); mic = null;
   source?.disconnect(); tap?.disconnect(); source = tap = null;
   const ctx = context; context = null; if (ctx) ctx.close().catch(() => {});
-  $('remote').srcObject = null; remoteStream = null; candidates = [];
+  $('remote').srcObject = null; remoteStream = null; candidates = []; restarts = 0; initiator = false;
+  clearTimeout(restartTimer); clearInterval(routeTimer); restartTimer = routeTimer = null;
   $('mute').textContent = 'Mute microphone'; controls(false); status(message);
 }
 async function remoteAudio(track) {
@@ -57,6 +59,7 @@ async function remoteAudio(track) {
 async function signal(msg) {
   if (stopped || !pc) return;
   if (msg.type === 'joined') { status(msg.waiting ? 'Waiting for the other participant' : 'Connecting'); return; }
+  if (msg.type === 'ready') initiator = !!msg.initiator;
   if (msg.type === 'ready' && msg.initiator) {
     const offer = await pc.createOffer(); await pc.setLocalDescription(offer);
     send({ type: 'offer', sdp: pc.localDescription.sdp });
@@ -72,6 +75,40 @@ async function signal(msg) {
     if (pc.remoteDescription) await pc.addIceCandidate(msg.candidate); else candidates.push(msg.candidate);
   } else if (msg.type === 'peer-left') await stop('Other participant left');
   else if (msg.type === 'error') await stop(msg.message);
+}
+
+// --- resilience helpers ---------------------------------------------------------------
+async function restartIce() {
+  if (!pc || stopped || !initiator || socket?.readyState !== WebSocket.OPEN) return;
+  restarts++;
+  try {
+    const offer = await pc.createOffer({ iceRestart: true });
+    await pc.setLocalDescription(offer);
+    send({ type: 'offer', sdp: pc.localDescription.sdp });
+    status(`Reconnecting (attempt ${restarts})`);
+  } catch (e) { status(`Reconnect failed: ${e.message}`); }
+}
+function scheduleRestart(delay) {
+  clearTimeout(restartTimer);
+  restartTimer = setTimeout(() => {
+    if (!pc || stopped) return;
+    if (pc.connectionState === 'connected') return;
+    if (initiator) restartIce();
+  }, delay);
+}
+// Show whether media flows directly or through TURN; useful when "no audio" is reported.
+async function reportRoute() {
+  if (!pc) return;
+  try {
+    const stats = await pc.getStats();
+    let pair = null; const cands = new Map();
+    stats.forEach(r => { if (r.type === 'local-candidate' || r.type === 'remote-candidate') cands.set(r.id, r); });
+    stats.forEach(r => { if (r.type === 'candidate-pair' && r.state === 'succeeded' && (r.selected || r.nominated)) pair = r; });
+    if (!pair) return;
+    const l = cands.get(pair.localCandidateId), r = cands.get(pair.remoteCandidateId);
+    const via = (l?.candidateType === 'relay' || r?.candidateType === 'relay') ? 'via TURN relay' : (l?.candidateType === 'host' && r?.candidateType === 'host') ? 'direct (same network)' : 'direct (NAT traversal)';
+    status(`Call connected · ${via}`);
+  } catch { /* stats unavailable */ }
 }
 const validRoom = room => /^[a-zA-Z0-9_-]{8,64}$/.test(room);
 function updateRoomLink() {
@@ -134,19 +171,29 @@ $('join').onclick = async () => {
     pc.onconnectionstatechange = () => {
       if (!pc) return;
       if (pc.connectionState === 'connected') {
+        clearTimeout(restartTimer); restartTimer = null; restarts = 0;
         status('Call connected'); document.body.classList.add('in-call');
         $('dial-title').textContent = 'You’re connected';
         $('dial-subtitle').textContent = 'Audio call in progress';
+        reportRoute();
       }
-      else if (pc.connectionState === 'failed') stop('Connection failed — check TURN configuration');
-      else if (pc.connectionState === 'disconnected') status('Connection interrupted');
+      else if (pc.connectionState === 'disconnected') { status('Connection interrupted — reconnecting'); scheduleRestart(4000); }
+      else if (pc.connectionState === 'failed') {
+        if (initiator && restarts < 3 && socket?.readyState === WebSocket.OPEN) { status('Connection failed — retrying'); scheduleRestart(500); }
+        else if (!initiator && restarts < 3) { restarts++; status('Connection failed — waiting for the other side to retry'); restartTimer = setTimeout(() => { if (pc?.connectionState === 'failed') stop('Could not connect. Both sides need STUN/TURN on this network; see the server configuration.'); }, 15000); }
+        else stop('Could not connect. Both sides need STUN/TURN on this network; see the server configuration.');
+      }
     };
     socket = new WebSocket(`${location.protocol === 'https:' ? 'wss:' : 'ws:'}//${location.host}`);
     socket.onopen = () => { joining = false; send({ type: 'join', room }); };
     // Serialize SDP and ICE operations to avoid races while setRemoteDescription resolves.
     let queue = Promise.resolve();
     socket.onmessage = event => { queue = queue.then(() => signal(JSON.parse(event.data))).catch(e => stop(e.message)); };
-    socket.onclose = () => { if (!stopped) stop('Signaling disconnected — rejoin the room'); };
+    socket.onclose = () => {
+      if (stopped) return;
+      if (pc?.connectionState === 'connected') { socket = null; status('Call connected (signaling lost — reconnect unavailable until you rejoin)'); }
+      else stop('Signaling disconnected — rejoin the room');
+    };
     socket.onerror = () => { if (!stopped) stop('Could not reach signaling server'); };
   } catch (e) { if (token === generation) await stop(e.message); }
 };

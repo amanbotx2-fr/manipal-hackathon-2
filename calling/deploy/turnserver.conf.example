@@ -1,0 +1,12 @@
+# coturn example for the Voice Check calling server (install: apt install coturn).
+# Open UDP/TCP 3478 (and the relay range) in the firewall. Use a scoped user; rotate credentials.
+listening-port=3478
+fingerprint
+lt-cred-mech
+user=voicecheck:REPLACE_WITH_STRONG_PASSWORD
+realm=call.YOUR_DOMAIN.com
+external-ip=YOUR_PUBLIC_IP
+min-port=49160
+max-port=49200
+no-multicast-peers
+no-cli
