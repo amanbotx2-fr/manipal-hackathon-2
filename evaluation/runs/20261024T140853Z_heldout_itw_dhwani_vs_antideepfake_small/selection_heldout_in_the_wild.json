@@ -1,0 +1,45 @@
+{
+  "dataset": "in_the_wild",
+  "seed": 20261026,
+  "full": false,
+  "rule": "genuine: 150, synthetic: 150, each by speaker round-robin; seed 20261026; per-stratum random.Random('20261026:in_the_wild:<label>[:<attack>]:...'); input sorted by clip_id; metadata only (no audio, no detector output)",
+  "n_selected": 300,
+  "selected": {
+    "n": 300,
+    "by_label": {
+      "genuine": 150,
+      "synthetic": 150
+    },
+    "by_attack": {},
+    "n_speakers_by_label": {
+      "genuine": 54,
+      "synthetic": 54
+    },
+    "n_speakers_total": 54,
+    "duplicate_clip_ids": 0
+  },
+  "available": {
+    "n": 31579,
+    "by_label": {
+      "genuine": 19863,
+      "synthetic": 11716
+    },
+    "by_attack": {},
+    "n_speakers_by_label": {
+      "genuine": 54,
+      "synthetic": 54
+    },
+    "n_speakers_total": 54,
+    "duplicate_clip_ids": 0
+  },
+  "clip_id_list_sha256": "cd83219f84d4d02b8587a92e50f6862221a5e21d008de9a71c09e5a6a3067daa",
+  "shortfalls": {},
+  "exclusion": {
+    "excluded_clip_ids": 200,
+    "excluded_speakers": 0,
+    "records_before": 31779,
+    "records_after": 31579
+  },
+  "speaker_overlap_with_pilot": 54,
+  "note": "clip-disjoint from pilot; speaker-disjoint impossible (pilot covered all 54 speakers)"
+}

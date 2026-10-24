@@ -1,0 +1,8 @@
+{
+  "dev_n_scored": 155,
+  "candidate_dev_auc": 0.9981666666666666,
+  "candidate_dev_eer": 0.025833333333333333,
+  "min_auc": 0.8,
+  "passed": true,
+  "meaning": "stop-and-investigate gate on development evidence; neither a proof of a mapping error nor of parity"
+}

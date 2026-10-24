@@ -110,3 +110,17 @@ Unpacked into `runs/20261024T123319Z_pilot_train_peak/`; details are in `RUN_NOT
 - Colab stopped in cell `# 3.` with all four code hashes mismatching. Cause: an escaping bug in `build_04_notebook.py` — the cell computed the hash of the file text plus the two characters `\n` (backslash, n) instead of a newline, so it could never match. Nothing was wrong with the embedded files themselves.
 - Fixed in the builder and rebuilt. My earlier local check only re-hashed the files with my own code; it now **executes the notebook's own hash lines** against the `%%writefile` contents, exactly as Colab does, for notebooks 03 and 04. Both pass.
 - No model or data cell ran in that attempt; nothing to preserve from it. Re-upload the rebuilt `04_candidate_comparison_colab.ipynb`.
+
+## 2026-10-24: held-out comparison run 20261024T140853Z received (In-the-Wild, 244 scored clips)
+
+Unpacked into `runs/20261024T140853Z_heldout_itw_dhwani_vs_antideepfake_small/`, details in its `RUN_NOTES.md`. Metrics recomputed locally from the per-file predictions: exact match. Held-out IDs: 0 overlap with the 200 pilot clips (speakers shared, unavoidable).
+
+- **Conversion parity verified**: fairseq 0.12.2 reference vs our transformers path, 12 identical inputs, max |Δ fake score| 4.6e-7.
+- Dev gate (candidate on pilot clips): AUC 0.998 → passed.
+- **Held-out (pilot subset, not a benchmark):** Dhwani AUC 0.512 / EER 0.488 (chance, as before). **AntiDeepfake-Small AUC 0.996 [0.990, 0.999], EER 0.025 [0.008, 0.061]; at the fixed 0.5: 119/5/3/117, balanced accuracy 0.967, synthetic recall 0.960, genuine FPR 0.025.** Paired AUC gain +0.48 [0.41, 0.56]. Window-mean variant slightly worse (AUC 0.994).
+- Coverage 244/300; all 56 exclusions are < 2 s. Errors concentrate in 2.1–2.3 s clips and archival recordings (FDR, 2Pac, B.I.G.).
+- ONNX export failed (`onnxscript` missing with torch 2.11); retry cell `colab_cells/12b_onnx_export_retry.py`. No ONNX numbers yet.
+- These 300 clip IDs are now used evidence too (`manifest_heldout_in_the_wild.csv`); the next fresh selection must exclude both lists.
+- Still open: licence (CC BY-NC-SA) for product use; VoxCeleb2 speaker overlap; ASVspoof still untested (403 from Colab); no on-device latency.
+
+**Next:** run `12b` in the same runtime for ONNX evidence; then decide on the deployment path (ONNX Runtime Mobile vs ExecuTorch) with the mobile session, which this session does not touch.

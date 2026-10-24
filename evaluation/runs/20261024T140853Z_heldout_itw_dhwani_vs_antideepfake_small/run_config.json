@@ -1,0 +1,156 @@
+{
+  "settings": {
+    "HELDOUT_SEED": 20261026,
+    "HELDOUT_N": 150,
+    "MIN_PILOT_DEV_AUC": 0.8,
+    "CAND_WINDOW": 64000,
+    "CAND_HOP": 32000,
+    "EXPORT_ONNX": true,
+    "dhwani": {
+      "repo": "ayush2635/Dhwani-Multilingual-Deepfake-Audio-Detection-Model",
+      "revision": "ee0187142973e1f02050e47d2a31c55ee0263065",
+      "sha256": "d1c232bf4d7990526804b375c15804c0ee4e9b566478b908c5a57431491b7342",
+      "preprocessing": "train_peak",
+      "clip_score": "mean of 4 s windows",
+      "threshold": 0.5
+    },
+    "candidate": {
+      "repo": "nii-yamagishilab/wav2vec-small-anti-deepfake",
+      "revision": "9a13264b5dcc827a8d5a4f8e01fccefa392f886b",
+      "sha256": "828ee456122f86d5d631cb7895a10e5c62c78a4fcb8a8b1c42cb5838a9abcfe0",
+      "license": "CC-BY-NC-SA-4.0 (weights); base facebook/wav2vec2-base Apache-2.0; code BSD-3",
+      "recipe": "layer_norm whole clip, mean-pool, fake=softmax[0]",
+      "thresholds": [
+        0.5
+      ],
+      "card_eer_threshold_context_only": 0.8128
+    },
+    "policy": {
+      "min_s": 2.0,
+      "max_s": 10.0
+    },
+    "batch_size": 1
+  },
+  "env": {
+    "python": "3.13.16",
+    "torch": "2.11.0+cu130",
+    "transformers": "5.20.2",
+    "onnxruntime": "1.31.0",
+    "numpy": "2.1.3",
+    "pandas": "2.2.3",
+    "librosa": "0.11.0",
+    "soundfile": "0.14.0",
+    "sklearn": "1.6.1",
+    "device": "cuda",
+    "gpu": "Tesla T4",
+    "code_sha256": {
+      "dhwani_infer.py": "8a7c9c8f4275fb27a0d6ba3dde43aaeedf98974b7057378c37122467ba756077",
+      "eval_lib.py": "1b61f04ac27d3734c22d905cc5fc8bfcb48fac708e5233459ac5c6c1ff2ffca0",
+      "antideepfake_hf.py": "fba4d117443e6ff10dd0b7fdd64f89cff94960a73b8f0a85799ec884eb2b3db5",
+      "fairseq_parity_ref.py": "b329d63588642ec781cb309f0f46c3661795cc3a262d865e7c2acc5da707692c"
+    }
+  },
+  "probe": {
+    "len_64000_batch1": {
+      "ok": true,
+      "shape": [
+        1,
+        2
+      ]
+    },
+    "len_32000_batch1": {
+      "ok": true,
+      "shape": [
+        1,
+        2
+      ]
+    },
+    "len_48000_batch1": {
+      "ok": true,
+      "shape": [
+        1,
+        2
+      ]
+    },
+    "len_96000_batch1": {
+      "ok": true,
+      "shape": [
+        1,
+        2
+      ]
+    },
+    "batch2": {
+      "ok": false,
+      "shape": [
+        1,
+        2
+      ],
+      "max_abs_diff_vs_individual": null
+    },
+    "deterministic": true
+  },
+  "candidate_load_report": {
+    "n_checkpoint_tensors": 220,
+    "n_encoder_mapped": 210,
+    "n_head": 2,
+    "dropped_pretrain_only": [
+      "m_ssl.model.final_proj.bias",
+      "m_ssl.model.final_proj.weight",
+      "m_ssl.model.mask_emb",
+      "m_ssl.model.project_q.bias",
+      "m_ssl.model.project_q.weight",
+      "m_ssl.model.quantizer.vars",
+      "m_ssl.model.quantizer.weight_proj.bias",
+      "m_ssl.model.quantizer.weight_proj.weight"
+    ],
+    "unexplained": [],
+    "missing_in_checkpoint": [],
+    "unexpected_for_hf": [],
+    "architecture": {
+      "model_type": "wav2vec2",
+      "feat_extract_norm": "group",
+      "conv_bias": false,
+      "feat_extract_activation": "gelu",
+      "conv_dim": [
+        512,
+        512,
+        512,
+        512,
+        512,
+        512,
+        512
+      ],
+      "conv_kernel": [
+        10,
+        3,
+        3,
+        3,
+        3,
+        2,
+        2
+      ],
+      "conv_stride": [
+        5,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "hidden_size": 768,
+      "num_hidden_layers": 12,
+      "num_attention_heads": 12,
+      "intermediate_size": 3072,
+      "hidden_act": "gelu",
+      "do_stable_layer_norm": false,
+      "num_conv_pos_embeddings": 128,
+      "num_conv_pos_embedding_groups": 16,
+      "layer_norm_eps": 1e-05,
+      "add_adapter": false
+    },
+    "n_params_encoder": 94370944,
+    "n_params_head": 1538
+  },
+  "started_utc": "20261024T140853Z"
+}

@@ -1,0 +1,382 @@
+{
+  "run_name": "20261024T140853Z_heldout_itw_dhwani_vs_antideepfake_small",
+  "scope": "HELD-OUT PILOT SUBSET of In-the-Wild (clip-disjoint from dev pilot; speakers shared). Not a full-dataset benchmark.",
+  "settings": {
+    "HELDOUT_SEED": 20261026,
+    "HELDOUT_N": 150,
+    "MIN_PILOT_DEV_AUC": 0.8,
+    "CAND_WINDOW": 64000,
+    "CAND_HOP": 32000,
+    "EXPORT_ONNX": true,
+    "dhwani": {
+      "repo": "ayush2635/Dhwani-Multilingual-Deepfake-Audio-Detection-Model",
+      "revision": "ee0187142973e1f02050e47d2a31c55ee0263065",
+      "sha256": "d1c232bf4d7990526804b375c15804c0ee4e9b566478b908c5a57431491b7342",
+      "preprocessing": "train_peak",
+      "clip_score": "mean of 4 s windows",
+      "threshold": 0.5
+    },
+    "candidate": {
+      "repo": "nii-yamagishilab/wav2vec-small-anti-deepfake",
+      "revision": "9a13264b5dcc827a8d5a4f8e01fccefa392f886b",
+      "sha256": "828ee456122f86d5d631cb7895a10e5c62c78a4fcb8a8b1c42cb5838a9abcfe0",
+      "license": "CC-BY-NC-SA-4.0 (weights); base facebook/wav2vec2-base Apache-2.0; code BSD-3",
+      "recipe": "layer_norm whole clip, mean-pool, fake=softmax[0]",
+      "thresholds": [
+        0.5
+      ],
+      "card_eer_threshold_context_only": 0.8128
+    },
+    "policy": {
+      "min_s": 2.0,
+      "max_s": 10.0
+    },
+    "batch_size": 1
+  },
+  "env": {
+    "python": "3.13.16",
+    "torch": "2.11.0+cu130",
+    "transformers": "5.20.2",
+    "onnxruntime": "1.31.0",
+    "numpy": "2.1.3",
+    "pandas": "2.2.3",
+    "librosa": "0.11.0",
+    "soundfile": "0.14.0",
+    "sklearn": "1.6.1",
+    "device": "cuda",
+    "gpu": "Tesla T4",
+    "code_sha256": {
+      "dhwani_infer.py": "8a7c9c8f4275fb27a0d6ba3dde43aaeedf98974b7057378c37122467ba756077",
+      "eval_lib.py": "1b61f04ac27d3734c22d905cc5fc8bfcb48fac708e5233459ac5c6c1ff2ffca0",
+      "antideepfake_hf.py": "fba4d117443e6ff10dd0b7fdd64f89cff94960a73b8f0a85799ec884eb2b3db5",
+      "fairseq_parity_ref.py": "b329d63588642ec781cb309f0f46c3661795cc3a262d865e7c2acc5da707692c"
+    }
+  },
+  "conversion_gate": {
+    "dev_n_scored": 155,
+    "candidate_dev_auc": 0.9981666666666666,
+    "candidate_dev_eer": 0.025833333333333333,
+    "min_auc": 0.8,
+    "passed": true,
+    "meaning": "stop-and-investigate gate on development evidence; neither a proof of a mapping error nor of parity"
+  },
+  "heldout_selection": {
+    "dataset": "in_the_wild",
+    "seed": 20261026,
+    "full": false,
+    "rule": "genuine: 150, synthetic: 150, each by speaker round-robin; seed 20261026; per-stratum random.Random('20261026:in_the_wild:<label>[:<attack>]:...'); input sorted by clip_id; metadata only (no audio, no detector output)",
+    "n_selected": 300,
+    "selected": {
+      "n": 300,
+      "by_label": {
+        "genuine": 150,
+        "synthetic": 150
+      },
+      "by_attack": {},
+      "n_speakers_by_label": {
+        "genuine": 54,
+        "synthetic": 54
+      },
+      "n_speakers_total": 54,
+      "duplicate_clip_ids": 0
+    },
+    "available": {
+      "n": 31579,
+      "by_label": {
+        "genuine": 19863,
+        "synthetic": 11716
+      },
+      "by_attack": {},
+      "n_speakers_by_label": {
+        "genuine": 54,
+        "synthetic": 54
+      },
+      "n_speakers_total": 54,
+      "duplicate_clip_ids": 0
+    },
+    "clip_id_list_sha256": "cd83219f84d4d02b8587a92e50f6862221a5e21d008de9a71c09e5a6a3067daa",
+    "shortfalls": {},
+    "exclusion": {
+      "excluded_clip_ids": 200,
+      "excluded_speakers": 0,
+      "records_before": 31779,
+      "records_after": 31579
+    },
+    "speaker_overlap_with_pilot": 54,
+    "note": "clip-disjoint from pilot; speaker-disjoint impossible (pilot covered all 54 speakers)"
+  },
+  "coverage": [
+    {
+      "label": "genuine",
+      "selected": 150,
+      "scored": 120,
+      "rejected": 30,
+      "fetch_failed": 0,
+      "coverage": 0.8
+    },
+    {
+      "label": "synthetic",
+      "selected": 150,
+      "scored": 124,
+      "rejected": 26,
+      "fetch_failed": 0,
+      "coverage": 0.8267
+    }
+  ],
+  "metrics": {
+    "dhwani_train_peak_mean4s": {
+      "n_scored": 244,
+      "threshold_free": {
+        "roc_auc": 0.5119623655913978,
+        "eer": 0.4877688172043011,
+        "eer_threshold_descriptive_only": 0.0009
+      },
+      "at_threshold": {
+        "threshold": 0.5,
+        "confusion": {
+          "tp_synthetic_as_synthetic": 33,
+          "fn_synthetic_as_genuine": 91,
+          "fp_genuine_as_synthetic": 25,
+          "tn_genuine_as_genuine": 95
+        },
+        "synthetic_recall": 0.2661290322580645,
+        "synthetic_recall_wilson95": [
+          0.19622791659501096,
+          0.3500851456342424
+        ],
+        "genuine_fpr": 0.20833333333333334,
+        "genuine_fpr_wilson95": [
+          0.14528439565967385,
+          0.28947678502783636
+        ],
+        "genuine_specificity": 0.7916666666666666,
+        "balanced_accuracy": 0.5288978494623655,
+        "accuracy": 0.5245901639344263,
+        "n_synthetic": 124,
+        "n_genuine": 120
+      },
+      "bootstrap95": {
+        "roc_auc": [
+          0.44163306451612905,
+          0.5875
+        ],
+        "eer": [
+          0.4221774193548387,
+          0.5533602150537634
+        ],
+        "balanced_accuracy@thr": [
+          0.4798387096774194,
+          0.5817204301075269
+        ],
+        "n_boot": 1000,
+        "seed": 20261026
+      },
+      "at_thresholds": {
+        "0.5": {
+          "threshold": 0.5,
+          "confusion": {
+            "tp_synthetic_as_synthetic": 33,
+            "fn_synthetic_as_genuine": 91,
+            "fp_genuine_as_synthetic": 25,
+            "tn_genuine_as_genuine": 95
+          },
+          "synthetic_recall": 0.2661290322580645,
+          "synthetic_recall_wilson95": [
+            0.19622791659501096,
+            0.3500851456342424
+          ],
+          "genuine_fpr": 0.20833333333333334,
+          "genuine_fpr_wilson95": [
+            0.14528439565967385,
+            0.28947678502783636
+          ],
+          "genuine_specificity": 0.7916666666666666,
+          "balanced_accuracy": 0.5288978494623655,
+          "accuracy": 0.5245901639344263,
+          "n_synthetic": 124,
+          "n_genuine": 120
+        }
+      }
+    },
+    "candidate_whole_clip": {
+      "n_scored": 244,
+      "threshold_free": {
+        "roc_auc": 0.9958333333333333,
+        "eer": 0.024596774193548387,
+        "eer_threshold_descriptive_only": 0.178018
+      },
+      "at_threshold": {
+        "threshold": 0.5,
+        "confusion": {
+          "tp_synthetic_as_synthetic": 119,
+          "fn_synthetic_as_genuine": 5,
+          "fp_genuine_as_synthetic": 3,
+          "tn_genuine_as_genuine": 117
+        },
+        "synthetic_recall": 0.9596774193548387,
+        "synthetic_recall_wilson95": [
+          0.9090738368489376,
+          0.9826556615280472
+        ],
+        "genuine_fpr": 0.025,
+        "genuine_fpr_wilson95": [
+          0.008538174703507567,
+          0.07093003384472339
+        ],
+        "genuine_specificity": 0.975,
+        "balanced_accuracy": 0.9673387096774193,
+        "accuracy": 0.9672131147540983,
+        "n_synthetic": 124,
+        "n_genuine": 120
+      },
+      "bootstrap95": {
+        "roc_auc": [
+          0.989986559139785,
+          0.9993279569892473
+        ],
+        "eer": [
+          0.008198924731182795,
+          0.0614247311827957
+        ],
+        "balanced_accuracy@thr": [
+          0.9428763440860215,
+          0.9877688172043011
+        ],
+        "n_boot": 1000,
+        "seed": 20261026
+      },
+      "at_thresholds": {
+        "0.5": {
+          "threshold": 0.5,
+          "confusion": {
+            "tp_synthetic_as_synthetic": 119,
+            "fn_synthetic_as_genuine": 5,
+            "fp_genuine_as_synthetic": 3,
+            "tn_genuine_as_genuine": 117
+          },
+          "synthetic_recall": 0.9596774193548387,
+          "synthetic_recall_wilson95": [
+            0.9090738368489376,
+            0.9826556615280472
+          ],
+          "genuine_fpr": 0.025,
+          "genuine_fpr_wilson95": [
+            0.008538174703507567,
+            0.07093003384472339
+          ],
+          "genuine_specificity": 0.975,
+          "balanced_accuracy": 0.9673387096774193,
+          "accuracy": 0.9672131147540983,
+          "n_synthetic": 124,
+          "n_genuine": 120
+        }
+      }
+    },
+    "candidate_window_mean4s": {
+      "n_scored": 244,
+      "threshold_free": {
+        "roc_auc": 0.9943548387096774,
+        "eer": 0.03279569892473118,
+        "eer_threshold_descriptive_only": 0.483822
+      },
+      "at_threshold": {
+        "threshold": 0.5,
+        "confusion": {
+          "tp_synthetic_as_synthetic": 118,
+          "fn_synthetic_as_genuine": 6,
+          "fp_genuine_as_synthetic": 4,
+          "tn_genuine_as_genuine": 116
+        },
+        "synthetic_recall": 0.9516129032258065,
+        "synthetic_recall_wilson95": [
+          0.898447531615991,
+          0.9776375895964853
+        ],
+        "genuine_fpr": 0.03333333333333333,
+        "genuine_fpr_wilson95": [
+          0.01303755100780557,
+          0.0825803380922108
+        ],
+        "genuine_specificity": 0.9666666666666667,
+        "balanced_accuracy": 0.9591397849462366,
+        "accuracy": 0.9590163934426229,
+        "n_synthetic": 124,
+        "n_genuine": 120
+      },
+      "bootstrap95": {
+        "roc_auc": [
+          0.9876344086021506,
+          0.9990591397849462
+        ],
+        "eer": [
+          0.008198924731182795,
+          0.0614247311827957
+        ],
+        "balanced_accuracy@thr": [
+          0.9307795698924731,
+          0.9834677419354838
+        ],
+        "n_boot": 1000,
+        "seed": 20261026
+      },
+      "at_thresholds": {
+        "0.5": {
+          "threshold": 0.5,
+          "confusion": {
+            "tp_synthetic_as_synthetic": 118,
+            "fn_synthetic_as_genuine": 6,
+            "fp_genuine_as_synthetic": 4,
+            "tn_genuine_as_genuine": 116
+          },
+          "synthetic_recall": 0.9516129032258065,
+          "synthetic_recall_wilson95": [
+            0.898447531615991,
+            0.9776375895964853
+          ],
+          "genuine_fpr": 0.03333333333333333,
+          "genuine_fpr_wilson95": [
+            0.01303755100780557,
+            0.0825803380922108
+          ],
+          "genuine_specificity": 0.9666666666666667,
+          "balanced_accuracy": 0.9591397849462366,
+          "accuracy": 0.9590163934426229,
+          "n_synthetic": 124,
+          "n_genuine": 120
+        }
+      }
+    }
+  },
+  "paired_auc_difference": {
+    "auc_diff_point": 0.4838709677419355,
+    "auc_diff_95": [
+      0.4086693548387097,
+      0.5615927419354838
+    ]
+  },
+  "onnx": {
+    "attempted": true,
+    "ok": false,
+    "error": "ModuleNotFoundError: No module named 'onnxscript'"
+  },
+  "conversion_parity": {
+    "status": "verified",
+    "attempted": true,
+    "env_setup_s": 18.1,
+    "n_clips": 12,
+    "max_abs_logit_diff": 1.0609626770019531e-05,
+    "max_abs_fake_score_diff": 4.603503125817643e-07,
+    "reference_stdout": "fairseq 0.12.2 torch 2.4.1+cpu scored 12",
+    "total_s": 36.8,
+    "note": "fairseq 0.12.2 (authors' dependency) on CPU vs transformers mapping on cuda"
+  },
+  "runtime": {
+    "candidate_ms_median": 140.4,
+    "dhwani_ms_median": 3597.1000000000004,
+    "device_candidate": "cuda",
+    "provider_dhwani": "CPUExecutionProvider"
+  },
+  "candidate_license": "CC-BY-NC-SA-4.0 (weights); base facebook/wav2vec2-base Apache-2.0; code BSD-3",
+  "overlap_notes": "In-the-Wild not in candidate training table; VoxCeleb2 (celebrity speech) is -> speaker overlap possible. Dhwani overlap unknown.",
+  "finished_utc": "20261024T143532Z"
+}
