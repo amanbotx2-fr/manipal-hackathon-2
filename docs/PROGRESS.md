@@ -250,3 +250,13 @@ Verified locally: `/config` returns STUN by default, TURN entries when env is se
 ## 2026-10-24 (night) — Calling server deployed on Lightsail
 
 `https://call.13-234-179-79.sslip.io/` (Lightsail static IP 13.234.179.79, deployed via `calling/deploy/setup-lightsail.sh` from the other laptop). Verified from this Mac: DNS → 13.234.179.79; valid TLS certificate; `/config` returns Google STUN plus `turn:call.13-234-179-79.sslip.io:3478` (udp and tcp) with the `voicecheck` credential; `/`, `/call.js`, `/pcm-worklet.js` served and `call.js` contains the resilience patch; WebSocket signaling answers a join with `{"type":"joined","waiting":true}`; STUN binding requests on 3478 are answered over both UDP and TCP (coturn reachable through the Lightsail firewall). Not yet verified: a two-phone call on mobile data through this server (watch for "via TURN relay" in the status line).
+
+## 2026-10-24 (night) — App-to-app calling (branch `live-calling`, ed5e779)
+
+Web-to-web calls confirmed working by Aman on the Lightsail server. Now: Home has a **"Call a friend · live check"** button; the Call screen's **Start a call** creates a room and shares an invite link (`https://call.13-234-179-79.sslip.io/?room=…`); the friend's tap opens the app (Android App Links, `autoVerify`, plus a `voicecheck://` scheme) which auto-joins the room (`?autojoin=1` handled by the updated page). Default calling server preset; invite can also be pasted. Server now serves `/.well-known/assetlinks.json` (`ASSETLINKS_JSON` env; statement in `calling/deploy/assetlinks.json` for signing cert `FA:C6:17:45…3B:9C`).
+
+APK: `testing apk/call apk.apk` (= `mobile/dist/voice-check-call-arm64-release-debugsigned.apk`, sha256 `4da17c72…`, same signing cert).
+
+**Verified on the emulator** (`runs/20261024_app_to_app_call/`): Call button on Home; `am start -a VIEW` with the https invite and with `voicecheck://call?room=…` both open the app on the Call screen, run the auto-start (mic permission, model load) and reach the in-call screen for the right room with Share invite and the page loaded with the room prefilled. Android registered the App Links domain with our signature (state "none" until the server publishes the statement).
+
+**Pending on the server** (Aman, other laptop): run `calling/deploy/update-lightsail.sh` on the instance to deploy the auto-join page and the assetlinks statement; then install `call apk.apk` on both phones (Android verifies the link at install). **Not verified:** a two-phone app-to-app call end to end.
