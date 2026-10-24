@@ -246,3 +246,7 @@ Changes (server + web page; no app rebuild needed for these, the WebView loads t
 
 Verified locally: `/config` returns STUN by default, TURN entries when env is set, and the override; kit tests pass; Kotlin compiles. **Not verified:** an actual cross-network call with these changes (needs the server redeployed with the new `web/` and `server/`, and TURN for mobile-data callers).
 - APK rebuilt with the screen-on fix: `mobile/dist/voice-check-livecalling-arm64-release-debugsigned.apk` (sha256 `d139f2f213e5…`), copied to `testing apk/`.
+
+## 2026-10-24 (night) — Calling server deployed on Lightsail
+
+`https://call.13-234-179-79.sslip.io/` (Lightsail static IP 13.234.179.79, deployed via `calling/deploy/setup-lightsail.sh` from the other laptop). Verified from this Mac: DNS → 13.234.179.79; valid TLS certificate; `/config` returns Google STUN plus `turn:call.13-234-179-79.sslip.io:3478` (udp and tcp) with the `voicecheck` credential; `/`, `/call.js`, `/pcm-worklet.js` served and `call.js` contains the resilience patch; WebSocket signaling answers a join with `{"type":"joined","waiting":true}`; STUN binding requests on 3478 are answered over both UDP and TCP (coturn reachable through the Lightsail firewall). Not yet verified: a two-phone call on mobile data through this server (watch for "via TURN relay" in the status line).
